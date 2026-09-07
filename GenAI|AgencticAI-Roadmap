@@ -1,0 +1,1479 @@
+PHASE 0 — Programming Foundation
+
+If you're starting from almost zero in AI, do not jump directly into LangChain.
+
+First become comfortable with Python.
+
+0.1 Python Basics
+
+Learn:
+
+Variables
+Data types
+Strings
+Lists
+Tuples
+Sets
+Dictionaries
+Operators
+Conditions
+if / elif / else
+Loops
+Functions
+*args, **kwargs
+Lambda
+List/dictionary comprehensions
+Exception handling
+File handling
+JSON
+Modules
+Packages
+Virtual environments
+
+0.2 Intermediate Python:
+Then:
+
+OOP
+Classes
+Objects
+Inheritance
+Encapsulation
+Polymorphism
+Decorators
+Iterators
+Generators
+Context managers
+Type hints
+Dataclasses
+Logging
+Environment variables
+Configuration management
+
+0.3 Important Libraries:
+Learn:
+NumPy
+Pandas
+Matplotlib
+Requests
+Pydantic
+
+Project 1 — Customer Support Ticket Analyzer
+
+Build:
+CSV/Excel customer tickets
+          ↓
+Python
+          ↓
+Clean data
+          ↓
+Analyze complaints
+          ↓
+Generate statistics
+          ↓
+Export report
+
+You should be able to explain:
+"I used Python and Pandas to process customer support data, perform data cleaning and generate analytical reports."
+----------------------------------------------
+
+
+PHASE 1 — SQL + Backend + API Fundamentals
+
+A GenAI engineer is not only an LLM prompt engineer.
+
+You need backend knowledge.
+
+SQL:
+Learn:
+SELECT
+WHERE
+GROUP BY
+ORDER BY
+JOIN
+INNER JOIN
+LEFT JOIN
+Subqueries
+CTE
+Window functions
+Aggregations
+Indexes
+Transactions
+Learn PostgreSQL properly.
+
+
+REST APIs
+
+Understand:
+Client
+  ↓
+HTTP Request
+  ↓
+API
+  ↓
+Business Logic
+  ↓
+Database
+  ↓
+Response
+
+
+Learn:
+GET
+POST
+PUT
+PATCH
+DELETE
+HTTP status codes
+Headers
+Authentication
+JSON
+REST principles
+
+FastAPI:
+Learn:
+Routes
+Request models
+Response models
+Pydantic
+Dependency injection
+Exception handling
+Middleware
+Async/await
+API documentation
+
+
+Project 2 — Banking Customer Service API
+
+Build:
+
+Customer
+   ↓
+FastAPI
+   ↓
+PostgreSQL
+   ↓
+Accounts
+Transactions
+Loans
+Cards
+
+Example:   This project becomes useful later when you add LLM tool calling.
+GET /customers/{id}
+
+GET /accounts/{id}
+
+GET /transactions/{id}
+
+GET /loans/{id}
+-----------------------------------------------------------------------------
+
+PHASE 2 — Machine Learning Fundamentals
+
+You don't need to become a research-level ML scientist.
+
+But at 3-year GenAI level, you should understand ML fundamentals.
+
+Learn
+Supervised Learning: 
+Linear Regression
+Logistic Regression
+Decision Tree
+Random Forest
+XGBoost — conceptual understanding
+Classification
+Regression
+
+Unsupervised Learning:
+Clustering
+K-Means
+Dimensionality reduction
+PCA
+
+Model Evaluation:
+Classification:
+Accuracy
+Precision
+Recall
+F1
+Confusion Matrix
+ROC-AUC
+Regression:
+MAE
+MSE
+RMSE
+R²
+
+Important concepts
+
+Understand:
+
+Training
+Validation
+Testing
+Overfitting
+Underfitting
+Bias
+Variance
+Feature engineering
+Cross-validation
+
+--------------------------------------------------------------------------
+PHASE 3 — NLP Fundamentals
+
+Before understanding LLMs, understand basic NLP.
+
+Learn:
+
+Text preprocessing
+Tokenization
+Stop words
+Stemming
+Lemmatization
+Bag of Words
+TF-IDF
+N-grams
+Cosine similarity
+Named Entity Recognition
+Text classification
+
+Then move into:
+Word embeddings
+       ↓
+Contextual embeddings
+       ↓
+Transformers
+       ↓
+LLMs
+
+------------------------------
+
+PHASE 4 — LLM Fundamentals
+
+Now start GenAI.
+
+This is where your real GenAI journey begins.
+
+Understand
+What is an LLM?
+
+Understand:
+Text
+ ↓
+Tokens
+ ↓
+Embeddings
+ ↓
+Transformer
+ ↓
+Attention
+ ↓
+Next-token prediction
+ ↓
+Generated response
+
+
+Tokens:
+
+Learn:
+
+Token
+Tokenization
+Token IDs
+Vocabulary
+Context window
+Input tokens
+Output tokens
+
+Understand:
+
+Why does an LLM not actually read text as humans do?
+
+--------------------------------
+PHASE 5 — Transformers
+
+This is extremely important for interviews.
+
+Learn:
+
+Transformer architecture
+ ↓
+Tokenization
+ ↓
+Embedding
+ ↓
+Positional information
+ ↓
+Self Attention
+ ↓
+Feed Forward Network
+ ↓
+Output
+
+
+Understand:
+Attention
+Self-attention
+Query
+Key
+Value
+Multi-head attention
+Positional encoding
+Encoder
+Decoder
+Encoder-decoder
+Transformer
+
+You don't need to implement GPT from scratch initially.
+But you should be able to explain how a Transformer works conceptually.
+
+-----------------------------------------
+PHASE 6 — LLM APIs
+
+Now learn how engineers actually use LLMs.
+
+Examples:
+
+OpenAI
+Azure OpenAI
+Anthropic
+Google Gemini
+AWS Bedrock
+
+Learn:
+Prompt
+ ↓
+API
+ ↓
+LLM
+ ↓
+Response
+
+Understand:
+Temperature
+Max tokens
+System prompt
+User prompt
+Assistant response
+Streaming
+Structured output
+JSON output
+Function/tool calling
+
+-----------------------------------
+PHASE 7 — Prompt Engineering
+
+Learn properly rather than just memorizing "prompt tricks."
+
+Topics
+Basic prompting:
+Zero-shot
+One-shot
+Few-shot
+
+Advanced prompting:
+Role prompting
+Instruction prompting
+Structured prompting
+Chain-of-thought concept
+Output constraints
+JSON output
+Prompt templates
+Context injection
+
+Production concerns:
+Prompt versioning
+Prompt security
+Prompt injection
+Sensitive information
+Hallucination
+
+PROJECT 3 — LLM Customer Support Assistant
+
+Build:
+User
+ ↓
+FastAPI
+ ↓
+LLM
+ ↓
+Prompt Template
+ ↓
+Response
+Features:
+
+Customer questions
+Product information
+Structured responses
+Conversation history
+Error handling
+Logging
+
+At this stage you have a simple LLM application.
+
+But it is not RAG yet
+
+
+--------------------------------------------------
+PHASE 8 — Embeddings
+
+This is one of the most important topics for GenAI interviews.
+
+Understand exactly:
+
+What is an embedding?
+
+An embedding converts text into a numerical vector representing its semantic meaning.
+
+Example:
+"How can I apply for a personal loan?"
+                    ↓
+             Embedding Model
+                    ↓
+[0.12, -0.43, 0.78, ...]
+
+Learn:
+
+Embedding models
+Dense vectors
+Dimensions
+Semantic similarity
+Cosine similarity
+Euclidean distance
+Dot product
+VERY IMPORTANT INTERVIEW QUESTION
+
+How is a query embedding compared with document embeddings?
+
+Understand:
+User Query
+     ↓
+Query Embedding
+     ↓
+Vector Search
+     ↓
+Compare with document vectors
+     ↓
+Similarity score
+     ↓
+Top-K documents
+
+Usually this involves similarity measures such as:
+Cosine similarity
+Dot product
+Euclidean distance
+--------------------------------------------------------------------
+PHASE 9 — Vector Databases
+
+Learn:
+
+FAISS
+ChromaDB
+PGVector
+Pinecone — conceptual understanding
+Weaviate — conceptual understanding
+
+Understand:
+Document
+ ↓
+Chunk
+ ↓
+Embedding
+ ↓
+Vector DB
+
+And:
+Query
+ ↓
+Embedding
+ ↓
+Vector similarity search
+ ↓
+Top-K chunks
+
+Learn:
+
+Indexing
+Metadata
+Filtering
+Top-K
+Similarity threshold
+Approximate nearest neighbor search
+
+----------------------------------------------------------
+
+
+PHASE 10 — RAG Fundamentals
+
+This is the core GenAI Engineer skill.
+
+RAG = Retrieval-Augmented Generation
+
+Architecture:
+
+              DOCUMENTS
+                  ↓
+              Loaders
+                  ↓
+              Chunking
+                  ↓
+              Embeddings
+                  ↓
+             Vector DB
+                  ↓
+                INDEX
+
+
+USER QUESTION
+      ↓
+Query Embedding
+      ↓
+Vector Search
+      ↓
+Relevant Chunks
+      ↓
+Prompt + Context
+      ↓
+LLM
+      ↓
+Answer
+
+RAG Topics You MUST Know
+Document ingestion:
+
+Learn:
+
+PDF
+Word
+Excel
+CSV
+HTML
+JSON
+Web pages
+
+Chunking: 
+Learn:
+Fixed-size chunking
+Character chunking
+Recursive chunking
+Sentence chunking
+Semantic chunking
+Parent-child chunking
+
+Understand:
+Why do we chunk documents?
+
+And:
+How do you decide chunk size and overlap?
+
+-------------------------------------------------------------
+
+PROJECT 4 — Banking Policy RAG Chatbot
+
+This should become one of your main portfolio projects.
+
+Documents
+
+Use:
+
+Loan policies
+Credit card policies
+KYC policies
+Account policies
+Interest rate documents
+FAQ documents
+
+
+Pipeline:
+ ↓
+Document Loader
+ ↓
+Text Extraction
+ ↓
+Chunking
+ ↓
+Embedding Model
+ ↓
+PGVector/FAISS
+ ↓
+Retriever
+ ↓
+Prompt
+ ↓
+LLM
+ ↓
+Answer
+
+
+Features:
+Add:
+Conversation history
+Source citations
+"I don't know" fallback
+Prompt protection
+Metadata filtering
+Logging
+FastAPI API
+
+This is already a strong junior-to-mid GenAI project.
+
+------------------------------------------------------------------
+
+PHASE 11 — Advanced RAG
+
+This is where you move toward 2–3 year experience level.
+
+Basic RAG isn't enough.
+
+Learn:
+
+Retrieval techniques
+1. Dense retrieval
+
+Embedding similarity.
+
+2. Sparse retrieval
+
+BM25 / keyword-based search.
+
+3. Hybrid search
+Vector Search
+      +
+BM25
+      ↓
+Combined results
+
+4. Reranking
+
+Query
+ ↓
+Retriever
+ ↓
+Top 20 documents
+ ↓
+Reranker
+ ↓
+Top 5 documents
+ ↓
+LLM
+
+
+Understand:
+
+Cross-encoder reranker
+Relevance scoring
+
+Advanced RAG Topics:
+Learn:
+Query rewriting
+Query expansion
+Multi-query retrieval
+HyDE
+Metadata filtering
+Parent-child retrieval
+Contextual compression
+Self-query retrieval
+Multi-hop retrieval
+Routing
+Corrective RAG
+Adaptive RAG
+
+You don't need to master every technique immediately.
+But you should understand when and why each is used.
+
+
+PROJECT 5 — Enterprise Banking Knowledge Assistant
+
+Upgrade your previous chatbot.
+
+Architecture:
+                         ┌── Vector Search
+                         │
+User Query → Query Router ┤
+                         │
+                         └── Keyword Search
+                                ↓
+                           Hybrid Search
+                                ↓
+                             Reranker
+                                ↓
+                         Context Selection
+                                ↓
+                              LLM
+                                ↓
+                           Final Answer
+
+Add:
+
+Hybrid search
+Reranking
+Query rewriting
+Metadata filtering
+Source citations
+Conversation memory
+Guardrails
+Evaluation
+
+This is a strong 2–3 year-level RAG project.
+
+------------------------------------------------------------------
+
+PHASE 12 — LangChain
+
+Only after understanding RAG manually should you learn LangChain.
+
+Otherwise you'll know syntax but not architecture.
+
+Learn:
+
+Models
+Prompts
+Output parsers
+Retrievers
+Document loaders
+Text splitters
+Chains
+Runnable concepts
+Memory
+Tools
+Agents
+
+Understand what LangChain is actually solving.
+
+--------------------------------------------------------------
+
+PHASE 13 — LangGraph
+
+This is important for modern GenAI/Agentic AI roles.
+
+Understand:
+
+State
+ ↓
+Node
+ ↓
+Edge
+ ↓
+Conditional Edge
+ ↓
+Graph
+
+Example:
+
+START
+  ↓
+Classify Query
+  ↓
+ ┌──────────────┐
+ ↓              ↓
+RAG           Database
+ ↓              ↓
+Answer        Validate
+ ↓              ↓
+ └──────→ END ←─┘
+
+
+Learn:
+
+State management
+Nodes
+Edges
+Conditional routing
+Loops
+Checkpoints
+Human-in-the-loop
+Memory
+Error recovery
+
+
+PHASE 14 — Agentic AI
+
+Now move from:
+"LLM answers questions"
+
+to:
+"LLM decides what actions need to be performed."
+
+Understand:
+User
+ ↓
+Agent
+ ↓
+Reason / Decide
+ ↓
+Tool
+ ↓
+Result
+ ↓
+Agent
+ ↓
+Next action
+ ↓
+Final response
+
+
+Agent Concepts:
+
+Learn:
+Agent
+Tool
+Tool calling
+Function calling
+Planning
+Routing
+ReAct
+Reflection
+Multi-agent systems
+Human-in-the-loop
+Memory
+State
+Workflow vs agent
+
+VERY IMPORTANT:
+Know the difference:
+
+Workflow
+A → B → C → D
+
+Agent:
+A
+ ↓
+Decision
+ ↙ ↓ ↘
+B  C  D
+ ↓
+Observe result
+ ↓
+Decide next action
+
+
+PROJECT 6 — Banking Operations Agent
+
+This should be your major Agentic AI project.
+
+Example user:
+
+"Check my account balance and if sufficient, transfer ₹5,000 to my savings account."
+
+Architecture:
+
+User
+ ↓
+Agent
+ ↓
+Intent Detection
+ ↓
+Account Tool
+ ↓
+Balance
+ ↓
+Decision
+ ↓
+Transfer Tool
+ ↓
+Validation
+ ↓
+Confirmation
+ ↓
+Response
+
+Tools:
+
+get_account_balance()
+get_customer_details()
+get_transactions()
+check_loan_status()
+transfer_money()
+generate_statement()
+
+Add:
+
+Authentication
+Authorization
+Confirmation before financial actions
+Audit logs
+Error handling
+Human approval
+State management
+
+This is much closer to a real enterprise GenAI application.
+
+PHASE 15 — MCP
+
+Learn Model Context Protocol.
+
+Understand:
+
+LLM
+ ↓
+MCP Client
+ ↓
+MCP Server
+ ↓
+Tools / Resources
+ ↓
+External System
+
+Learn:
+
+MCP architecture
+MCP client
+MCP server
+Tools
+Resources
+Prompts
+Transport concept
+Security
+Authentication
+FastMCP
+
+Build an MCP server exposing:
+Customer Tool
+Transaction Tool
+Loan Tool
+Document Search Tool
+
+Then connect your agent to it.
+
+
+PROJECT 7 — MCP-Based Banking AI Assistant
+
+Architecture:
+      LLM
+                 ↓
+              Agent
+                 ↓
+            MCP Client
+                 ↓
+        ┌────────┼────────┐
+        ↓        ↓        ↓
+    Customer  Banking   Document
+     MCP       MCP       MCP
+     Server    Server    Server
+        ↓        ↓        ↓
+       DB       APIs      Vector DB
+
+This is an excellent project for modern Agentic AI interviews.
+
+
+------------------------------------------------------------------------------------------
+
+PHASE 16 — Memory
+
+Learn the difference between:
+
+Short-term memory
+
+Current conversation.
+
+Long-term memory
+
+Information retained across conversations.
+
+Conversation history:
+User
+Assistant
+User
+Assistant
+...
+
+
+
+Understand:
+Context window
+Conversation summarization
+Memory storage
+User preferences
+Session state
+---------------------------------------------------
+PHASE 17 — LLM Evaluation
+
+This is often missing from beginner GenAI portfolios.
+
+A production engineer needs to answer:
+
+"How do you know your RAG system is actually good?"
+
+Learn:
+Retrieval metrics:
+Precision@K
+Recall@K
+MRR
+Hit Rate
+
+Generation metrics:
+Faithfulness
+Answer relevance
+Context relevance
+Groundedness
+
+Learn tools/concepts such as:
+RAGAS
+LLM-as-a-judge
+Golden datasets
+Human evaluation
+---------------------------------------------------------------------------------
+
+PHASE 18 — Hallucination & Guardrails
+
+Learn:
+
+Hallucination
+
+Why LLMs produce incorrect information.
+
+Prevention:
+RAG
++
+Grounded prompts
++
+Temperature control
++
+Validation
++
+Structured output
++
+Guardrails
+
+Learn:
+
+Prompt injection
+Jailbreaking
+Data leakage
+PII protection
+Toxicity
+Unauthorized tool usage
+Output validation
+-----------------------------------------------------------------
+
+PHASE 19 — Observability
+
+Production GenAI systems need monitoring.
+
+Learn:
+
+Request
+ ↓
+Prompt
+ ↓
+Retrieval
+ ↓
+LLM
+ ↓
+Response
+
+
+Monitor:
+
+Latency
+Token usage
+Cost
+Errors
+Retrieval quality
+LLM response quality
+Tool failures
+
+Tools/concepts:
+
+LangSmith
+Grafana
+Kibana
+Splunk
+OpenTelemetry
+
+
+------------------------------------------------------------------------------------
+
+PHASE 20 — Docker
+
+Learn:
+
+Application
+ ↓
+Dockerfile
+ ↓
+Docker Image
+ ↓
+Container
+
+Understand:
+Dockerfile
+Images
+Containers
+Ports
+Environment variables
+Docker Compose
+Container networking
+
+Containerize your FastAPI + RAG application.
+
+-----------------------------------------------------------------------
+
+PHASE 21 — Cloud
+
+For your target roles, learn at least one cloud deeply enough to deploy GenAI applications.
+
+You can focus on:
+
+Azure
+
+Learn:
+
+Azure OpenAI
+Azure Storage
+Azure AI Search
+Azure Functions
+Azure Container Apps
+Key Vault
+Application Insights
+
+Or AWS:
+
+Bedrock
+S3
+EC2
+Lambda
+IAM
+CloudWatch
+OpenSearch
+
+Since your target roles often mention Azure/GCP/AWS, understand the concepts across clouds even if you specialize in one.
+
+
+------------------------------------------------------------
+
+PHASE 22 — CI/CD
+
+Learn:
+
+Git
+ ↓
+Branch
+ ↓
+Pull Request
+ ↓
+Code Review
+ ↓
+Tests
+ ↓
+Build
+ ↓
+Docker
+ ↓
+Deploy
+
+Tools:
+
+Git
+GitHub
+GitHub Actions
+Docker
+CI/CD
+-----------------------------------------------------------------------
+PHASE 23 — Production Architecture
+
+Now you should understand a complete GenAI system.
+   USERS
+                      ↓
+                Load Balancer
+                      ↓
+                  FastAPI
+                      ↓
+               Authentication
+                      ↓
+                 AI Service
+                      ↓
+              ┌───────┴───────┐
+              ↓               ↓
+           RAG               Agent
+              ↓               ↓
+         Retriever          Tools
+              ↓               ↓
+        Vector Database    APIs / DB
+              ↓               ↓
+              └───────┬───────┘
+                      ↓
+                     LLM
+                      ↓
+                  Guardrails
+                      ↓
+                   Response
+                      ↓
+                Observability
+
+
+You should be able to explain this architecture in an interview.
+
+----------------------------------------------------------------------------------
+
+PHASE 24 — Advanced Topics for 3-Year Level
+
+Once your fundamentals are strong, learn these at conceptual + practical level:
+
+RAG:
+Advanced chunking
+Hybrid retrieval
+Reranking
+Query routing
+Multi-hop RAG
+Agentic RAG
+Graph RAG
+Multimodal RAG
+
+LLM:
+Fine-tuning
+LoRA
+QLoRA
+PEFT
+Quantization
+Distillation
+Model selection
+
+Agents:
+Multi-agent architecture
+Supervisor agents
+Planner/executor
+Human-in-the-loop
+Agent memory
+Agent evaluation
+
+Infrastructure:
+Caching
+Async processing
+Queues
+Kafka
+Rate limiting
+Load balancing
+Horizontal scaling
+
+🚀 Your 7 Real-Time Projects
+
+I recommend that you do not build 20 small projects.
+
+Build these 7 progressively larger projects.
+
+
+| Project                      | Level              | Main Skills                          |
+| ---------------------------- | ------------------ | ------------------------------------ |
+| 1. Customer Support Analyzer | Beginner           | Python, Pandas, SQL                  |
+| 2. Banking Customer API      | Beginner+          | FastAPI, PostgreSQL, REST            |
+| 3. LLM Customer Assistant    | GenAI Beginner     | LLM, Prompt Engineering              |
+| 4. Banking Policy RAG        | GenAI Intermediate | RAG, Embeddings, Vector DB           |
+| 5. Enterprise Banking RAG    | Advanced RAG       | Hybrid Search, Reranking, Evaluation |
+| 6. Banking Operations Agent  | Agentic AI         | LangGraph, Tools, APIs               |
+| 7. MCP Banking Assistant     | Advanced Agentic   | MCP, Multi-tool Agent, Production    |
+
+--------------------------
+
+
+⭐ The 3 Projects You Should Focus on Most
+
+For your target GenAI Engineer interviews, I would make these three your strongest projects.
+
+
+PROJECT A — Banking GenAI Knowledge Assistant
+Documents
+ ↓
+Ingestion
+ ↓
+Chunking
+ ↓
+Embeddings
+ ↓
+Vector DB
+ ↓
+Hybrid Retrieval
+ ↓
+Reranking
+ ↓
+LLM
+ ↓
+Answer + Citations
+
+Technologies:
+
+Python
+FastAPI
+LangChain
+PostgreSQL
+PGVector
+LLM
+Embeddings
+RAG
+Docker
+Azure/GCP
+
+
+--------------------
+
+PROJECT B — Banking Operations Agent
+User
+ ↓
+Agent
+ ↓
+Intent
+ ↓
+Planning
+ ↓
+Tools
+ ├── Account API
+ ├── Transaction API
+ ├── Loan API
+ └── Customer API
+ ↓
+Validation
+ ↓
+Human Approval
+ ↓
+Action
+ ↓
+Audit Log
+ ↓
+Response
+
+
+Technologies:
+
+Python
+FastAPI
+LangGraph
+LLM
+Tool Calling
+PostgreSQL
+REST APIs
+Docker
+Cloud
+
+
+PROJECT C — MCP-Based Enterprise Agent
+
+                    User
+                     ↓
+                  AI Agent
+                     ↓
+                 MCP Client
+                     ↓
+        ┌────────────┼────────────┐
+        ↓            ↓            ↓
+   Banking MCP   Knowledge MCP  Customer MCP
+        ↓            ↓            ↓
+      APIs       Vector DB        DB
+
+This gives you experience with:
+
+Agentic AI
+MCP
+Tool Calling
+RAG
+Vector Search
+APIs
+Databases
+LLMs
+Security
+Observability
+
+
+------------------------------------
+
+
+🎯 Interview Topics — 3-Year GenAI Engineer
+
+You should eventually be able to answer questions like:
+
+LLM:
+What is an LLM?
+How does GPT work?
+What is tokenization?
+What is a context window?
+What is temperature?
+What is attention?
+What is Transformer architecture?
+Embeddings:
+What is an embedding?
+Why do we need embeddings?
+How is query embedding compared with document embedding?
+Cosine similarity vs dot product?
+What is vector dimension?
+RAG:
+What is RAG?
+Why RAG instead of fine-tuning?
+How does document ingestion work?
+What is chunking?
+How do you choose chunk size?
+What is chunk overlap?
+What is hybrid search?
+What is reranking?
+How do you reduce hallucination?
+Advanced RAG:
+Query rewriting?
+HyDE?
+Multi-query retrieval?
+Parent-child retrieval?
+Contextual compression?
+RAG evaluation?
+Agents:
+What is an AI agent?
+Agent vs workflow?
+What is tool calling?
+What is function calling?
+What is LangGraph?
+How do you maintain agent state?
+How do you prevent an agent from performing unauthorized actions?
+MCP:
+What is MCP?
+Why MCP?
+MCP vs API?
+MCP client vs server?
+How would you design an MCP server?
+Production:
+How do you monitor LLM applications?
+How do you reduce latency?
+How do you reduce token cost?
+How do you handle failures?
+How do you secure an LLM application?
+How do you evaluate RAG?
+How do you deploy a GenAI application?
+
+--------------------------------------------
+
+🏆 Your Final Skill Stack
+
+By the end, your stack should look approximately like this:
+  GENAI ENGINEER
+                          │
+       ┌──────────────────┼──────────────────┐
+       │                  │                  │
+   Programming          AI/ML             Backend
+       │                  │                  │
+    Python              ML                 FastAPI
+    SQL                 NLP                REST
+    Git                 DL                 PostgreSQL
+       │                  │
+       └──────────────────┼──────────────────┐
+                          │                  │
+                         LLM              GenAI
+                          │                  │
+                    Transformers          RAG
+                    Tokenization          Embeddings
+                    Attention             Vector DB
+                                         Retrieval
+                                         Reranking
+                          │
+                          ↓
+                       Agents
+                          │
+                    LangGraph
+                    Tool Calling
+                    MCP
+                    Multi-Agent
+                          │
+                          ↓
+                     Production
+                          │
+                  Docker / CI-CD
+                  Cloud
+                  Monitoring
+                  Evaluation
+                  Security
+                  Cost Optimization
+
+
