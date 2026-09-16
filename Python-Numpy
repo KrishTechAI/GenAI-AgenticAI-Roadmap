@@ -1,3 +1,22 @@
+NumPy → numerical arrays
+
+Pandas → tabular data
+
+Think:
+
+NumPy
+  ↓
+Arrays + numerical computation
+  ↓
+Pandas
+  ↓
+Tables + data analysis
+  ↓
+Machine Learning
+  ↓
+AI / GenAI
+-------------------------
+
 1. Numpy = Numerical Python
 
 2. Usage: 
@@ -136,10 +155,22 @@ print(arr[arr>2])  -----> [30 40]  # THIS IS CALLED BOOLEAN INDEXING OR BOOLEAN 
 |Random Numbers|
 
 37. np.random.randint(1,100, 5)  # between 1, 100  --> 5 integers
+
 38. np.ramdom.rand(5) -----> Generates random floating-point values between 0 and 1.
+np.random.rand(2, 3)
+
 39.np.random.randint(1, 100, size= (3,4)) ----> 3 rows, 4 columns
-40. np.random.seed(42)    1st  # For reproducible results, This is useful in Machine Learning experiments.
+
+40.np.random.choice([10, 20, 30])	# Random choice Picks randomly from given list
+
+40. np.random.seed(42)    1st  # For reproducible results, This is useful in Machine Learning experiments.  ## Fixes the random output, Useful for testing makes results repeatable
 41. np.random.randint(1, 100, 5)   (then)
+
+In machine learning, we use seed to make sure:
+	Model training gives same results every time
+	Easy to debug issues
+	Results are reproducible across environments
+
 -------------------------------------------------------
 |Sorting|
 
@@ -158,6 +189,202 @@ b = np.array([3, 4])
 46. np.unique(arr)  # gives only unique values (finding distinct values)
 --------------------------------------
 | Handling missing values|
+
+arr = np.array([10, 20, np.nan, 40])
+
+47. np.isnan(arr) --# true false false true
+48.print(np.nanmean(arr))   # ********
+-----------------------------------------------------
+|Data Types|
+
+49. arr = np.array([10, 20, 30], dtype=float)
+dtype=int
+dtype=float
+dtype=str
+dtype=bool
+
+50. Convert:
+arr.astype(float)
+---------------------------------------------
+|Copy vs View|  ***************
+
+51. arr = np.array([1, 2, 3])      
+    new_arr = arr.copy()    #Changing new_arr does not change arr. [copy() creates an independent copy.]*****
+
+52. new_arr = arr.view()  #A view can share the same underlying data.
+------------------------------------------
+|Transpose|
+
+53. print(arr.T)
+-----------------------------------------
+|Matrix Multiplication|
+
+a = np.array([
+    [1, 2],
+    [3, 4]
+])
+
+b = np.array([
+    [5, 6],
+    [7, 8]
+])
+
+54. result = np.matmul(a,b)   # or  (result = a @ b)
+    print(result)
+-----------------------------------------------
+
+NumPy:
+	It is Numerical Python.
+	It is used for working with numbers and arrays.
+	It stores datas like a list but it is much faster than list.
+	List -> Calulations are slower; array -> calculations are much faster.
+	NumPy is written in Python, but internally it uses C language.
+
+Array:
+	Stores multiple values in a single variable and the values are in same data type.
+	values are strored in ordered way.
+
+----------------------------------------------------------------
+    list	   		|	   Array	 	|
+----------------------------------------------------------------
+1. store diff data type		| Stores only same data type	|
+2. Slower for calculation	| Faster because it is optimised|
+3. cannot directly perfom	| Supports directly		|
+   element wise calculation	|				|
+4. Uses More memory		| Uses Less memory		|
+------------------------------------------------------------------
+C language is:
+	Faster than Python
+	Works directly with memory
+	Efficient for calculations
+
+So NumPy uses C to:
+	Store arrays efficiently
+	Perform fast mathematical operation
+
+
+In list if we want to bring 1 to 10 we manully put 1 to 10 or else we can sue for loop.
+Instead of that in NumPy we can use vectorization.
+
+genai -> ml and dl -> for ml concepts numpy is important
+library(set of modules)
+
+
+import numpy as np
+x = np.array([[[1, 2, 3], [4, 5, 6]], [[7, 8, 9], [10, 11, 12]]])
+print(x[1, 0, 1]) #( table , rows , columns )
+table 1:
+[[1, 2, 3], [4, 5, 6]]
+table 2: 
+ [[7, 8, 9], [10, 11, 12]]
+
+import numpy as np
+x = np.array([[1, 2, 3], [4, 5, 6]])
+for i in x:
+  print(i)
+
+x = np.array([10, 20, 30, 40, 30, 30])
+y = np.where(x == 30) #np.where() always returns a tuple
+print(y)  # 2, 4, 5
+
+import numpy as np
+x = np.array([10, 20, 30, 40, 30, 30])
+y = np.where(x == 30)[0]
+print(y) 					#only array part
+
+
+import numpy as np
+arr = np.array([10, 20, 30, 40])
+indexes = np.where(arr > 20)[0]
+result = arr[indexes]
+print(result)     # retuens the values instead index position
+
+import numpy as np
+arr = np.array([10, 20, 30, 40])
+result = np.where(arr > 20, arr, 0)
+print(result)
+output: [ 0  0 30 40]
+
+import numpy as np
+mark = np.array([95, 85, 75, 45])
+status = np.where(mark >= 50, "Pass", "Fail")
+print(status)
+
+import numpy as np
+arr = np.array([10, 20, 30, 40])
+result = arr[arr > 20]					#This is called Boolean Indexing
+print(result)	// op: [30 40]
+
+
+import numpy as np
+price = np.array([10000, 25000, 30000, 15000])
+discounted_price = np.where(price > 20000, price - (price * 0.1), price)
+print(discounted_price)
+
+import numpy as np
+data = np.array([45, -1, 78, 0, -1, 90])  # -1 means "missing"
+cleaned = np.where(data == -1, np.nan, data)
+print(cleaned)	             # Integer arrays cannot hold missing values in NumPy
+
+-------------------------------
+2D array Example:
+
+arr = np.array([
+    [10, 30],
+    [40, 15]
+])
+
+result = np.where(arr > 20, "Yes", "No")      # here also we can directly use arr[arr > 20] but it flatted 2D to 1D
+print(result)
+
+output:
+[['No' 'Yes']
+ ['Yes' 'No']]
+
+-----------------------------------------
+3D Array Example:
+
+
+arr = np.array([
+    [[10, 25], [35, 5]],
+    [[50, 15], [20, 45]]
+])
+
+result = np.where(arr > 20, 1, 0)
+print(result)
+
+output:
+
+[[[0 1]
+  [1 0]]
+
+ [[1 0]
+  [0 1]]]
+
+
+import numpy as np
+from numpy import random
+df = random.rand(2, 3) * 10000  # 2 rows and 3 columns
+print(df)
+
+import numpy as np
+from numpy import random
+x = random.randint(100) #randint(low, high)
+print(x)
+
+
+import numpy as np
+from numpy import random
+ages = np.random.randint(1, 10, size=3)
+print(ages)
+
+
+
+
+
+
+
+
 
 
 
