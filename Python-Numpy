@@ -1,1 +1,192 @@
+1. Numpy = Numerical Python
+
+2. Usage: 
+It is a Python library mainly used for:
+Numerical calculations
+Arrays
+Mathematical operations
+Statistics
+Linear algebra
+Data manipulation
+Machine Learning / Deep Learning foundations
+
+3. import numpy as np
+
+4. numpy designed for numerical operations and is generally much more efficient than python list for large numerical dataset. (allows elements wise calculation)
+
+5. creating numpy array and numerical operation
+arr = np.array([10,20,30,40)]
+print(numbers*2)  #numerical operation
+
+6. 0 Dimemtion array
+arr = np.array(10)
+
+7. 1D array:
+arr = np.array([10,20,30])
+
+8. 2d array
+arr = np.array([
+         [10,20,30],
+         [12,30,40]
+         ])
+
+9. 3D Array
+arry = np.array([[[1,2],[3,4]],[[5,6],[7,8]]])
+
+-----------------------------
+
+|Arry Properties|
+
+10. arr.ndim --> Number of dimensions
+11. arr.shape --> Rows and columns/dimensions
+12. arr. --> Total elements
+13. arr.dtype --> Data type
+--------------------------------------
+|Indexing|
+
+1D array:
+14. print(arr[0])
+15.print(arr[2])
+16.print(arr[-1])
+
+2D array:
+        0   1   2
+      ┌───────────
+0     │ 10  20  30
+1     │ 40  50  60
+
+17. print([0, 1])  
+------------------------------------------------
+|Slicing|
+
+18. print(arr[1:3])
+
+19.2D Slicing
+
+print(arr[:2]) ---> 1st 2 rows
+print(arr[:, :2] ----> 1st 2 columns   #: means all
+
+-------------------------------------------------------
+|Creating Special Arrays|
+
+20.  np.zeros(5)   --> 1D
+21 np.zero(2, 3) ----> 2D
+22. np.ones(3)
+23. np.full(5, 10)   # [10,10,10,10,10]
+24. np.arrange(1,10) #[1 2 3 4 5 6 7 8 9]
+25.np.arrange(0,10,2) # [0 2 4 6 8]
+26. np.linesapce(0,10,5) --->  Evenly spaces values
+27. varName.reshape(2,3)  --> reshape the entier array [1,2,3,4,5,6,7] 
+28. varName.flatten() ---> make the reshaped value to one line array  #2D - 1D ***
+---------------------------------------------------------
+
+|Mathematical Operations|
+
+29. arr = np.array([10, 20, 30])
+print(arr+5) 
+print(arr-5)
+print(arr*5)
+print(arr/5)
+
+30. a = np.array([10, 20, 30])
+    b = np.array([1, 2, 3])
+
+print(a+b) , a*b
+-------------------------------------------------------------
+|Aggregate Functions|
+
+31. salary = np.array([30000, 40000, 50000, 60000])
+
+salary.sum()
+salary.mean()
+salary.max()
+salary.min()
+salary.std()
+---------------------------------------------------------------
+|Axis|
+
+32. arr = np.array([
+    [10, 20, 30],
+    [40, 50, 60]
+])
+
+arr.sum(axis = 0)  # column wise  10+40, 20+50+ 30+60
+arr.sum(axis =1) # row wise 10+20+30, 40+50+60 ===> [ 60 150]
+-----------------------------------------------------------
+|Comparison|
+
+33. arr = np.array([10, 20, 30, 40])
+
+print(arr>20)   # false true true true]
+----------------------------------------------------
+|Filtering|    
+
+34. arr = np.array([10, 20, 30, 40])
+
+print(arr[arr>2])  -----> [30 40]  # THIS IS CALLED BOOLEAN INDEXING OR BOOLEAN MASKING 
+---------------------------------------------------------
+| where()| 
+
+35. arr = np.array([10, 20, 30, 40])
+    result = np.where(arr > 20, "High", "Low")
+    print(result)
+
+36. np.where(arr>20, "Yes", "No")
+-----------------------------------------------------------
+|Random Numbers|
+
+37. np.random.randint(1,100, 5)  # between 1, 100  --> 5 integers
+38. np.ramdom.rand(5) -----> Generates random floating-point values between 0 and 1.
+39.np.random.randint(1, 100, size= (3,4)) ----> 3 rows, 4 columns
+40. np.random.seed(42)    1st  # For reproducible results, This is useful in Machine Learning experiments.
+41. np.random.randint(1, 100, 5)   (then)
+-------------------------------------------------------
+|Sorting|
+
+42. np.sort(arr)
+43. np.concatenate((a,b))
+------------------------------------------------------
+|Stack|
+a = np.array([1, 2])
+b = np.array([3, 4])
+
+44. np.vstack((a,b))
+45.np.hstack((a,b))
+----------------------------------------
+|Unique values|
+
+46. np.unique(arr)  # gives only unique values (finding distinct values)
+--------------------------------------
+| Handling missing values|
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
