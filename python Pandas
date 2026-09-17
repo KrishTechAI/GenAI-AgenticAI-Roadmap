@@ -241,6 +241,8 @@ concat → stack/combine DataFrames
 70. df["month"] = df["date"].dt.month
 71. df["day"] = df["date"].dt.day
 72. df["weekday"] = df["date"].dt.day_name()
+df["week_day"]= df["HIRE_DATE"].dt.day_name()
+df['New_date']= df['HIRE_DATE'].dt.strftime('%d-%m-%y')
 
 73. df[df["date"] >= "2026-01-01"] -----> Filtering Dates
 
