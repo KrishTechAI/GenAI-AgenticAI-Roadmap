@@ -126,6 +126,7 @@ df.loc[:, "Name"]  ---> : means all rows.
 33. df.drop("age", axis=1, inplace=True)   # column
 34 . df.drop(2, axis=0, inplace=True)    #row
 ---------------------------------------
+|Sort|
 
 35. df.sort_values("balance")
 36. df.sort_values("balance", ascending = False)
