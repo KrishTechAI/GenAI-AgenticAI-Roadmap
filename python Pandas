@@ -85,6 +85,16 @@ iloc → positions
 24. print(df.iloc[0]) ---> iloc uses integer positions.
 25. print(df.iloc[0:3])  ---> first 3 rows
 26. print(df.iloc[0, 1])  ---> 1st row , 2nd colummn
+
+df.loc[:, "Name"]  ---> : means all rows.
+
+|          | `loc`                | `iloc`              |
+| -------- | -------------------- | ------------------- |
+| Based on | Labels               | Position            |
+| Uses     | Names/labels         | Integer numbers     |
+| Example  | `df.loc[1, "Name"]`  | `df.iloc[1, 0]`     |
+| Meaning  | Index 1, Name column | 2nd row, 1st column |
+
 ------------------------------------------------------------
 |Filtering Data|
 
