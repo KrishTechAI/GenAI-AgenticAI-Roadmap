@@ -1,1 +1,137 @@
+What programming is
+What Python is
+Variables
+Data types
+print()
+Taking input
+Arithmetic operators
+Comparison operators
+Logical operators
+if / elif / else
+Basic Python coding practice
 
+
+1. What is Programming?
+Programming means giving instructions to a computer to perform a task
+
+balance = 50000
+withdrawal = 10000
+remaining_balance = balance - withdrawal
+print(remaining_balance)
+
+
+2. What is Python?
+Python is a programming language.
+
+It is widely used for:
+
+Web applications
+Data analysis
+Machine Learning
+Artificial Intelligence
+Generative AI
+Automation
+APIs
+Backend development
+
+3. print() ---> Print something on the screen.
+4. Variables --> Used to store a values
+-----------------------------------
+|Data type|
+
+str    ---> Name, city..
+int    ----> whole number 
+float   ----> decimal values
+bool    ----> True or Flase
+-------------------------------------------
+|Check Data type|
+
+6. type()
+-----------------------------------------
+|Operators|
+
+7. Arithmetic operator  ---> +, -, *, /, %  (remainder) ,  // (Whole number from float ), **
+8.Comparison operator ----> ==, >=, <=, !=, <, >
+9. Logical operator ---> and, or, not 
+    eg: 
+is_active = True
+print(not is_active)
+----------------------------------------------------
+|Conditions|
+
+10. if ---> we can make the computer make decisions.
+
+structure :
+if condition:
+    statement
+
+11. if / else
+
+Struture: 
+
+age = 16
+if age >= 18:
+    print("Adult")
+else:
+    print("Minor")
+
+
+12. if / elif / else
+
+Structure:
+
+credit_score = 780
+if credit_score >= 750:
+    print("Excellent")
+elif credit_score >= 650:
+    print("Good")
+elif credit_score >= 550:
+    print("Average")
+else:
+    print("Poor")
+-------------------------------------------------------------
+|User Input|
+
+13. input()
+14. int(input()
+-------------------------------------------
+|Converting Data Types|
+
+int()    #age = int(age)
+float()
+str()
+bool()  
+--------------------------------------
+|Combining Text and Variables|
+
+16. f-strings
+
+print(f"My name is {name}")
+print(f"My age is {age}")
+
+----------------------------------------------
+
+Excercise:
+Exercise 1 — Employee Information
+Exercise 2 — Bank Withdrawal
+Exercise 3 — Loan Eligibility
+Exercise 4 — Score
+
+--------------------------------------------------------
+
+What is Python?
+What is a variable?
+What are Python's basic data types?
+What is the difference between int and float?
+What is a Boolean?
+What is the difference between = and ==?
+What does input() do?
+Why do we use int(input())?
+What is an if statement?
+What is the difference between and and or?
+
+Real-time scenario:
+
+Q11. You are developing a banking application. A customer has ₹20,000 and requests a withdrawal of ₹25,000. How would you implement the validation in Python?
+
+Q12. A loan application should be accepted only when the customer is at least 21 years old and earns at least ₹30,000 per month. How would you implement it?
