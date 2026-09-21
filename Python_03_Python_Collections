@@ -229,17 +229,206 @@ unique_cities = set(city_data)
 print(unique_cities)
 print(len(unique_cities))
 ====================================================================
-|DICTONARY|
+|DICTONARY|  # {}
+
+-> It stores data as key-value pairs.
+-> It is Ordered. 
+-> It is Mutable.
+-> Does not allow Duplicate Key.
+
+customer = {
+    "name": "Priya",
+    "age": 25,
+    "city": "Chennai",
+    "balance": 50000
+}
+--------------------------------------------------------
+|Access |
+
+print(customer['name'])
+-------------------------------------------------
+|Update|
+
+customer['name'] = "Krishnapriya"
+print(customer[name])
+---------------------------------------
+|Add new Key|
+
+customer['acc_type'] = 'saving'
+print(customer)
+-------------------------------
+|Remove|  #remove a key
+
+del customer['name']
+-----------------------------------------
+|pop()|
+
+employee.pop("department") 
+print(employee)
+
+age = employee.pop("age", 0)
+print(age)
+
+employee.popitem()
+print(employee)
+
+removed = employee.popitem()
+print(removed)
+-----------------------------------------
+|get()|
+
+print(customer['phone])  # return keyError
+print(customer.get('phone'))   # return None
+print(customer.get('phone', "Not available"))    # return Not available
+--------------------------------------------------------------
+|Methods|
+
+print(customer.key())
+print(customer.value())
+print(customer.items())
+------------------------------------------------------------------------------
+
+|Loop through dictionary|
+
+for key, value in customer.items():
+     print(key, value)
 
 
+.items() returns all key–value pairs from the dictionary
+Each pair is returned as a tuple
+The result is a special object called dict_items
+------------------------------------------------------------
+
+employee.update({"bonus": 5000})
+print(employee)
+
+employee.update({"salary": 70000})
+print(employee)
+------------------------------------------------
+|List of dictionary|
+
+customers = [
+    {
+        "id": 101,
+        "name": "Priya",
+        "balance": 50000
+    },
+    {
+        "id": 102,
+        "name": "Ravi",
+        "balance": 30000
+    },
+    {
+        "id": 103,
+        "name": "Arun",
+        "balance": 75000
+    }
+]
+
+for customer in customers:
+    print(customer["name"])
+
+for customer in customers:
+    if customer["balance"] >= 50000:
+        print(customer["name"]
+
+--------------------------------------------------------
+|Nested Dictionary|
+
+employee = {101: {"name": "Asha", "dept": "IT", "salary": 100},
+            102: {"name": "Sugumar", "dept": "HR", "salary": 20},
+            103: {"name": "Raja", "dept": "CEO", "salary": 15}}
 
 
+print(employee[101]["name"])
 
+customer = {
+    "name": "Priya",
+    "account": {
+        "type": "Savings",
+        "balance": 50000
+    }
+}
+print(customer["account"]["balance
+------------------------------------------------------------------------
 
+Exercise 1 — Customer List
 
+Do the following:
 
+Print the first customer.
+Print the last customer.
+Add "Kumar".
+Remove "Ravi".
+Print the total number of customers.
 
+Exercise 2 — Transactions
+transactions = [5000, -1000, 3000, -2000, 1500]
 
+Using a loop:
+
+Print each transaction.
+Print only positive transactions.
+Calculate the total.
+
+Exercise 3 — Dictionary
+
+Print name.
+Print balance.
+Change balance to 45000.
+Add "account_type": "Savings".
+Print the complete dictionary.
+
+Exercise 4 — List of Dictionaries
+
+customers = [
+    {"id": 101, "name": "Priya", "balance": 50000},
+    {"id": 102, "name": "Ravi", "balance": 30000},
+    {"id": 103, "name": "Arun", "balance": 75000}
+]
+
+Using a loop:
+
+A.Print every customer's name.
+
+B.Print customers whose balance is greater than 40000.
+
+Exercise 5 — Set  
+Convert it into a set and print the unique skills.
+
+-----------------------------------------------------------------------
+What is a list?
+What is indexing?
+Why does Python start indexing at 0?
+What is slicing?
+What does append() do?
+Difference between append() and extend()?
+What is a tuple?
+List vs tuple?
+What is a set?
+Why do we use sets?
+What is a dictionary?
+What is a key-value pair?
+How do you access a dictionary value?
+What does .get() do?
+Can a dictionary have duplicate keys?
+Real-time GenAI questions
+
+16. Your RAG retriever returns 10 document chunks. How would you store and process them in Python?
+
+17. Each retrieved chunk contains:
+
+text
+source
+page
+score
+
+What Python data structure would you use?
+
+18. You receive duplicate document IDs from an API and need only unique IDs. Which Python collection would you use?
+
+19. Your API returns 100 customer records, where every record has multiple fields such as id, name, balance, and status. How would you represent this data in Python?
+-----------------------------------------------------------------------------
 
 
 
