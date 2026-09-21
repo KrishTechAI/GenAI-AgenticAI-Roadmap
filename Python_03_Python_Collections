@@ -1,0 +1,254 @@
+What is collection:
+
+Collections allow you to store mutiple values into one variable
+One variable contains multiple values # name = ['krishna', 'priya', 'kavin']
+-------------------------------------------------------
+|LIST|   # []
+
+List is ordered, changable
+list can store diff datatypes
+A List is a collection where you can store multiple values (items).
+You can change the items later (mutable).
+Items are stored in order, and duplicates are allowed.
+Used to store Temporary data
+-------------------------------------------
+|List indexing| ---> Access
+
+3. customer = ["priya", "krishna", "PAPA"]
+   print(customer[0])
+
+4. print(customer[-1])
+-------------------------------------------------
+|Change list items| ---------> Modify
+------
+
+5. Change value in specific index 
+
+customer = ["priya", "krishna", "PAPA"]
+customer[1] = "Krishnapriya"
+-------------------------------------------------------
+|Adding items| - Append()
+
+6. Add the value to the end.
+
+customer = ["priya", "krishna", "PAPA"]
+customer.append("Kavin")
+print(customer)
+------------------------------------------
+|Adding mutiple items| -- Extend()
+
+7. Add mutiple items to the end. 
+
+customer = ["priya", "krishna", "PAPA"]
+customer.extend(["Kavin", "Akash"]
+print(customer)
+-------------------------------------------
+|Insert|
+
+8. Insert an item at the specific position. 
+   It will not remove any exsiting items. 
+
+customer = ["priya", "krishna", "PAPA"]
+customer.insert(2, "Kavin")
+----------------------------------------------
+|Remove|
+
+fruits = ['apple', 'banana', 'orange']
+
+fruits.remove('banana')
+print(fruits)
+
+fruits.remove('grape')
+
+--------------------------------------------------
+|Pop()|
+
+9. Removes an item based on the index and retuen it.
+
+customer = ["priya", "krishna", "PAPA"]
+customer.pop(1)
+print(customer) 
+--------------------------------------------------
+|len()|  ----> Find the number of items. 
+
+10. len()
+-----------------------------------------------------
+|in| --->  check whether an item exists.
+
+customer = ["priya", "krishna", "PAPA"]
+print(priya in customer)
+----------------------------------------------
+|Loop through list|
+
+customer = ["priya", "krishna", "PAPA"]
+for customers in customer:
+    print(customers)
+------------------------------------------------------
+|Slicing|
+
+customer = ["priya", "krishna", "PAPA", "Akash", "KAVIN"]
+print(customer[1:4])
+
+customer[:4]  ----> first 4 items 
+customer[2:] ----> from index 2
+customer[::2] ----> every second items
+---------------------------------------------------
+|Sort|
+
+14. number.sort()
+15. number.sort(reverse= True)
+----------------------------------------------------
+fruits = ['apple', 'grape', 'orange']
+
+Operation	Syntax				            Example
+Access		list[index]		            	fruits[1] → 'banana'
+Modify		list[index] = value		      fruits[0] = 'mango'
+Append		list.append(item)		        fruits.append('grape')
+Extend		list.extend([item1, item2])	fruits.extend(['kiwi', 'pear'])
+Remove		list.remove(item)		        fruits.remove('orange')
+Sort		list.sort()			              fruits.sort()
+Length		len(list)			              len(fruits) → 3
+                                      customers.insert(2, "Arun")
+
+
+print(min(fruits))
+print(min(fruits))
+
+print()
+variable_name.count()
+list_name.count()
+tuple_name.count()
+========================================================================
+|TUPLE|   # ()
+
+A tuple is similar to a list, but it is immutable.
+-> A tuple is like List but we can't change it (immutable)
+-> It is also ordered and allows duplicates.
+-> It is faster than List.
+Tuple can be appropriate.  # location(12,08, 80.27)
+
+Eg: (Like PAN Card details)
+-----------------------------------------------------------
+eration         	Syntax			          Example	Description
+Access		       tuple[index]		       fruits[1] → 'grape'
+Count		         tuple.count(item)	   fruits.count('apple') → 1
+Index		         tuple.index(item)    	fruits.index('orange') → 2
+Length	       	len(tuple)		          len(fruits) → 3	
+Concatenation	   tuple1 + tuple2	fruits + ('kiwi',) → ('apple','grape','orange','kiwi')
+
+-------------------------------------------------------------------------------
+|Index| ---> Access
+
+
+fruits = ('apple', 'grape', 'orange')
+
+print(fruits[0]) 
+print(fruits[-1])
+print(fruits[5])
+----------------------------------------------------------------------
+|Count|
+
+fruits = ('apple', 'grape', 'orange', 'apple', 'apple')
+print(fruits.count('apple'))
+print(fruits.count('banana'))
+---------------------------------------------------
+|Length|
+
+print(len(fruits))
+------------------------------------------------------------------
+|Concatenation|
+
+new_fruits = fruits + ('kiwi',)
+print(new_fruits)
+
+-------------------------------------------------------------------
+|List (VS) Tuple|
+
+
+List         	            |   Tuple
+[]	                          ()
+Mutable	                      Immutable
+Can change	                  Cannot change
+More flexible 	              More fixed
+Common for dynamic data  	    Useful for fixed data
+===========================================================================
+|SET|   # {}
+
+A set stores unique values.
+
+-> It is an inbuild Data structure which does not allow duplicates.
+-> it is unordered
+-> It is Mutable
+
+skills = {"Python", "SQL", "Python", "RAG"}
+print(skills)   #{ 'Python, 'sql', Rag}
+----------------------------------------------------
+|List to set|
+
+customer = ["priya", "priya", "krishna", "PAPA", "Akash", "KAVIN"]
+
+unique_customer = set(customer)
+print(unique_customer)
+
+
+data = [10, 20, 10, 30, 20, 40]
+unique_data = set(data)
+print(unique_data)
+-----------------------------------------------------------------
+union -> eliminates duplicates and orders result in ascending
+intersection -> shows matched data between the data sets
+minus -> shows unmatched data from 1st data set
+
+print(a | b)
+print(a & b)
+print(a - b)
+
+--------------------------------------------------------
+|Add|
+
+a = {1, 2, 3}
+b = {3, 4, 5}
+a.add(10)
+print(a)
+
+-------------------------------------------------
+|Remove|
+
+a.remove(1)
+print(a)
+-------------------------------------------------------  
+|Len()|
+
+city = ['Chennai', 'Mumbai', 'Delhi', 'Chennai', 'Bangalore',
+        'Mumbai', 'Hyderabad', 'Delhi', 'Kolkata', 'Pune',
+        'Delhi', 'Hyderabad', 'Chennai', 'Mumbai'] * 1000
+
+print(len(city_data))
+
+unique_cities = set(city_data)
+print(unique_cities)
+print(len(unique_cities))
+====================================================================
+|DICTONARY|
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
