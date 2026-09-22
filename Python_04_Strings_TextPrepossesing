@@ -1,6 +1,8 @@
 1. What is string?
 
 String is a text data.
+string is immutable (cannot change its values)
+
 eg:
 name = "Krishna"
 
@@ -54,6 +56,9 @@ print(text.strip())
 
 Used to replace text 
 text = text.replace("Java", "python")
+
+text = "Personal Loan\nInterest Rate: 10.5%\nMinimum Age: 21"
+text = text.replace("\n", " ")
 --------------------------------------------
 |split()|
 
@@ -89,6 +94,303 @@ position= text.find("python)
 print(position)     # 14
 
 ---------------------------------------------------
+|in|
+
+Check text exists. 
+
+text = "I love python"
+print("python" in text)   #true or false
+------------------------------------------
+|startswith()|
+
+filename = "loanPolicy.pdf"
+print(filename.startswith("Loan"))
+-----------------------------------------------------
+|endswith()|
+
+print(filename.endswith("pdf"))
+
+
+if filename.endswith("pdf")
+   print("process pdf"
+-------------------------------------------------
+|String immutability|    # not possibile in string
+
+name = "Krishna"
+name[0] = "p"       # through error ******************************
+--------------------------------------------------
+|f- string|
+
+message = f"My name is {name} and I have {experience} years of experience."
+------------------------------------------------------------
+|Formating numbers|
+
+print(f"Account balance: ₹{balance}")
+
+print(f"Amount: ₹{amount:.2f}")     # .2f  ---> display 2 digits after decimals 
+-----------------------------------------------------------
+|Escape character|
+
+message  = "krishna\'s message"
+
+\n → new line
+\t → tab
+\" → double quote
+\' → single quote
+
+print("Hello\nPython")
+--------------------------------------------------------
+|Multiline Strings|
+
+#This is useful when storing longer text.
+
+text = """
+Welcome to the banking chatbot.
+
+You can ask about:
+Loans
+Cards
+Accounts
+Transactions
+"""
+-------------------------------------------------
+
+Excercise:
+
+text = "   PERSONAL LOAN Policy\nMinimum age: 21 years.   "
+
+# Remove extra spaces
+text = text.strip()
+
+# Remove line break
+text = text.replace("\n", " ")
+
+# Convert to lowercase
+text = text.lower()
+
+# Split into words
+words = text.split()
+
+print(words)
+---------------------------------------------------------
+
+| Method         | Purpose                            |
+| -------------- | ---------------------------------- |
+| `lower()`      | Convert to lowercase               |
+| `upper()`      | Convert to uppercase               |
+| `strip()`      | Remove leading/trailing whitespace |
+| `replace()`    | Replace text                       |
+| `split()`      | String → list                      |
+| `join()`       | List → string                      |
+| `find()`       | Find position                      |
+| `startswith()` | Check beginning                    |
+| `endswith()`   | Check ending                       |
+
+
+============================================================================
+
+1. What is a string in Python?
+
+2. Are strings mutable or immutable?
+
+3. What is string indexing?
+
+4. What does len() do?
+
+5. What is the difference between lower() and upper()?
+
+6. What does strip() do?
+
+7. What does replace() do?
+
+8. What does split() return?
+
+9. What is the difference between split() and join()?
+
+10. What does find() return if the text is not found?
+
+11. What is the difference between find() and in?
+
+12. What do startswith() and endswith() do?
+-------------------------------------------------------------------------
+14. You receive this user query:
+query = "   What is the PERSONAL LOAN interest rate?   "
+How would you clean and normalize it before sending it to a retrieval pipeline?
+
+15. You receive this user query:
+query = "   What is the PERSONAL LOAN interest rate?   "
+How would you clean and normalize it before sending it to a retrieval pipeline?
+
+16. filename = "loan_policy.pdf"
+How would you check whether the file is a PDF?
+
+17. filename = "loan_policy.pdf"
+How would you check whether the file is a PDF?
+
+18. text = "Python,SQL,RAG,LangChain"
+How would you convert it into:
+["Python", "SQL", "RAG", "LangChain"]
+-------------------------------------------------
+19. text = "Generative AI Engineer"
+
+Print:
+
+First character
+Last character
+Length
+First 10 characters
+Convert to uppercase
+Convert to lowercase
+
+20. Exercise 2 — Clean User Query
+
+Given:
+query = "   WHAT IS THE LOAN INTEREST RATE?   "
+Convert it into:
+what is the loan interest rate?
+Use:
+strip()
+lower()
+
+21. Exercise 3 — Replace
+
+Given:
+text = "I am learning Java"
+Change it to:
+I am learning Python
+
+22. Exercise 4 — Split
+
+Given:
+skills = "Python,SQL,RAG,LangChain,LangGraph"
+Convert it into a list.
+Expected:
+['Python', 'SQL', 'RAG', 'LangChain', 'LangGraph']
+
+Exercise 5 — Join
+
+Given:
+skills = ["Python", "SQL", "RAG", "LangChain"]
+Convert it into:
+Python | SQL | RAG | LangChain
+
+
+Exercise 6 — File Validation
+
+Given:
+filename = "banking_policy.pdf"
+Write code that prints:
+
+PDF document
+if the filename ends with .pdf.
+
+Exercise 7 — Banking Query
+Given:
+query = "   I want information about PERSONAL LOANS   "
+Clean it and check whether "personal loan" exists.
+Expected:
+Personal loan query
+
+Exercise 8 — Real RAG Preprocessing
+Given:
+
+text = """
+   PERSONAL LOAN POLICY
+
+   Minimum age: 21 years.
+
+   Minimum salary: Rs. 30,000.
+"""
+
+Perform these operations:
+Remove leading/trailing whitespace.
+Replace \n with spaces.
+Convert to lowercase.
+Print the cleaned text.
+----------------------------------------------------------
+
+Create:
+
+documents = [
+    "  PERSONAL LOAN policy  ",
+    " CREDIT CARD policy ",
+    "   KYC REQUIREMENTS\n"
+]
+
+Use a loop to clean every document:
+
+strip whitespace
+↓
+replace newline
+↓
+convert to lowercase
+
+Expected:
+
+personal loan policy
+credit card policy
+kyc requirements
+
+-------------------------------------------------------------------------
+
+String Handling Functions:
+--------------------------
+	A String Handling Function is a function used to perform operations on a string
+
+1.  upper() -> 	Converts all characters in a string to uppercase letters.
+
+2.  lower() -> Converts all characters in a string to lowercase letters.
+
+3.  title() -> Converts the first letter of every word into uppercase.
+   
+4.  strip() -> Removes spaces from the beginning and end of the string.
+   
+5.  lstrip() ->  Removes spaces only from the left side of the string.
+    
+6.  rstrip() -> Removes spaces only from the right side of the string.
+   
+7.  replace() -> Replaces a word or character with another value. 
+    
+8.  split() -> Splits a string into multiple parts and returns a list.
+    
+9.  capitalize() -> Converts the first letter of the string to uppercase.
+    
+10. swapcase() -> Converts uppercase letters to lowercase and lowercase
+    letters to uppercase. 
+
+11. join() -> Combines list elements into a single string using a
+    separator. 
+
+Homework:
+----------
+1. Convert the text "python programming" into all capital letters.
+
+2.Convert the text "DATA ANALYTICS COURSE" into all small letters.
+
+3. Change the text "introduction to data engineering" so that each word starts with a capital letter.
+
+4. Remove the extra spaces at the beginning and end of the text
+" welcome to programming ".
+
+5. Remove only the spaces at the beginning of the text
+" machine learning".
+
+6. Remove only the spaces at the end of the text
+"artificial intelligence ".
+
+7. In the sentence "sql is a powerful language", change the word "sql" to "python".
+
+8. Break the text "red,blue,green,yellow" into separate values using comma as the separator.
+
+9. Change the sentence "data science is growing fast" so that only the first letter of the sentence is capital.
+
+10.Change the text "PyThOn CoDiNg ClAsS" so that uppercase letters become lowercase and lowercase letters become uppercase.
+
+11.Combine the values ['10','12','2026'] to form the date format 10/12/2026.
+
+12. Break the text "car:bus:train:flight" into separate values.
+
+
 
 
 
