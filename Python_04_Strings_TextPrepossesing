@@ -1,0 +1,105 @@
+1. What is string?
+
+String is a text data.
+eg:
+name = "Krishna"
+
+2. String with numbers:
+
+acc_number = "00123568990"    # If itis integer , it will lose the leading zero
+--------------------------------------------------------------------
+|Type|
+
+print(type(name))
+--------------------------------------------------
+|Indexing|
+
+4. Strings are sequence of character.
+Name = "Krishnapriya"
+
+print(name[0])
+print(name[-1])
+------------------------------------------------
+|String Slicing|
+
+print(name[0:3])
+print(name[:4] )    #first 4 
+print(name[5:])     # from 5
+print(name[::2])    #every 2nd character 
+----------------------------------------------
+|Len()|
+
+print(len(name))
+------------------------------------------
+|lower()|
+
+print(text.lower()
+
+query = input("Enter service: ")
+query = query.lower()
+
+if query == "loan":
+    print("Loan information")
+------------------------------------------
+|upper()|
+
+Print(text.upper())
+--------------------------------------------
+|strip()|
+
+text = " Krishnapriya "
+print(text.strip())
+--------------------------------------------
+|replace()|
+
+Used to replace text 
+text = text.replace("Java", "python")
+--------------------------------------------
+|split()|
+
+breaks a string into 2 pieces.
+
+text = "python ois east"
+print(text.split())
+
+data = "python", "sql","java"
+skills = data.split(",")
+-----------------------------------------------
+|Join()| -----> oppsite of split()
+
+word = ["python", "is", "easy"]
+sentence = " ". join(word)
+
+skills = ["Python", "SQL", "RAG"]
+result = ", ".join(skills)
+print(result)
+--------------------------------------------
+split()
+String → List
+
+join()
+List → String
+-------------------------------------------------
+|Find()|
+
+Tells where the substring occures.
+
+text = "I am learning python"
+position= text.find("python)
+print(position)     # 14
+
+---------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
