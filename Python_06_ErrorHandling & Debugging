@@ -1,0 +1,564 @@
+1. Try and except:
+
+try:
+    # code that may cause an error
+except:
+    # what to do if an error happens
+
+try:
+    number = int(input("Enter a number: "))
+
+except ValueError:
+    print("Please enter a valid number")
+
+
+
+try     → Try this
+except  → If something goes wrong, handle it
+else    → If everything is successful, do this
+finally → Do this no matter what
+-------------------------------------------------
+
+| Exception           | Meaning                                     |
+| ------------------- | ------------------------------------------- |
+| `ValueError`        | Wrong value                                 |
+| `TypeError`         | Wrong data type                             |
+| `ZeroDivisionError` | Division by zero                            |
+| `KeyError`          | Dictionary key doesn't exist                |
+| `IndexError`        | List index doesn't exist                    |
+| `FileNotFoundError` | File doesn't exist                          |
+| `NameError`         | Variable doesn't exist                      |
+| `AttributeError`    | Object doesn't have the requested attribute |
+| `ImportError`       | Import problem                              |
+  indentationError    | Wrong indentation         | Fix spacing           
+
+------------------------------------------------------------------------------
+|ValueError|
+
+try:
+    age = int("hello")
+
+except ValueError:
+    print("Invalid age")
+--------------------------------------------
+|TypeError|
+
+number = 10
+name = "Krishna"
+try:
+    result = number + name
+
+except TypeError:
+    print("Cannot add different data types")
+-----------------------------------------------------------------------
+|ZeroDivisionError|
+
+try:
+    result = 100 / 0
+
+except ZeroDivisionError:
+    print("Cannot divide by zero")
+
+------------------------------------------------------------
+|KeyError|
+
+customer = {
+    "name": "Priya",
+    "age": 25
+}
+
+try:
+    account_number = customer["account_number"]
+
+except KeyError:
+    print("Account number not found")
+
+----------------------------------------------------------------
+|IndexError|
+
+transactions = [1000, 2000, 3000]
+
+print(transactions[5])
+
+try:
+    print(transactions[5])
+
+except IndexError:
+    print("Transaction does not exist")
+
+------------------------------------------------------------------
+|Getting the Error Message|
+
+# as e
+
+try:
+    number = int("hello")
+
+except ValueError as e:
+    print(e)
+
+O/P : invalid literal for int() with base 10: 'hello'
+--------------------------------------------------------------------
+|Multiple Except block|
+
+try:
+    number = int(input("Enter number: "))
+    result = 100 / number
+
+except ValueError:
+    print("Please enter a valid number")
+
+except ZeroDivisionError:
+    print("Number cannot be zero")
+
+-----------------------------------------------------------------
+|else|
+
+# else runs only when there is no error.
+
+try:
+    number = int(input("Enter number: "))
+
+except ValueError:
+    print("Invalid number")
+
+else:
+    print("Number entered successfully")
+
+------------------------------------------------------------------
+|finally|
+
+#finally runs whether an error occurs or not.
+Even if the database operation fails, we want to close the connection.
+
+try:
+    number = int(input("Enter number: "))
+
+except ValueError:
+    print("Invalid number")
+
+finally:
+    print("Process completed")
+
+
+
+try:
+    connection = connect_to_database()
+    print("Database operation")
+
+except Exception as e:
+    print("Database error:", e)
+
+finally:
+    connection.close()
+----------------------------------------------------------
+|raise|
+
+Sometimes we want to manually create an error.
+
+def withdraw(balance, amount):
+
+    if amount > balance:
+        raise ValueError("Insufficient balance")
+
+    return balance - amount
+
+try:
+    result = withdraw(5000, 7000)
+    print(result)
+
+except ValueError as e:
+    print(e)
+
+-------------------------------------------------------------------
+def withdraw(balance, amount):
+
+    if amount <= 0:
+        raise ValueError("Withdrawal amount must be positive")
+
+    if amount > balance:
+        raise ValueError("Insufficient balance")
+
+    return balance - amount
+
+try:
+    remaining = withdraw(10000, 3000)
+    print("Remaining balance:", remaining)
+
+except ValueError as e:
+    print("Transaction failed:", e)
+---------------------------------------------------
+|Exception|
+
+#his catches most normal runtime exceptions.
+
+except Exception as e:
+
+try:
+    result = 10 / 0
+
+except Exception as e:
+     print("error",e)
+
+----------------------------------------------------
+|Pass|
+
+# Don't Hide Errors
+
+try:
+    result = process_data()
+
+except:
+    pass
+--------------------------------------------
+|Logging Basics|
+
+# Logging helps us identify the exact stage. where did the problem happen?
+import logging
+
+logging.basicConfig(level=logging.INFO)
+
+logging.info("Application started")
+logging.warning("Database response is slow")
+logging.error("Database connection failed")
+
+
+logging.info("User request received")
+logging.warning("Vector database response is slow")
+logging.error("LLM API request failed")
+logging.critical("Application cannot start")
+
+-------------------------------------------------------------------
+|Real GenAI Example — API Failure|
+
+try:
+    response = llm.invoke(query)
+
+except Exception as e:
+    print("LLM API failed:", e)
+
+
+
+Fallback logic:
+
+try:
+    response = primary_llm.invoke(query)
+
+except Exception as e:
+    logging.error("Primary LLM failed: %s", e)
+
+    response = backup_llm.invoke(query)
+
+
+
+conceptually:
+Primary LLM
+     ↓
+   FAILED
+     ↓
+Backup LLM
+     ↓
+Response
+--------------------------------------------------
+def retrieve_documents(query):
+
+    try:
+        embedding = create_embedding(query)
+
+        documents = vector_db.search(embedding)
+
+        return documents
+
+    except Exception as e:
+        logging.error("Document retrieval failed: %s", e)
+        return []
+
+documents = retrieve_documents(query)
+
+if not documents:
+    print("Sorry, I could not find relevant information.")
+
+--------------------------------------------------------------------
+|Debugging  and Error handling|
+
+Error handling and debugging are related but different.
+
+|Error handling|
+Means:
+What should the application do when something goes wrong?
+
+
+|Debugging|
+Means:
+Why did something go wrong, and how do I fix it?
+----------------------------------------------------------------------
+|Read the Error from Bottom to Top|
+
+Traceback (most recent call last):
+  File "banking.py", line 10, in calculate_balance
+    result = balance / count
+ZeroDivisionError: division by zero
+
+1. Error type → ZeroDivisionError
+2. Reason     → division by zero
+3. Location   → line 10
+----------------------------------------------------------
+|Debugging with print()|
+
+def calculate_total(transactions):
+
+    print("Transactions:", transactions)
+
+    total = 0
+
+    for transaction in transactions:
+        print("Current transaction:", transaction)
+        total += transaction
+
+    print("Final total:", total)
+
+    return total
+
+This helps us understand what the program is doing
+------------------------------------------------------
+  |Important production pattern|
+
+def process_request(request):
+
+    try:
+        data = validate_request(request)
+
+        result = process_data(data)
+
+        return result
+
+    except ValueError as e:
+        logging.error("Validation error: %s", e)
+        return {"error": "Invalid request"}
+
+    except Exception as e:
+        logging.exception("Unexpected error")
+        return {"error": "Internal server error"}
+
+-------------------------------------------------------------------------------
+Try Except Block
+================
+
+Python mainly has 3 types of errors:
+Syntax Errors  - fix
+Runtime Errors - fix or handle using exceptions
+Logical Errors - fix
+
+try block will be at start of a code
+The except block will handle the error.
+The else block will execute code when there is no error.
+The finally block lets you execute code, regardless of the result of the try- and except blocks.
+
+| Exception         | Meaning                   | Fix                   |
+| ----------------- | ------------------------- | --------------------- |
+| NameError         | Variable not defined      | Define variable       |
+| TypeError         | Wrong data type operation | Convert type          |
+| ValueError        | Invalid value format      | Validate input        |
+| IndexError        | Invalid list index        | Check length          |
+| KeyError          | Missing dictionary key    | Use `.get()`          |
+| ZeroDivisionError | Dividing by zero          | Check before division |
+| FileNotFoundError | File missing              | Verify path           |
+| AttributeError    | Object has no attribute   | Check method name     |
+| ImportError       | Module missing            | Install module        |
+| IndentationError  | Wrong indentation         | Fix spacing           |
+
+
+print(x)
+
+
+try:
+  print(x)
+except:
+  print("An exception occurred")
+
+//
+
+try:
+  print(x)
+except NameError:
+  print("Variable x is not defined")
+except:
+  print("Something else went wrong")
+
+//
+
+try:
+    print(my_dict["username"])
+except KeyError:
+    print("Username not found")
+except:
+    print("Something else went wrong")
+
+//
+
+try:
+    x = {"name": "Kiruthika"}
+    print(x["username"])
+except KeyError:
+    print("Username not found")
+except:
+    print("Something else went wrong")
+
+//
+
+try:
+  print("Hello")
+except:
+  print("Something went wrong")
+else:
+  print("Nothing went wrong")
+
+/
+
+try:
+  a = int(input("enter a number"))
+  b = a / 0
+  print(a)
+except ZeroDivisionError:
+  print("Number cannot be divided by zero")
+
+try:
+  a = int(input("enter a number"))
+  b = a / 0
+  print(a)
+except Exception as e:
+  print("ABC",e)
+
+-----------------------------------------------------------------------------
+
+try
+ ↓
+Code that may fail
+
+except
+ ↓
+Handle the error
+
+else
+ ↓
+Runs when there is no error
+
+finally
+ ↓
+Always runs
+
+raise
+ ↓
+Manually raise an error
+
+and: 
+
+Error Handling
+       ↓
+Prevent application crash
+
+Debugging
+       ↓
+Find why the error happened
+
+Logging
+       ↓
+Record what happened
+
+
+=======================================================
+Exercise 1 — Division
+def divide(a, b):
+Handle ZeroDivisionError.
+
+Exercise 2 — User Input
+Write a program that asks:
+
+Enter your age:
+Convert it to an integer.
+
+Handle:
+ValueError
+
+
+Exercise 3 — Banking
+Create:
+def withdraw(balance, amount):
+Rules:
+
+amount <= 0 → raise ValueError
+amount > balance → raise ValueError
+otherwise → return remaining balance
+Then handle the errors using try-except.
+
+Exercise 4 — Dictionary
+
+Given:
+customer = {
+    "name": "Priya",
+    "account_type": "Savings",
+    "balance": 50000
+}
+
+Try to access:
+customer["account_number"]
+Handle the KeyError.
+
+
+
+5. Create:
+
+def calculate_total(transactions):
+
+Given:
+
+transactions = [5000, -1000, 3000, -2000]
+
+Calculate the total.
+
+Then intentionally pass something invalid and handle the appropriate error.
+
+--------------------------------------------------------------
+What is exception handling in Python?
+What is the difference between try, except, else, and finally?
+What is the difference between raise and except?
+What is the difference between ValueError and TypeError?
+Why should we avoid a bare except?
+Why is logging important in production applications?
+How would you handle an LLM API failure?
+How would you handle a vector database failure in a RAG application?
+What fallback mechanism would you implement if the primary LLM is unavailable?
+How would you debug a RAG application when no relevant documents are retrieved?
+
+⭐ 3-Year-Level Scenario
+
+Interviewer:
+
+Your banking RAG chatbot was working correctly yesterday. Today, users are receiving "Sorry, I couldn't find the answer." How would you troubleshoot it?
+
+A strong approach would be:
+
+1. Check application logs
+        ↓
+2. Verify user query reached the API
+        ↓
+3. Check query preprocessing
+        ↓
+4. Check embedding generation
+        ↓
+5. Check vector DB connection
+        ↓
+6. Check similarity-search results
+        ↓
+7. Check retrieved document count
+        ↓
+8. Check prompt construction
+        ↓
+9. Check LLM API response
+        ↓
+10. Check final response generation
+
+That is the production debugging mindset we want to build throughout Phase 0.
+-----------------------------------------------------------------------------------
+
+
