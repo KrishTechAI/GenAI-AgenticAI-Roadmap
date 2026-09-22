@@ -1,0 +1,170 @@
+1. What Is a Function?
+
+A function is a reusable block of code that performs a specific task.
+
+def calculate_balance(balance, withdrawal):
+    return balance - withdrawal
+result = calculate_balance(50000, 10000)
+print(result)
+
+Write logic once
+      ↓
+Create function
+      ↓
+Reuse it many times
+-----------------------------------------------------------------------
+|Creating a Function|
+
+def function_name():
+    code
+
+code: 
+def greet():
+   print("hello")
+
+greet()
+----------------------------------------------
+|Function definition (vs) function call|
+
+Definition:      # Create a function called greet.
+
+def greet():
+    print("Hello")
+
+call:     # execute the greet function. 
+ greet() 
+
+
+format:
+
+def greet()
+     ↓
+Create the function
+
+greet()
+     ↓
+Run the function
+----------------------------------------------------
+|Function With a Parameter|
+
+def greet(name):
+   print(f" name {"name"})
+
+greet("krishna")
+----------------------------------------------
+|Parameter vs Argument|
+
+Parameter → variable defined in function
+Argument → actual value passed to function
+
+
+def greet(name):
+    print(f"Hello {name}")
+
+greet("krishna")
+
+# Name is a parameter
+# krishna is argument
+---------------------------------------------------
+|Multiple Parameters|
+
+def calculate_total (price, quantity):
+     total = price * quantity
+     return total 
+---------------------------------------------
+|return |
+
+Return sends the value back from function
+
+
+10 + 20
+   ↓
+function
+   ↓
+30
+   ↓
+result
+---------------------------------------------
+|print()  (vs) return |
+
+
+print() → display
+return → give the value back
+
+
+Print():
+   Displays something.
+
+def add(a, b):
+    print(a + b)
+
+Return:
+sends the result back.
+
+
+
+def withdraw(balance, amount):
+
+    if amount <= balance:
+        return balance - amount
+    else:
+        return "Insufficient balance"
+
+result = withdraw(25000, 10000)
+
+print(result)
+
+better:
+
+def withdraw(balance, amount):
+
+    if amount <= balance:
+        remaining_balance = balance - amount
+        return remaining_balance
+
+    return None
+
+result = withdraw(25000, 10000)
+
+if result is not None:
+    print("Withdrawal successful")
+    print("Remaining balance:", result)
+else:
+    print("Insufficient balance")
+-----------------------------------------------
+|Functions Can Return Multiple Values|
+
+def get_customer():
+    name = "Krishna"
+    age = 25
+    return name, age
+name, age = get_customer()
+print(name)
+print(age)
+
+------------------------------------------------
+|Default Parameters|
+
+def greet(name, message="Welcome"):
+    print(f"{message}, {name}")
+
+greet("Krishna")
+
+
+def calculate_interest(amount, rate=10.5):
+    return amount * rate / 100
+interest = calculate_interest(100000)
+print(interest)
+
+or:
+
+interest = calculate_interest(100000, 12)    # we can override rate
+print(interest)
+---------------------------------------------
+
+
+
+
+
+
+
