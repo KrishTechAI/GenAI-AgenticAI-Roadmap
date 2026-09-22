@@ -161,10 +161,508 @@ or:
 interest = calculate_interest(100000, 12)    # we can override rate
 print(interest)
 ---------------------------------------------
+|Keyword argument|
+
+Instead of relying on parameter order, you can specify names.
+
+def create_customer(name, age, city):
+    print(name, age, city)
+
+create_customer(
+    name="Krishna",
+    age=25,
+    city="Chennai"
+)
+-------------------------------------------------
+|Positional Arguments|
+
+create_customer("Krishna", 25, "Chennai")
+----------------------------------------------------
+|*args|
+
+Suppose we don't know how many arguments the function will receive.
+
+def calculate_sum(*numbers):
+    return sum(numbers)
+
+print(calculate_sum(10, 20, 30, 40))
+---------------------------------------------------
+| **kwargs|
+
+ **kwargs allows a variable number of keyword arguments.
+
+def display_customer(**details):
+
+    for key, value in details.items():
+        print(key, value)
+
+display_customer(
+    name="Krishna",
+    age=25,
+    city="Chennai"
+)
+-------------------------------------------------------
+|Function Scope|
+
+# Local variable:
+
+def calculate():
+    amount = 1000
+    print(amount)
+
+calculate()      # You cannot normally access it outside:
+print(amount)
+
+amount exists inside the function.
+This is a local variable.
+
+# Global Variable
+
+bank_name = "ABC Bank"
+def display_bank():
+    print(bank_name)
+
+display_bank()
+--------------------------------------------------------
+|Function Calling Another Function|
+
+def clean_text(text):
+    return text.strip().lower()
+
+def process_query(query):
+    cleaned_query = clean_text(query)
+    return cleaned_query
+
+result = process_query("   PERSONAL LOAN   ")
+print(result)
+
+
+---------------------------------------------------------
+|Real GenAI Example|
+
+User query
+      ↓
+clean_query()
+      ↓
+retrieve_documents()
+      ↓
+build_context()
+      ↓
+generate_response()
+
+
+def clean_query(query):
+    return query.strip().lower()
+
+def build_context(documents):
+    context = ""
+
+    for document in documents:
+        context += document + "\n"
+
+    return context
+
+def create_prompt(query, context):
+    return f"""
+    Answer the question using the context.
+
+    Context:
+    {context}
+
+    Question:
+    {query}
+    """
+
+Each function does one specific job.
+------------------------------------------------------------------
+23. Single Responsibility                             ******************************************
+
+A good function should generally have a clear responsibility.
+
+Better:
+
+load_document()
+      ↓
+clean_text()
+      ↓
+create_chunks()
+      ↓
+create_embeddings()
+      ↓
+store_embeddings()
+      ↓
+retrieve_documents()
+      ↓
+generate_answer()
+-----------------------------------------------------------------------
+|Function With a List|
+
+def calculate_total(transactions):
+    total = 0
+
+    for transaction in transactions:
+        total += transaction
+
+    return total
+transactions = [5000, -1000, 3000, -2000]
+
+result = calculate_total(transactions)
+
+print(result)
+-----------------------------------------------------------------------
+|Function With a Dictionary|
+
+customer = {
+    "name": "Priya",
+    "balance": 50000
+}
+
+
+def get_balance(customer):
+    return customer["balance"]
+
+balance = get_balance(customer)
+print(balance)
+-------------------------------------------------------
+|Function + Loop + Dictionary|
+
+def get_high_balance_customers(customers):
+
+    result = []
+
+    for customer in customers:
+
+        if customer["balance"] >= 50000:
+            result.append(customer["name"])
+
+    return result
+
+customers = [
+    {"name": "Priya", "balance": 50000},
+    {"name": "Ravi", "balance": 30000},
+    {"name": "Arun", "balance": 75000}
+]
+
+high_balance_customers = get_high_balance_customers(customers)
+print(high_balance_customers)
+
+---------------------------------------------------------
+|Real RAG-Style Example|
+
+documents = [
+    {
+        "text": "Personal loan minimum age is 21.",
+        "score": 0.92
+    },
+    {
+        "text": "Credit card eligibility requires valid KYC.",
+        "score": 0.85
+    },
+    {
+        "text": "Savings accounts require identity verification.",
+        "score": 0.62
+    }
+]
+
+def filter_documents(documents, threshold=0.80):
+
+    filtered_documents = []
+
+    for document in documents:
+
+        if document["score"] >= threshold:
+            filtered_documents.append(document)
+
+    return filtered_documents
+
+results = filter_documents(documents)
+print(results)
+-------------------------------------------------------
+|Function Documentation|     
+
+# This is called a docstring.
+
+
+def calculate_balance(balance, withdrawal):
+    """
+    Calculate the remaining account balance
+    after a withdrawal.
+    """
+    return balance - withdrawal
+
+--------------------------------------------------------------
+|Type Hints|
+
+def calculate_balance(balance: float, withdrawal: float) -> float:
+    return balance - withdrawal
+
+Type hints don't force Python to behave like a statically typed language, but they improve readability, tooling, and maintainability.
+You'll use these heavily when we learn FastAPI.
+
+
+def clean_text(text: str) -> str:
+    """
+    Remove leading/trailing whitespace
+    and convert text to lowercase.
+    """
+    return text.strip().lower()
+
+----------------------------------------------------------------
+|Real GenAI Pipeline Structure|
+
+def load_documents():
+    pass
+
+
+def clean_text(text: str) -> str:
+    pass
+
+
+def create_chunks(text: str):
+    pass
+
+
+def create_embeddings(chunks):
+    pass
+
+
+def store_embeddings(embeddings):
+    pass
+
+
+def retrieve_documents(query: str):
+    pass
+
+
+def build_prompt(query: str, documents):
+    pass
+
+
+def generate_response(prompt: str):
+    pass
+--------------------------------------------------------------
+Execution:
+
+def add(a, b):
+    result = a + b
+    return result
+
+answer = add(10, 20)
+print(answer)
+
+
+
+1. Python reads function definition
+             ↓
+2. add(10, 20) is called
+             ↓
+3. a = 10
+   b = 20
+             ↓
+4. result = 30
+             ↓
+5. return 30
+             ↓
+6. answer = 30
+             ↓
+7. print(answer)
+             ↓
+8. 30
+
+-----------------------------------------------------
+
+Exercise 1 — Greeting Function
+
+Create:
+def greet(name):
+It should print:
+Hello Krishna
+
+when called with:
+greet("Krishna")
+
+Exercise 2 — Addition
+
+Create:
+def add(a, b):
+Return the sum.
+Test:
+
+result = add(10, 20)
+print(result)
+
+
+Exercise 3 — Bank Balance
+
+Create:
+def calculate_balance(balance, withdrawal):
+Return the remaining balance.
+
+Test:
+calculate_balance(25000, 10000)
+
+
+Exercise 4 — Loan Eligibility
+
+Create:
+
+def check_loan_eligibility(age, salary):
+Rules:
+
+age >= 21 AND salary >= 30000
+       ↓
+"Eligible"
+
+Otherwise
+        ↓
+"Not Eligible"
+
+Return the result.
+
+
+Exercise 5 — Transaction Total
+
+Create:
+transactions = [5000, -1000, 3000, -2000, 1500]
+
+Create:
+def calculate_total(transactions):
+Use a loop and return the total.
+
+
+Exercise 6 — Clean Query
+
+Create:
+
+def clean_query(query):
+
+Given:
+query = "   PERSONAL LOAN POLICY   "
+Return:
+personal loan policy
+
+
+Exercise 7 — RAG-Style Function
+
+Given:
+
+documents = [
+    {"text": "Personal loan policy", "score": 0.92},
+    {"text": "Credit card policy", "score": 0.75},
+    {"text": "KYC policy", "score": 0.88}
+]
+
+Create:
+
+def filter_documents(documents, threshold):
+Return only documents whose score is greater than or equal to the threshold.
+
+Test:
+
+results = filter_documents(documents, 0.80)
+print(results)
+------------------------------------------------------
+
+What is a function?
+Why do we use functions?
+What does def mean?
+What is the difference between defining and calling a function?
+What is a parameter?
+What is an argument?
+What does return do?
+Difference between print() and return.
+What is a default parameter?
+What are positional arguments?
+What are keyword arguments?
+What is *args?
+What is **kwargs?
+What is variable scope?
+What is a local variable?
+What is a global variable?
+What is a docstring?
+What are type hints?
+
+
+🔥 3-Year-Level Interview Thinking
+Don't stop at syntax.
+
+Q19 — Scenario
+You are developing a RAG chatbot.
+You have these operations:
+Read documents
+Clean text
+Create chunks
+Generate embeddings
+Store vectors
+Retrieve documents
+Build prompt
+Call LLM
+Would you put all of this inside one function? Why or why not?
+
+Q20 — Scenario
+Your clean_query() function is being used in 10 different places.
+A new requirement says:
+Remove extra whitespace and convert everything to lowercase.
+Why is using a function better than copying these two lines into 10 places?
+
+
+Q21 — Interview Question
+What is the difference between:
+
+def add(a, b):
+    print(a + b)
+
+and:
+
+def add(a, b):
+    return a + b
+
+When would you prefer return?
 
 
 
 
+Q22 — GenAI Scenario
+
+You have:
+def retrieve_documents(query):
+    ...
+
+and:
+
+def generate_answer(query, documents):
+    ...
+
+Why might it be better to keep retrieval and answer generation as separate functions?
+Think about:
+Reusability
+Testing
+Debugging
+Maintenance
+Separation of responsibility
+
+
+--------------------------------------------------------------
+
+VARIABLE
+    ↓
+stores data
+
+LIST / DICTIONARY
+    ↓
+stores collections
+
+LOOP
+    ↓
+processes multiple items
+
+CONDITION
+    ↓
+makes decisions
+
+FUNCTION
+    ↓
+organizes reusable logic
 
 
 
