@@ -1,0 +1,475 @@
+File Handling:
+
+Python can read this file and process its content.
+--------------------------------------------------
+|Open()|
+
+# opening a file.
+
+file = open("personal_loan.txt", "r")
+-----------------------------
+
+|close()|
+
+When Python opens a file, it creates a resource.
+-----------------------------------------------
+|With open()|
+
+# python automatically closes the file after leaving the with block.
+
+with open("personal_loan.txt", "r") as file:
+    content = file.read()
+print(content)
+
+--------------------------------------------------
+| "r" |
+
+# read a file/ read mode.
+
+file = open("personal_loan.txt", "r")
+content = file.read()
+print(content)
+file.close()
+----------------------------------------------------------------------
+|File modes|
+
+Mode	| Meaning
+----------------
+"r"   |	Read
+"w"   |	Write
+"a"	  |Append
+"x"	  |Create new file
+-----------------------------------------------------------
+|Read Mode — "r"|
+
+try:
+    with open("data.txt", "r") as file:
+        content = file.read()
+    print(content)
+
+except FileNotFoundError:
+    print("File not found")
+
+#If the file doesn't exist, Python raises: FileNotFoundError:
+------------------------------------------------------------------
+|Write Mode — "w"|
+
+-> If the file doesn't exist, Python creates it.
+-> If it already exists, "w" overwrites the existing content.
+
+with open("customer.txt", "w") as file:
+    file.write("Customer Name: Priya")
+-------------------------------------------------
+|Append Mode — "a"|
+
+--> If you want to add content without deleting existing content:
+
+with open("customer.txt", "a") as file:
+    file.write("\nAccount Type: Savings")
+
+------------------------------------------------------------
+|Reading Line by Line|
+
+with open("loan.txt", "r") as file:
+
+    for line in file:
+        print(line)
+
+-> This reads the file one line at a time.
+-------------------------------------------------
+|read() vs readline() vs readlines()|
+
+-> read()
+Reads the entire file.
+content = file.read()
+
+-> readline()
+Reads one line.
+line = file.readline()
+
+-> readlines()
+Reads all lines into a list.
+lines = file.readlines()
+
+with open("loan.txt", "r") as file:
+    lines = file.readlines()
+print(lines)
+
+o/p:
+[
+    "Personal Loan\n",
+    "Home Loan\n",
+    "Car Loan\n",
+    "Education Loan\n"
+]
+=================================================================
+Part 2 — File Handling + String Processing 
+
+with open("loan.txt", "r") as file:
+    content = file.read()
+
+content = content.strip().lower()
+content = content.replace("\n", " ")
+print(content)
+===================================================
+Part 3 — What is JSON?
+
+JSON = JavaScript Object Notation
+
+You'll see JSON everywhere in:
+
+REST APIs
+GenAI APIs
+LLM responses
+Configuration
+Databases
+Microservices
+
+-> JSON is a syntax for storing and exchanging data.
+-> JSON is text, written with JavaScript object notation.
+
+
+x =  '{ "name":"Kiruthika", "age":30, "city":"Tuticorin"}'
+y =  { "name":"Kiruthika", "age":30, "city":"Tuticorin"}
+print(type(x))
+print(type(y))
+------------------------------------------------------------
+|JSON (vs)  Python Dictionary|
+
+Python dictionary → Python object
+
+JSON   → Text/data format
+---------------------------------------------------
+|Import JSON|
+
+# import json
+---------------------------------------------
+|Python Dictionary → JSON|   # This is called serialization.
+
+
+|dumps|
+
+import json
+customer = {
+    "name": "Priya",
+    "age": 25,
+    "balance": 50000
+}
+json_data = json.dumps(customer)
+print(json_data)
+
+Python object
+     ↓
+json.dumps()
+     ↓
+JSON string
+-----------------------------------------------
+|JSON → Python Dictionary|   #This is called deserialization.
+
+|Loads|
+
+import json
+json_data = '{"name": "Priya", "age": 25}'
+customer = json.loads(json_data)
+print(customer)
+------------------------------------------------
+
+json.dumps() → Python → JSON
+
+json.loads() → JSON → Python
+-----------------------------------------------
+|dump() vs dumps()|
+
+# dumps --> The s means string.  Python object → JSON string
+# dump----> Used to write JSON directly to a file.
+
+import json
+customer = {
+    "name": "Priya",
+    "age": 25,
+    "balance": 50000
+}
+with open("customer.json", "w") as file:
+    json.dump(customer, file, indent=4)
+-----------------------------------------------------------------
+|Reading a JSON File|
+
+
+# load
+
+import json
+
+with open("customer.json", "r") as file:
+    customer = json.load(file)
+print(customer)
+
+now:
+print(customer["name"])
+print(customer["balance"])
+---------------------------------------------------
+
+json.load()   → JSON file → Python object
+
+json.loads()  → JSON string → Python object
+---------------------------------------------------------
+| 4 JSON functions|
+
+Function	         Purpose
+json.dumps()	     Python → JSON string
+json.loads()	     JSON string → Python
+json.dump()	       Python → JSON file
+json.load()        JSON file → Python
+---------------------------------------------------------
+|JSON with Nested Data|
+
+customer = {
+    "name": "Priya",
+    "account": {
+        "type": "Savings",
+        "balance": 50000
+    }
+}
+
+print(customer["name"])
+print(customer["account"]["balance"])
+------------------------------------------
+|JSON with Lists|
+
+customer = {
+    "name": "Priya",
+    "accounts": [
+        {
+            "type": "Savings",
+            "balance": 50000
+        },
+        {
+            "type": "Current",
+            "balance": 100000
+        }
+    ]
+}
+
+print(customer["accounts"][0])
+print(customer["accounts"][0]["balance"])
+
+-------------------------------------------------------------
+|JSON + Error Handling|
+
+import json
+
+data = '{"name": "Priya", "age": }'
+
+try:
+    customer = json.loads(data)
+
+except json.JSONDecodeError as e:
+    print("Invalid JSON:", e)
+
+----------------------------------------------------
+|Real-Time RAG Example|
+
+{
+    "document_name": "personal_loan_policy.pdf",
+    "category": "loan",
+    "product": "personal_loan",
+    "page": 10
+}
+
+chunk = {
+    "text": "Personal loan interest rate starts from 10.5%.",
+    "metadata": {
+        "document_name": "personal_loan_policy.pdf",
+        "page": 10,
+        "category": "loan"
+    }
+}
+
+import json
+json_chunk = json.dumps(chunk, indent=4)
+print(json_chunk)
+
+--------------------------------------------------
+| Important RAG Connection|
+
+    DOCUMENT
+                    ↓
+              File Handling
+                    ↓
+              Extract Text
+                    ↓
+             Clean Text
+                    ↓
+                Chunking
+                    ↓
+              Add Metadata
+                    ↓
+              Create Embedding
+                    ↓
+              Vector Database
+
+------------------------------------------------------
+import json
+x =  '{ "name":"Kiruthika", "age":30, "city":"Tuticorin"}'
+y = json.loads(x)
+print(type(x))
+print(type(y))
+print(y["age"])
+
+//
+
+import json
+
+# a Python object (dict):
+x = { "name":"Kiruthika", "age":30, "city":"Tuticorin"}
+
+# convert into JSON:
+y = json.dumps(x)
+
+# the result is a JSON string:
+print(type(y))
+print(type(x))
+
+//
+
+import json
+
+x = {
+  "name": "Kiruthika",
+  "age": 30,
+  "married": True,
+  "divorced": False,
+  "children": ("Aaron", "Bala"),
+  "pets": None,
+  "cars": [
+    {"model": "XUV300", "mileage": 16.5},
+    {"model": "BMW X3", "mileage": 9.1}
+  ]
+}
+
+print(type(x["cars"][0]))
+print(json.dumps(x))
+
+
+import json
+
+x = {"name": "Kiruthika", "age": 30, "married": True}
+y = json.dumps(x, indent=4)
+print(y)
+
+==========================================================
+File handling
+with open("file.txt", "r") as file:
+    content = file.read()
+Write
+with open("file.txt", "w") as file:
+    file.write("Hello")
+Append
+with open("file.txt", "a") as file:
+    file.write("New line")
+Python → JSON
+json.dumps(data)
+
+JSON → Python
+json.loads(data)
+
+Python → JSON file
+json.dump(data, file)
+
+JSON file → Python
+json.load(file)
+====================================================================
+Exercise 1 — Read a File
+
+Create a file:
+loan.txt
+
+with:
+Personal Loan
+Minimum age: 21
+Minimum salary: 30000
+Write Python code to read and print the complete content.
+
+Exercise 2 — Count Lines
+Read loan.txt and print the number of lines.
+Expected:
+3
+
+Exercise 3 — Clean the Document
+Read:
+loan.txt
+and convert the content to lowercase.
+Then replace newline characters with spaces.
+Expected:
+personal loan minimum age: 21 minimum salary: 30000
+
+
+Exercise 4 — Create JSON
+Create this Python dictionary:
+customer = {
+    "name": "Priya",
+    "age": 25,
+    "balance": 50000
+}
+
+Convert it to a JSON string using:
+json.dumps()
+
+
+Exercise 5 — JSON File
+Save the customer information into:
+customer.json
+using:
+json.dump()
+Then read it back using:
+json.load()
+
+6. document = {
+    "text": "Personal loan interest rate starts from 10.5%.",
+    "metadata": {
+        "document": "personal_loan_policy.pdf",
+        "page": 10,
+        "category": "loan"
+    }
+}
+
+Then:
+Convert it to JSON.
+Print it.
+Access the document name.
+Access the page number.
+Handle a missing key using try-except.
+==============================================================================
+What is file handling in Python?
+Difference between read(), readline(), and readlines()?
+Difference between "r", "w", and "a"?
+Why do we use with open()?
+What happens if a file doesn't exist?
+What is JSON?
+Difference between Python dictionary and JSON?
+Difference between json.dumps() and json.loads()?
+Difference between json.dump() and json.load()?
+Why is JSON commonly used in REST APIs?
+How is JSON used in GenAI applications?
+How can JSON be used for RAG document metadata?
+
+Real Interview Scenario
+Interviewer:
+"Your RAG application receives a JSON request from the frontend. Sometimes the request doesn't contain the query field. How would you handle it?"
+
+
+try:
+    query = request["query"]
+
+except KeyError:
+    return {"error": "Query field is required"}
+
+
+
+
+
+
+
+
+    
+    
+    
