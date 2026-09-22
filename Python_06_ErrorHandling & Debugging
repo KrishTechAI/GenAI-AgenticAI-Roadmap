@@ -562,3 +562,13 @@ That is the production debugging mindset we want to build throughout Phase 0.
 -----------------------------------------------------------------------------------
 
 
+| Concept          | Meaning                                |
+| ---------------- | -------------------------------------- |
+| `try`            | Code that might fail                   |
+| `except`         | Handle the error                       |
+| `else`           | Runs when there is no error            |
+| `finally`        | Always runs                            |
+| `raise`          | Intentionally trigger an exception     |
+| `Exception as e` | Catch exception and access its details |
+| Logging          | Record what happened                   |
+| Debugging        | Find and fix the cause                 |
