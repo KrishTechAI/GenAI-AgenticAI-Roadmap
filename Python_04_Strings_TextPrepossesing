@@ -67,7 +67,7 @@ breaks a string into 2 pieces.
 text = "python ois east"
 print(text.split())
 
-data = "python", "sql","java"
+data = "python,sql,java"
 skills = data.split(",")
 -----------------------------------------------
 |Join()| -----> oppsite of split()
