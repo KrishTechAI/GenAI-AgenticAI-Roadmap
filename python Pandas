@@ -362,6 +362,8 @@ df["AGE"] = df["AGE"].fillna(df["AGE"].median())
 print(df.to_string())
 print(df.isnull().sum())
 
+df["AGE"] = df["AGE"].astype(int)  ---- to change it to integer 
+
 89. Filling Missing salary
 
 print("Filling Missing salary")
