@@ -470,6 +470,53 @@ Pandas:
 Practice numpy formulas 
 
 
+-----------------------------------------------------------------
+
+Sample.csv
+My code:
+
+import pandas as pd
+
+df = pd.read_csv("/content/D6-Sample.csv")
+# print(df)
+
+df = df.dropna(how= "all")
+
+df["AGE"]= pd.to_numeric(df["AGE"], errors= "coerce")
+# df["AGE"]= df["AGE"].fillna(df["AGE"].median())
+df["SALARY"] = pd.to_numeric(df["SALARY"], errors= "coerce")
+
+df["HIRE_DATE"] = pd.to_datetime(df["HIRE_DATE"], format="%d-%m-%Y" ,errors="coerce")
+df["HIRE_DATE"]= df["HIRE_DATE"].fillna("2023-01-01")
+# df["NAME"]= df["NAME"].fillna("unknown")
+df["AGE"]= df["AGE"].fillna(df["AGE"].median())
+df["AGE"] = df["AGE"].astype(int)
+df["SALARY"] = df["SALARY"].fillna(df["SALARY"].median())
+df["SALARY"]= df["SALARY"].astype(int)
+df["DEPARTMENT"]= df["DEPARTMENT"].fillna("unknown")
+df = df.dropna()
+
+
+
+df.rename(
+    columns= {"EMPLOYEE_ID": "EMP_ID"},
+    inplace= True
+)
+
+
+df["ANUAL_SALARY"]= df["SALARY"]+10000
+df["NAME"]= df["NAME"].str.capitalize()
+
+df.columns = df.columns.str.strip().str.capitalize().str.replace(" ", "-")
+
+
+print(df.to_string())
+
+
+df.to_csv("cleaned_sample.csv", index=False)
+
+
+
 
   
   
