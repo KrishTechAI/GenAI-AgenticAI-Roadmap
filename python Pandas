@@ -453,8 +453,19 @@ d.Validate date column (HIRE_DATE) #to_datetime
 e.Replace missing values with default values #fillna("unknown")
 f.Print cleaned output
 
+------------------------------------------------------------------
+Pandas:
 
-
+1.Update salary for a specific person.
+2.Remove rows where Age is null.
+3.Count how many null values in each column.
+4.Remove duplicate rows.
+5.Sort data by Age.
+6.Group by City and calculate average Age.
+7.Find maximum and minimum salary.
+8.Replace missing values with mean.
+9.Rename column names.
+Practice numpy formulas 
 
 
 
