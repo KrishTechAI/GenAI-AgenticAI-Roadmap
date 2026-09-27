@@ -58,7 +58,7 @@ arry = np.array([[[1,2],[3,4]],[[5,6],[7,8]]])
 
 10. arr.ndim --> Number of dimensions
 11. arr.shape --> Rows and columns/dimensions
-12. arr. --> Total elements
+12. arr.count() --> Total elements
 13. arr.dtype --> Data type
 --------------------------------------
 |Indexing|
