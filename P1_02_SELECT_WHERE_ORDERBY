@@ -142,6 +142,60 @@ WHERE name LIKE '_____'
 # _ --> represent one character 
 
 ------------------------------------------------------
+|IS NULL|
+
+| employee_id | name    | manager |
+| ----------: | ------- | ------- |
+|         101 | Arun    | Ravi    |
+|         102 | Priya   | NULL    |
+|         103 | Krishna | Ravi    |
 
 
+NULL means:
+No value / unknown / missing valu
+
+1. WHERE manager IS NULL;
+2. WHERE manager IS NOT NULL;
+
+-----------------------------------------------------------
+|ORDER BY|    #By default, sorting is ascending.
+
+#What if we want to sort?
+
+1.  #By default, sorting is ascending.
+
+SELECT *
+FROM employees
+ORDER BY salary;      
+
+2. ASC     -----> Lowest → highest.
+
+SELECT *
+FROM employees
+ORDER BY salary ASC;
+
+3. DESC    --------------> Highest → lowest.
+
+SELECT *
+FROM employees
+ORDER BY salary DESC;
+-------------------------------------------------------------
+|Filtering + Sorting|
+
+This is where SQL starts becoming useful in real applications.
+
+SELECT *
+FROM employees
+WHERE city = 'Chennai'
+ORDER BY salary DESC;
+
+
+Ex:Show IT employees whose salary is above 55000, highest salary first.
+
+SELECT *
+FROM employees
+WHERE department = 'IT'
+AND salary > 55000
+ORDER BY salary DESC;
+------------------------------------------------
 
