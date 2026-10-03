@@ -1,0 +1,12 @@
+1. What Is a Database?
+A database is a system used to store and manage data.
+Instead of keeping millions of records in Excel files, companies use databases.
+-----------------------------------------------
+2. What Is SQL?
+SQL = Structured Query Language
+SQL is used to communicate with relational databases.
+
+For example:   #Give me all records from the customers table.
+SELECT *
+FROM customers;
+-------------------------------------
