@@ -9,4 +9,164 @@ SQL is used to communicate with relational databases.
 For example:   #Give me all records from the customers table.
 SELECT *
 FROM customers;
+
+#Relational database stores a datas in table
 -------------------------------------
+3. Primary Key:
+
+A primary key uniquely identifies a row.
+
+CREATE TABLE customers (
+    customer_id INT PRIMARY KEY,     #means two customers cannot have the same ID.
+    name VARCHAR(100),
+    city VARCHAR(100)
+);
+-------------------------------------------------------------------------------------------
+4. Foreign Key
+
+The applications.customer_id can reference the customer table.
+
+CREATE TABLE applications (
+    application_id VARCHAR(20) PRIMARY KEY,
+    customer_id INT,
+    amount DECIMAL(12,2),
+    status VARCHAR(30),
+
+    FOREIGN KEY (customer_id)
+    REFERENCES customers(customer_id)
+);
+
+customers
+   │
+   │ customer_id
+   ↓
+applications
+
+#This relationship will become extremely important when we learn JOINs.
+-------------------------------------------------------------------------------------
+5. SQL vs Mongodb 
+  
+| SQL               | MongoDB                     |
+| ----------------- | --------------------------- |
+| Tables            | Collections                 |
+| Rows              | Documents                   |
+| Columns           | Fields                      |
+| Primary Key       | `_id`                       |
+| JOIN              | `$lookup`                   |
+| Structured schema | Flexible document structure |
+-----------------------------------------------------------------------
+# Postgresql---> We'll also compare PostgreSQL with MySQL, Oracle, and MongoDB where useful.
+----------------------------------------------------------------------
+6. Structure 
+
+SELECT ----> want to retrive the data
+* -----> all columns
+from customers -----> from customer table 
+-----------------------------------------------------------------------
+|Select specific column|
+
+SELECT name, city
+FROM customers;
+--------------------------------------------------------
+|WHERE|
+
+SELECT *
+FROM customers
+WHERE city = 'Chennai';
+-------------------------------------------
+|Numeric filtering|
+
+SELECT *     #select all table 
+FROM customers
+WHERE age > 25;
+
+
+SELECT name                      #select name table 
+FROM customers
+WHERE age > 25;
+----------------------------------------------
+|Multiple conditions|
+
+SELECT *
+FROM customers
+WHERE city = 'Chennai'
+AND age > 25;
+----------------------------------------------------------------------------
+|Interview question|
+
+Q1. What is SQL?
+
+Strong answer:
+SQL is a language used to interact with relational databases. It is commonly used to retrieve, insert, update, delete, and analyze structured data.
+--------------------------------------------------------------------------
+Q2. What is a database?
+
+A database is an organized system for storing, managing, and retrieving data efficiently.
+-------------------------------------------------------------------------
+Q3. What is a primary key?
+
+A primary key uniquely identifies each record in a table. It must contain unique values and cannot contain NULL values.
+----------------------------------------------------------------------------------
+Q4. What is a foreign key?
+
+A foreign key is a column that references a key in another table and is used to establish relationships between tables.
+------------------------------------------------------------------------
+Q5. SQL vs NoSQL?
+
+A good interview answer:
+
+Relational databases use structured tables and predefined relationships and are queried primarily using SQL. 
+NoSQL databases use models such as documents, key-value pairs, or graphs and generally provide more flexible schemas. 
+The choice depends on the application's data model and requirements.
+-------------------------------------------------------------------------------------------------------------------
+|Excercise|
+
+Exercise 1
+
+Get all employees.
+
+employees
+
+employee_id | name    | department | salary | city
+------------|---------|------------|--------|--------
+101         | Arun    | IT         | 60000  | Chennai
+102         | Priya   | HR         | 50000  | Bangalore
+103         | Krishna | IT         | 75000  | Chennai
+104         | Ravi    | Finance    | 65000  | Mumbai
+105         | Anu     | IT         | 55000  | Chennai
+
+
+Exercise 2
+
+Get only:
+name
+salary
+
+
+Exercise 3
+Find employees from Chennai.
+
+Exercise 4
+Find employees whose salary is greater than 60000.
+
+Exercise 5
+Find employees who are:
+
+IT
+AND
+salary > 60000
+
+
+Exercise 6
+
+Find employees who are from:
+Chennai OR Bangalore
+
+
+Exercise 7
+Find employees whose salary is between 50000 and 65000.
+
+
+Exercise 8
+Find employees whose department is not IT.
+
