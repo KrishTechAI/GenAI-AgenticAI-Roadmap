@@ -84,6 +84,8 @@ WHERE age > 25;
 SELECT name                      #select name table 
 FROM customers
 WHERE age > 25;
+
+
 ----------------------------------------------
 |Multiple conditions|
 
@@ -91,6 +93,26 @@ SELECT *
 FROM customers
 WHERE city = 'Chennai'
 AND age > 25;
+
+
+|OR|
+SELECT *
+FROM customers
+WHERE city = 'Chennai'
+OR city = 'Bangalore';
+
+|NOT|
+
+Suppose we don't want Chennai customers:
+SELECT *
+FROM customers
+WHERE city <> 'Chennai';                 #not equal to
+
+|BETWEEN|
+
+SELECT *
+FROM customers
+WHERE age BETWEEN 25 AND 30;
 ----------------------------------------------------------------------------
 |Interview question|
 
@@ -169,4 +191,39 @@ Find employees whose salary is between 50000 and 65000.
 
 Exercise 8
 Find employees whose department is not IT.
+
+----------------------------------------------------
+  Phase 1 → Real-Time Project
+
+At the end of Phase 1, we'll build a larger project:
+
+Banking Support Data Pipeline            
+
+
+
+                API
+                 │
+                 ↓
+          Customer Data
+                 │
+                 ↓
+              Python
+                 │
+          ┌──────┴──────┐
+          ↓             ↓
+       Validate       Transform
+          │             │
+          └──────┬──────┘
+                 ↓
+             PostgreSQL
+                 │
+          ┌──────┼──────┐
+          ↓      ↓      ↓
+        SQL    Reports  APIs
+          │
+          ↓
+       Analytics
+          │
+          ↓
+    Future GenAI Layer
 
