@@ -1,0 +1,147 @@
+By the end of this lesson, you should understand:
+
+SELECT
+FROM
+WHERE
+Comparison operators
+AND, OR, NOT
+IN
+BETWEEN
+LIKE
+IS NULL
+ORDER BY
+ASC vs DESC
+Combining filtering + sorting
+SQL execution thinking
+Real-time banking examples
+Interview questions
+Practice exercises
+--------------------------------------------------------------------------------------------------
+Example:
+
+Show me the names of IT employees?
+
+SELECT name
+FROM employees
+WHERE department = 'IT';
+
+---------------------------------------------------------------
+|SELECT|     -------> What information do i need? 
+
+SELECT *      # * all column
+FROM employees;
+
+# get specific column                                  #inductry avoid using selct * , use select name, age
+
+SELECT name, salary
+FROM employees;
+-----------------------------------------------------
+|WHERE|
+
+#WHERE filters rows.
+#Which records do I want?
+
+SELECT *
+FROM employees
+WHERE city = 'Chennai';
+------------------------------------------------------
+|Comparison operator|
+
+
+| Operator | Meaning               |
+| -------- | --------------------- |
+| `=`      | equal                 |
+| `<>`     | not equal             |
+| `>`      | greater than          |
+| `<`      | less than             |
+| `>=`     | greater than or equal |
+| `<=`     | less than or equal    |
+----------------------------------------------------------------
+|AND|
+
+#Both conditions must be true.
+
+SELECT *
+FROM employees
+WHERE department = 'IT'
+AND salary > 60000;
+-----------------------------------------------------
+|OR|
+
+#At least one condition must be true.
+
+SELECT *
+FROM employees
+WHERE city = 'Chennai'
+OR city = 'Bangalore';
+
+---------------------------------------------------------
+|IN|   #IN = "Is this value one of these options?"
+
+SELECT *
+FROM employees
+WHERE city = 'Chennai'
+OR city = 'Bangalore'
+OR city = 'Mumbai';
+
+
+instead:
+--------------
+
+SELECT *
+FROM employees
+WHERE city IN ('Chennai', 'Bangalore', 'Mumbai');
+
+---------------------------------------------------------------------
+|NOT IN|
+
+SELECT *
+FROM employees
+WHERE city NOT IN ('Chennai', 'Bangalore');    #This returns employees who aren't in either city.
+------------------------------------------------------------------
+|BETWEEN|
+
+Suppose you need employees whose salary is between 50000 and 65000.
+
+SELECT *
+FROM employees
+WHERE salary BETWEEN 50000 AND 65000;
+---------------------------------------------------------
+|Pattern matching|
+
+|LIKE|  
+
+1.  A%    ---> starts with A
+
+#LIKE is used for pattern matching.
+This is especially useful when searching text.
+
+ex:
+You want names beginning with A.
+
+SELECT *
+FROM employees        
+WHERE name LIKE 'A%';
+
+# % ----> Any number of character , Anything beginning with A...
+
+
+2.  %a  ---> Ends with A
+
+WHERE name LIKE '%a'
+
+
+3. Contains --> %ir%
+
+WHERE name LIKE '%ri%'
+
+4. Exactly 5 character    ---> Use _
+
+WHERE name LIKE '_____'
+
+# _ --> represent one character 
+
+------------------------------------------------------
+
+
+
