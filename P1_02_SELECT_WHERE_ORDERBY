@@ -198,4 +198,194 @@ WHERE department = 'IT'
 AND salary > 55000
 ORDER BY salary DESC;
 ------------------------------------------------
+1. Show all pending applications."
+SELECT *
+FROM loan_applications
+WHERE status = 'PENDING';
 
+2. Show pending applications with the highest loan amount first."
+SELECT *
+FROM loan_applications
+WHERE status = 'PENDING'
+ORDER BY loan_amount DESC;
+
+3. Show pending loan applications from Chennai."
+SELECT application_id, customer_name, loan_amount
+FROM loan_applications
+WHERE city = 'Chennai'
+AND status = 'PENDING';
+
+
+| application_id | customer_name | city      | loan_amount | status   |
+| -------------- | ------------- | --------- | ----------: | -------- |
+| 1001           | Arun          | Chennai   |      500000 | APPROVED |
+| 1002           | Priya         | Bangalore |      800000 | PENDING  |
+| 1003           | Ravi          | Chennai   |      300000 | REJECTED |
+| 1004           | Anu           | Chennai   |      900000 | PENDING  |
+----------------------------------------------------
+User
+ ↓
+LLM
+ ↓
+Intent / query generation
+ ↓
+SQL
+ ↓
+Database
+ ↓
+Results
+ ↓
+LLM
+ ↓
+Natural language response
+
+This is one reason SQL is important for an AI/GenAI Engineer.
+--------------------------------------------------------
+|SQL execution order — interview level| ****************************
+
+FROM
+ ↓
+WHERE
+ ↓
+SELECT
+ ↓
+ORDER BY
+-------------------------------------
+Common mistakes
+
+Mistake 1 — Forgetting quotes around text
+WHERE city = Chennai
+
+Mistake 2 — Using = for NULL
+
+Mistake 3 — Confusing AND and OR
+Mistake 4 — Wrong sorting direction
+Mistake 5 — Using SELECT * unnecessarily
+-----------------------------------------------------
+Q1. What is SELECT?
+
+Answer:
+
+SELECT is used to specify the columns we want to retrieve from a table.
+
+Example:
+
+SELECT name, salary
+FROM employees;
+
+Q2. What is WHERE?
+
+Answer:
+
+WHERE filters rows based on a condition.
+
+SELECT *
+FROM employees
+WHERE department = 'IT';
+
+Q3. What is ORDER BY?
+
+Answer:
+
+ORDER BY sorts query results.
+ORDER BY salary DESC;
+
+Q4. Difference between ASC and DESC?
+
+Answer:
+
+ASC sorts in ascending order, while DESC sorts in descending order.
+
+For salary:
+
+ASC  → 50000 → 75000
+DESC → 75000 → 50000
+
+Q: How would you find employees from Chennai earning more than 60,000?
+SELECT *
+FROM employees
+WHERE city = 'Chennai'
+AND salary > 60000;
+
+----------------------------------------------------
+
+Q: A production application is querying millions of customer records. Would you use SELECT *?
+
+A strong answer:
+
+No. If I only need specific columns, I would select only those columns instead of using SELECT *. This reduces unnecessary data retrieval and can improve network and processing efficiency. For production queries, I would also consider appropriate filtering, indexes, query plans, and pagination depending on the use case.
+
+Notice the difference.
+
+A beginner says:
+
+"SELECT * is bad."
+
+A stronger engineer explains why and when.
+-----------------------------------------------
+Excercise:
+
+
+| employee_id | name    | department | salary | city      |
+| ----------: | ------- | ---------- | -----: | --------- |
+|         101 | Arun    | IT         |  60000 | Chennai   |
+|         102 | Priya   | HR         |  50000 | Bangalore |
+|         103 | Krishna | IT         |  75000 | Chennai   |
+|         104 | Ravi    | Finance    |  65000 | Mumbai    |
+|         105 | Anu     | IT         |  55000 | Chennai   |
+
+
+Exercise 1
+Get all employees.
+
+Exercise 2
+Get only name and salary.
+Exercise 3
+Get employees from Chennai.
+
+Exercise 4
+Get employees whose salary is greater than 60,000.
+
+Exercise 5
+Get IT employees earning more than 55,000.
+
+Exercise 6
+Get employees from Chennai or Bangalore using IN.
+
+Exercise 7
+Get employees whose salary is between 50,000 and 65,000.
+
+Exercise 8
+Get employees whose name starts with A.
+
+Exercise 9
+Get employees who are not from Chennai.
+
+Exercise 10 ⭐
+Get Chennai IT employees earning more than 55,000 and sort them from highest salary to lowest.
+
+----------------------------------------
+
+"Find the top-paid IT employees in Chennai."
+Table?
+↓
+employees
+
+Required records?
+↓
+IT + Chennai
+
+Sorting?
+↓
+salary highest → lowest
+
+--------------------------------------------------------
+
+phase-1-sql/
+│
+├── lesson-01-database-fundamentals/
+│
+└── lesson-02-select-where-orderby/
+    ├── notes.md
+    ├── practice.sql
+    └── README.md
