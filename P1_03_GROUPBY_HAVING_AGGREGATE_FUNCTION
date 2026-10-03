@@ -1,0 +1,21 @@
+Aggregate functions
+COUNT()
+SUM()
+AVG()
+MIN()
+MAX()
+GROUP BY
+HAVING
+WHERE vs HAVING
+GROUP BY with multiple columns
+ORDER BY with aggregates
+--------------------------------------------------------------------
+Why do we need GROUP BY?
+
+"How many employees are in each department?"
+
+#You don't want every employee.
+#You want a summary -----> COUNT in each dept
+
+
+
