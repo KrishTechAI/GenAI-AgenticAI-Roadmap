@@ -16,6 +16,525 @@ Why do we need GROUP BY?
 
 #You don't want every employee.
 #You want a summary -----> COUNT in each dept
+-----------------------------------------------------------------
+|Aggegate function|
+
+| Function  | Purpose           |
+| --------- | ----------------- |
+| `COUNT()` | Count records     |
+| `SUM()`   | Add values        |
+| `AVG()`   | Calculate average |
+| `MIN()`   | Find minimum      |
+| `MAX()`   | Find maximum      |
+
+1. COUNT()  ----> COUNT() counts rows or values.
+
+SELECT COUNT(*)
+FROM employees;
+
+SELECT COUNT(*) AS employee_count
+FROM employees;
+
+# AS employee_count gives the result column a readable name.
+
+COUNT(*)       → counts the rows
+AS             → gives the result a temporary name
+employee_count → the name of the result column
 
 
+2. COUNT(column)
+
+# You can also count a particular column.
+
+SELECT COUNT(name)
+FROM employees;
+
+COUNT(*)----> Counts rows.
+COUNT(column) ---> Counts non-NULL values in that column.
+
+COUNT(*) counts rows, while COUNT(column) ignores NULL values in that column.
+
+
+---------------------------------------------------------------------
+|SUM()|
+
+# SUM() adds numeric values.
+gives total count
+
+SELECT SUM(salary) AS total_salary
+FROM employees;
+-------------------------------------------------------
+|AVG()|
+
+#AVG() calculates the average.
+
+SELECT AVG(salary) AS average_salary
+FROM employees;
+--------------------------------------------------------
+|MIN()| -------------> Find the smallest value.
+
+SELECT MIN(salary) AS minimum_salary
+FROM employees;
+------------------------------------------------------------
+|MAX()|   -------------> Find the largest value.
+
+SELECT MAX(salary) AS maximum_salary
+FROM employees;
+
+------------------------------------------------------
+SELECT
+    COUNT(*) AS employee_count,
+    SUM(salary) AS total_salary,
+    AVG(salary) AS average_salary,
+    MIN(salary) AS minimum_salary,
+    MAX(salary) AS maximum_salary
+FROM employees;
+---------------------------------------------------------------
+|Using GROUPBY|
+
+# What is the average salary for each department?
+
+without groupby:
+SELECT AVG(salary)
+FROM employees;
+
+With groupby:
+
+SELECT
+    department,
+    AVG(salary) AS average_salary
+FROM employees
+GROUP BY department;
+------------------------------------------
+|COUNT + GROUP BY|
+
+How many employees are in each department?
+
+SELECT
+    department,
+    COUNT(*) AS employee_count
+FROM employees
+GROUP BY department;
+--------------------------------------------------------------
+|SUM + GROUP BY|
+
+What is the total salary for each department?
+
+SELECT
+    department,
+    SUM(salary) AS total_salary
+FROM employees
+GROUP BY department;
+--------------------------------------------
+|MIN + GROUP BY|
+
+SELECT
+    department,
+    MIN(salary) AS minimum_salary
+FROM employees
+GROUP BY department;
+
+------------------------------------------------
+|MAX + GROUP BY|
+
+SELECT
+    department,
+    MAX(salary) AS maximum_salary
+FROM employees
+GROUP BY department;
+-----------------------------------------------------
+|GROUP BY multiple columns|
+
+Number of employees in each department for each city.
+
+SELECT
+    department,
+    city,
+    COUNT(*) AS employee_count
+FROM employees
+GROUP BY department, city;
+
+#  department + city
+------------------------------------------------------
+|GROUP BY + WHERE|
+
+Find the average salary of IT employees by city.
+
+SELECT
+    city,
+    AVG(salary) AS average_salary
+FROM employees
+WHERE department = 'IT'
+GROUP BY city;
+
+#WHERE filters rows before grouping.
+--------------------------------------------------
+|HAVING|
+
+Show only departments having more than 1 employee.
+
+SELECT
+    department,
+    COUNT(*) AS employee_count
+FROM employees
+GROUP BY department
+HAVING COUNT(*) > 1;
+------------------------------------------------------
+|WHERE vs HAVING|
+
+WHERE-----> Filters individual rows.
+HAVING----> Filters groups after GROUP BY.
+
+WHERE
+↓
+Filter rows
+
+GROUP BY
+↓
+Create groups
+
+HAVING
+↓
+Filter groups
+--------------------------------------------------------------
+|Easy example|
+
+Find departments whose average salary is greater than 60,000.
+SELECT
+    department,
+    AVG(salary) AS average_salary
+FROM employees
+GROUP BY department
+HAVING AVG(salary) > 60000;
+
+---------------------------------------------------------------------
+|WHERE + GROUP BY + HAVING|
+
+Find departments where employees earning more than 55,000 have an average salary greater than 60,000.
+
+SELECT
+    department,
+    AVG(salary) AS average_salary
+FROM employees
+WHERE salary > 55000
+GROUP BY department
+HAVING AVG(salary) > 60000;
+----------------------------------------------------------------------
+|GROUP BY + ORDER BY|
+
+Show departments by average salary from highest to lowest.
+
+SELECT
+    department,
+    AVG(salary) AS average_salary
+FROM employees
+GROUP BY department
+ORDER BY average_salary DESC;
+--------------------------------------------------------------------
+Real Banking Example
+
+| application_id | city      | loan_type | loan_amount | status   |
+| -------------: | --------- | --------- | ----------: | -------- |
+|           1001 | Chennai   | Home      |      500000 | APPROVED |
+|           1002 | Chennai   | Personal  |      200000 | APPROVED |
+|           1003 | Bangalore | Home      |      800000 | PENDING  |
+|           1004 | Chennai   | Home      |      700000 | REJECTED |
+|           1005 | Bangalore | Personal  |      300000 | APPROVED |
+
+
+Business question 1
+How many loan applications are there?
+
+SELECT COUNT(*) AS total_applications
+FROM loan_applications;
+
+Business question 2
+How many applications are there for each status?
+
+SELECT
+    status,
+    COUNT(*) AS application_count
+FROM loan_applications
+GROUP BY status;
+
+Business question 3
+What is the total loan amount for each city?
+
+SELECT
+    city,
+    SUM(loan_amount) AS total_loan_amount
+FROM loan_applications
+GROUP BY city;
+
+Business question 4
+Which cities have total loan amounts above 1 million?
+
+SELECT
+    city,
+    SUM(loan_amount) AS total_loan_amount
+FROM loan_applications
+GROUP BY city
+HAVING SUM(loan_amount) > 1000000;
+
+-----------------------------------------------------------
+"Which cities generated the highest loan volume last month?"
+
+SELECT
+    city,
+    COUNT(*) AS loan_count,
+    SUM(loan_amount) AS total_amount
+FROM loan_applications
+WHERE application_date >= '2026-09-01'
+AND application_date < '2026-10-01'
+GROUP BY city
+ORDER BY total_amount DESC;
+---------------------------------------------------------------------
+|Mistake|
+
+Mistake 1: Selecting a column without GROUP BY
+Wrong:
+SELECT department, AVG(salary)
+FROM employees;
+
+correct:
+SELECT department, AVG(salary)
+FROM employees
+GROUP BY department;
+
+Mistake 2: Using WHERE with aggregate functions
+
+worong: WHERE COUNT(*) > 2
+
+Mistake 3: Confusing WHERE and HAVING
+
+WHERE  → rows
+HAVING → groups
+
+
+Mistake 4: Forgetting what GROUP BY means
+------------------------------------------
+Format:
+
+FROM
+ ↓
+WHERE
+ ↓
+GROUP BY
+ ↓
+HAVING
+ ↓
+SELECT
+ ↓
+ORDER BY
+
+---------------------------------------------------------------------
+Q1. What is an aggregate function?
+
+Answer:
+
+An aggregate function performs a calculation over multiple rows and returns a summarized result.
+
+Examples include:
+COUNT()
+SUM()
+AVG()
+MIN()
+MAX()
+
+Q2. What is GROUP BY?
+
+Answer:
+
+GROUP BY groups rows with the same values in one or more columns so that aggregate functions can be applied to each group.
+Example:
+
+SELECT department, COUNT(*)
+FROM employees
+GROUP BY department;
+
+Q3. Difference between WHERE and HAVING?
+
+Strong answer:
+WHERE filters individual rows before grouping, while HAVING filters groups after GROUP BY and is commonly used with aggregate functions.
+
+Q4. 
+
+Can we use WHERE and HAVING in the same query?
+
+Yes.
+
+Example:
+
+SELECT
+    department,
+    AVG(salary) AS average_salary
+FROM employees
+WHERE salary > 50000
+GROUP BY department
+HAVING AVG(salary) > 60000;
+
+Explain it:
+
+WHERE
+↓
+Remove employees earning 50,000 or less
+
+GROUP BY
+↓
+Create department groups
+
+AVG()
+↓
+Calculate average for each department
+
+HAVING
+↓
+Keep only departments whose average > 60,000
+
+
+--------------------------------------------------------------------
+Interviewer:
+
+You are analyzing millions of banking transactions. The business asks you to find the transaction count and total transaction amount by transaction type,
+but only for transaction types whose total amount exceeds ₹1 crore. How would you approach it?
+
+You should think:
+
+Table
+↓
+transactions
+
+Required:
+transaction_type
+COUNT
+SUM
+
+Grouping:
+transaction_type
+
+Filter groups:
+SUM > 1 crore
+
+Sort if required
+
+Query:
+
+SELECT
+    transaction_type,
+    COUNT(*) AS transaction_count,
+    SUM(amount) AS total_amount
+FROM transactions
+GROUP BY transaction_type
+HAVING SUM(amount) > 10000000
+ORDER BY total_amount DESC;
+
+--------------------------------------------------------------
+
+Employee table:
+
+| employee_id | name    | department | salary | city      |
+| ----------: | ------- | ---------- | -----: | --------- |
+|         101 | Arun    | IT         |  60000 | Chennai   |
+|         102 | Priya   | HR         |  50000 | Bangalore |
+|         103 | Krishna | IT         |  75000 | Chennai   |
+|         104 | Ravi    | Finance    |  65000 | Mumbai    |
+|         105 | Anu     | IT         |  55000 | Chennai   |
+
+
+Exercise 1
+
+Find the total number of employees.
+
+Exercise 2
+
+Find the total salary of all employees.
+
+Exercise 3
+
+Find the average salary.
+
+Exercise 4
+
+Find the highest salary.
+
+Exercise 5
+
+Find the lowest salary.
+
+Exercise 6
+
+Find the number of employees in each department.
+
+Exercise 7
+
+Find the average salary for each department.
+
+Exercise 8
+
+Find the total salary for each department.
+
+Exercise 9
+
+Show only departments having more than 1 employee.
+
+Exercise 10
+
+Show departments whose average salary is greater than 60,000.
+
+Exercise 11 ⭐
+
+Find the number of employees in each city.
+
+Exercise 12 ⭐
+
+Find the average salary in each city and sort from highest to lowest.
+
+Exercise 13 🔥
+
+Find departments where the total salary is greater than 100,000.
+
+Exercise 14 🔥
+
+Find IT employees earning more than 55,000, group them by city, and show the average salary for each city.
+-------------------------------------------------------------------
+
+                 SQL ANALYSIS
+
+                    FROM
+                     ↓
+              Get the data
+                     ↓
+                   WHERE
+                     ↓
+              Filter rows
+                     ↓
+                 GROUP BY
+                     ↓
+               Create groups
+                     ↓
+                 Aggregate
+              COUNT/SUM/AVG
+                MIN/MAX
+                     ↓
+                  HAVING
+                     ↓
+              Filter groups
+                     ↓
+                ORDER BY
+                     ↓
+                 Sort result
+
+------------------------------------------------------------------------
+WHERE filters rows; GROUP BY creates groups; aggregate functions summarize them; HAVING filters those groups; ORDER BY sorts the final result.
+-----------------------------------------------------------------------------
+phase-1-sql/
+│
+├── lesson-01-database-fundamentals/
+│
+├── lesson-02-select-where-orderby/
+│
+└── lesson-03-groupby-having-aggregations/
+    ├── notes.md
+    ├── practice.sql
+    └── README.md
 
