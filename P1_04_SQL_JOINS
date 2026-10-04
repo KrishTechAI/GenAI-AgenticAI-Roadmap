@@ -1,0 +1,488 @@
+Why JOINs are needed
+Primary key vs foreign key
+INNER JOIN
+LEFT JOIN
+RIGHT JOIN
+FULL OUTER JOIN
+JOIN conditions
+Joining 3+ tables
+JOIN + WHERE
+JOIN + GROUP BY
+---------------------------------------------
+Why do we need JOINs?
+
+customers:
+
+| customer_id | customer_name | city      |
+| ----------: | ------------- | --------- |
+|         101 | Arun          | Chennai   |
+|         102 | Priya         | Bangalore |
+|         103 | Krishna       | Chennai   |
+|         104 | Ravi          | Mumbai    |
+
+
+orders:
+
+| order_id | customer_id | amount |
+| -------: | ----------: | -----: |
+|     5001 |         101 |   5000 |
+|     5002 |         103 |   8000 |
+|     5003 |         101 |   3000 |
+|     5004 |         102 |   7000 |
+
+--------------------------------------------------------------
+Why not keep everything in one table?
+
+duplicate data
+larger storage
+update problems
+inconsistent data
+maintenance problems
+--------------------------------------------
+|Primary Key and Foreign Key|
+
+--> customer_id = Primary Key      #Each customer should have a unique ID.
+
+-------------------------------------------------
+|JOIN|
+
+A JOIN combines rows from two or more tables based on a related column.
+
+
+JOIN syntax:
+
+SELECT columns
+FROM table1
+JOIN table2
+    ON table1.key = table2.key;
+
+Ex:
+
+SELECT *
+FROM customers
+JOIN orders
+    ON customers.customer_id = orders.customer_id;
+----------------------------------------------
+|INNER JOIN|
+
+#  INNER JOIN returns only records that have a match in both tables.
+# only returns matching records.
+
+SELECT
+    customers.customer_name,
+    orders.order_id,
+    orders.amount
+FROM customers
+INNER JOIN orders
+    ON customers.customer_id = orders.customer_id;
+------------------------------------------------------
+|Why use table aliases?|
+
+#Imagine your query becomes large.
+
+customers.customer_id
+orders.customer_id
+customers.customer_name
+orders.order_id
+
+Ex:
+
+SELECT
+    c.customer_name,
+    o.order_id,
+    o.amount
+FROM customers AS c
+INNER JOIN orders AS o
+    ON c.customer_id = o.customer_id;
+
+Now:
+c → customers
+o → orders
+
+We can omit AS:
+
+FROM customers c
+JOIN orders o
+------------------------------------------------------------
+|LEFT JOIN|
+
+Show all customers, even if they have never placed an order.
+keeps all rows from the left table.
+The right-side values become NULL when there is no match.
+
+SELECT
+    c.customer_name,
+    o.order_id,
+    o.amount
+FROM customers c
+LEFT JOIN orders o
+    ON c.customer_id = o.customer_id;
+---------------------------------------------------
+|INNER JOIN vs LEFT JOIN|
+
+INNER JOIN---> Give me only matching records.
+
+LEFT JOIN --->Give me everything from the left table, plus matching records from the right.
+---------------------------------------------------
+Real-world example
+
+Find customers who have never placed an order.
+
+SELECT
+    c.customer_id,
+    c.customer_name
+FROM customers c
+LEFT JOIN orders o
+    ON c.customer_id = o.customer_id
+WHERE o.order_id IS NULL;
+---------------------------------------------------------
+|RIGHT JOIN|
+
+keeps all rows from the right table.
+
+
+SELECT
+    c.customer_name,
+    o.order_id,
+    o.amount
+FROM customers c
+RIGHT JOIN orders o
+    ON c.customer_id = o.customer_id;
+-------------------------------------------------------------
+|FULL OUTER JOIN|
+
+All matching and non-matching rows from both tables.
+
+SELECT
+    c.customer_name,
+    o.order_id,
+    o.amount
+FROM customers c
+FULL OUTER JOIN orders o
+    ON c.customer_id = o.customer_id;
+----------------------------------------------------
+
+| JOIN              | What it returns           |
+| ----------------- | ------------------------- |
+| `INNER JOIN`      | Matching rows only        |
+| `LEFT JOIN`       | All left + matching right |
+| `RIGHT JOIN`      | All right + matching left |
+| `FULL OUTER JOIN` | Everything from both      |
+-----------------------------------------------------------
+
+|JOIN + WHERE|
+
+Find Chennai customers who placed orders above ₹5,000.
+
+SELECT
+    c.customer_name,
+    c.city,
+    o.order_id,
+    o.amount
+FROM customers c
+INNER JOIN orders o
+    ON c.customer_id = o.customer_id
+WHERE c.city = 'Chennai'
+AND o.amount > 5000;
+------------------------------------------
+|JOIN + GROUP BY|
+
+Find the total order amount for each customer.
+
+SELECT
+    c.customer_name,
+    SUM(o.amount) AS total_amount
+FROM customers c
+INNER JOIN orders o
+    ON c.customer_id = o.customer_id
+GROUP BY c.customer_name;
+
+-----------------------------------------------------
+|Include customers with zero orders|
+
+Show every customer and their total order amount, including customers who have never ordered.
+Use LEFT JOIN:
+
+SELECT
+    c.customer_name,
+    COALESCE(SUM(o.amount), 0) AS total_amount
+FROM customers c
+LEFT JOIN orders o
+    ON c.customer_id = o.customer_id
+GROUP BY c.customer_name;
+-------------------------------------------------------------
+|JOINing 3 tables|
+
+SELECT
+    c.customer_name,
+    p.product_name,
+    o.amount
+FROM customers c
+JOIN orders o
+    ON c.customer_id = o.customer_id
+JOIN products p
+    ON o.product_id = p.product_id;
+
+----------------------------------------------------------------
+customers:
+
+| customer_id | customer_name |
+| ----------: | ------------- |
+|         101 | Arun          |
+|         102 | Priya         |
+|         103 | Krishna       |
+
+loan_application:
+
+| application_id | customer_id | loan_amount | status   |
+| -------------: | ----------: | ----------: | -------- |
+|           1001 |         101 |      500000 | APPROVED |
+|           1002 |         102 |      800000 | PENDING  |
+|           1003 |         101 |      300000 | REJECTED |
+
+
+Show customer name, application ID, loan amount and status.
+
+SELECT
+    c.customer_name,
+    l.application_id,
+    l.loan_amount,
+    l.status
+FROM customers c
+JOIN loan_applications l
+    ON c.customer_id = l.customer_id;
+--------------------------------------------------------------------------
+Banking question: pending loans
+
+1. Show customer names for pending loan applications.
+
+SELECT
+    c.customer_name,
+    l.application_id,
+    l.loan_amount
+FROM customers c
+JOIN loan_applications l
+    ON c.customer_id = l.customer_id
+WHERE l.status = 'PENDING';
+
+2. Banking question: total loan amount per customer
+
+SELECT
+    c.customer_name,
+    SUM(l.loan_amount) AS total_loan_amount
+FROM customers c
+JOIN loan_applications l
+    ON c.customer_id = l.customer_id
+GROUP BY c.customer_name;
+
+----------------------------------------------------------------
+ON → controls how rows are matched.
+WHERE → filters the resulting rows.
+----------------------------------------------------------------
+Q1. What is a JOIN?
+Answer:
+A JOIN combines data from two or more tables using a related column, typically a primary key and foreign key relationship.
+
+Q2. What is INNER JOIN?
+INNER JOIN returns only rows where a matching record exists in both tables.
+
+Q3. What is LEFT JOIN?
+LEFT JOIN returns all rows from the left table and matching rows from the right table. If there is no match, the right-side columns contain NULL.
+
+Q4. INNER JOIN vs LEFT JOIN?
+| INNER JOIN                      | LEFT JOIN                               |
+| ------------------------------- | --------------------------------------- |
+| Matching records only           | All left records                        |
+| Non-matching left rows excluded | Non-matching left rows included         |
+| Useful when a match is required | Useful when preserving the main dataset |
+
+
+4.Find customers who have never placed an order.
+
+SELECT
+    c.customer_id,
+    c.customer_name
+FROM customers c
+LEFT JOIN orders o
+    ON c.customer_id = o.customer_id
+WHERE o.order_id IS NULL;
+
+I use a LEFT JOIN to retain all customers. Customers without matching orders will have NULL in the order columns, so I filter using WHERE o.order_id IS NULL.
+
+
+2nd approach:
+
+The same requirement can sometimes be solved with NOT EXISTS:
+SELECT
+    c.customer_id,
+    c.customer_name
+FROM customers c
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM orders o
+    WHERE o.customer_id = c.customer_id
+);
+
+--------------------------------------------------------------------
+Mental map:
+
+
+SELECT
+↓
+What columns?
+
+FROM
+↓
+Which table?
+
+JOIN
+↓
+Which tables need to be connected?
+
+ON
+↓
+How are they related?
+
+WHERE
+↓
+Which rows?
+
+GROUP BY
+↓
+How should rows be grouped?
+
+HAVING
+↓
+Which groups?
+
+ORDER BY
+↓
+How should results be sorted?
+
+-------------------------------------------------------------
+
+Find Chennai customers whose total loan amount is greater than ₹500,000, and show the highest total loan amount first.
+
+Tables:
+customers
+loan_applications
+Connection:
+customer_id
+Filter:
+city = Chennai
+Group:
+customer
+Calculate:
+SUM(loan_amount)
+Group filter:
+SUM > 500000
+Sort:
+DESC
+
+SELECT
+    c.customer_id,
+    c.customer_name,
+    SUM(l.loan_amount) AS total_loan_amount
+FROM customers c
+JOIN loan_applications l
+    ON c.customer_id = l.customer_id
+WHERE c.city = 'Chennai'
+GROUP BY
+    c.customer_id,
+    c.customer_name
+HAVING SUM(l.loan_amount) > 500000
+ORDER BY total_loan_amount DESC;
+
+------------------------------------------------------------------
+|Practice Exercises|
+
+customer:
+
+| customer_id | customer_name | city      |
+| ----------: | ------------- | --------- |
+|         101 | Arun          | Chennai   |
+|         102 | Priya         | Bangalore |
+|         103 | Krishna       | Chennai   |
+|         104 | Ravi          | Mumbai    |
+|         105 | Anu           | Chennai   |
+
+order:
+
+| order_id | customer_id | amount |
+| -------: | ----------: | -----: |
+|     5001 |         101 |   5000 |
+|     5002 |         103 |   8000 |
+|     5003 |         101 |   3000 |
+|     5004 |         102 |   7000 |
+
+
+Exercise 1 — Basic JOIN
+
+Show:
+
+customer_name
+order_id
+amount
+
+for customers who have orders.
+
+Exercise 2
+Show all customers, including customers who have no orders.
+
+Exercise 3
+Find customers who have never placed an order.
+
+Exercise 4
+Show Chennai customers and their orders.
+
+Exercise 5
+Show orders greater than ₹5,000 along with the customer name.
+
+Exercise 6
+Find the total order amount for each customer.
+
+Exercise 7
+Show every customer and their total order amount, including customers with zero orders.
+
+Exercise 8 ⭐
+Find customers whose total order amount is greater than ₹5,000.
+
+Exercise 9 ⭐
+Show customers in Chennai whose total order amount is greater than ₹5,000.
+
+Exercise 10 🔥
+Show customers and their total order amount, sorted from highest to lowest.
+
+-----------------------------------------------------------------------------------------
+Beginner
+What is a JOIN?
+What is INNER JOIN?
+What is LEFT JOIN?
+Difference between INNER JOIN and LEFT JOIN?
+What is a primary key?
+What is a foreign key?
+Strong
+Why would you use LEFT JOIN instead of INNER JOIN?
+How do you find records that don't have a matching record in another table?
+What happens when there is no matching row in a LEFT JOIN?
+What is the purpose of the ON clause?
+Advanced
+What is a Cartesian product?
+Why can an incorrect JOIN become expensive on large datasets?
+Difference between filtering in ON and WHERE?
+How would you optimize a JOIN involving millions of records?
+How would JOINs be used in an AI-powered banking application?
+
+----------------------------------------------------------
+Github:
+
+phase-1-sql/
+│
+├── lesson-01-database-fundamentals/
+├── lesson-02-select-where-orderby/
+├── lesson-03-groupby-having-aggregations/
+│
+└── lesson-04-sql-joins/
+    ├── notes.md
+    ├── practice.sql
+    └── README.md
