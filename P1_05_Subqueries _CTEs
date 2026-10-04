@@ -1,0 +1,97 @@
+What is a subquery?
+Why do we need subqueries?
+Scalar subqueries
+Subqueries with IN
+Subqueries with EXISTS
+Correlated subqueries
+Subquery in WHERE
+Subquery in SELECT
+Subquery in FROM
+CTEs — WITH
+Multiple CTEs
+CTE vs subquery vs JOIN
+---------------------------------------------------------------
+What is a subquery?
+
+A subquery is a SQL query written inside another SQL query.
+
+Main Query
+    ↓
+needs some information
+    ↓
+Subquery
+    ↓
+provides that information
+
+Find employees earning more than the average salary.
+
+ex query:
+SELECT *
+FROM employees
+WHERE salary > 61000;
+
+But instead of manually calculating 61000, we can put the first query inside the second:
+
+SELECT *
+FROM employees
+WHERE salary > (
+    SELECT AVG(salary)
+    FROM employees
+);
+
+---------------------------------------------------------------------
+Why do we need subqueries?
+
+Find employees whose salary is greater than the average salary.
+
+
+The average salary isn't a fixed value.
+Tomorrow the table could change:
+
+Average = 61,000
+
+Next month:
+
+Average = 64,500
+
+We don't want to manually change our SQL.
+The subquery calculates it dynamically.
+--------------------------------------------------------------------
+|Types of subqueries|
+
+Subquery
+│
+├── Scalar subquery
+│
+├── Subquery with IN
+│
+├── Subquery with EXISTS
+│
+├── Subquery in WHERE
+│
+├── Subquery in SELECT
+│
+└── Subquery in FROM
+
+-------------------------------------------------------------------
+|Scalar subquery|
+
+A scalar subquery returns one value.
+
+SELECT *
+FROM employees
+WHERE salary > (
+    SELECT AVG(salary)
+    FROM employees
+);
+
+Find employees earning the maximum salary.:
+
+SELECT *
+FROM employees
+WHERE salary = (
+    SELECT MAX(salary)
+    FROM employees
+);
+------------------------------------------------------------------------
+
