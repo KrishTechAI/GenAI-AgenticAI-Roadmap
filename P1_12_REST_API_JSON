@@ -13,6 +13,23 @@ Database / External Service
 API = Application programming interface
 API as a messenger between two software systems.
 
+┌────────────────────┐
+│  Banking Mobile App│
+│   Application A    │
+└─────────┬──────────┘
+          │
+          │ HTTP
+          ↓
+┌────────────────────┐
+│  Banking Backend   │
+│   Application B    │
+│                    │
+│   REST API         │
+└─────────┬──────────┘
+          │
+          ↓
+       Database
+
 --------------------------------------------------
                     ┌───────────────┐
                     │ Banking App   │
