@@ -1,0 +1,820 @@
+User
+ ↓
+FastAPI
+ ↓
+AI Agent
+ ↓
+Tool/API
+ ↓
+Database / External Service
+--------------------------------------
+|API|
+
+API = Application programming interface
+API as a messenger between two software systems.
+
+--------------------------------------------------
+                    ┌───────────────┐
+                    │ Banking App   │
+                    └───────┬───────┘
+                            │
+                           API
+                            │
+             ┌──────────────┼──────────────┐
+             ↓              ↓              ↓
+         KYC Service    Credit Bureau    Payment
+             │              │              │
+             ↓              ↓              ↓
+          Database       Database       Database
+-----------------------------------------------------
+|API vs Database|
+
+Database --> Stores data.
+
+API --> Provides controlled access to functionality/data.
+
+Database = storage
+API = communication interface
+-----------------------------------------------------------------
+|What is REST?|
+
+REST = Representational State Transfer
+
+API = a way for applications to communicate
+REST = a common way of designing that API
+
+REST is a set of principles/rules for designing APIs so that applications can communicate with each other in a standard way using HTTP.
+
+API is the interface. REST is a style of designing that interface. FastAPI is a Python framework that can be used to build REST APIs.
+
+these are resources:
+/customer
+/loan
+/transaction
+/account
+
+------------------------------------------------------------------------------
+|HTTP|
+
+API commonly communicate using HTTP.
+-------------------------------------------------------------------
+|HTTP Request and Response|
+
+Every API interaction generally has:
+
+REQUEST
+   ↓
+SERVER
+   ↓
+RESPONSE
+-------------------------------------------
+|Anatomy of a Request|
+
+A request can contain:
+HTTP Method
+URL
+Headers
+Parameters
+Body
+
+GET
+ ↓
+What operation?
+
+/customers/101
+ ↓
+Which resource?
+
+------------------------------------------------------
+|HTTP Methods|
+
+| Method | Purpose                            |
+| ------ | ---------------------------------- |
+| GET    | Read data                          |
+| POST   | Create data / trigger an operation |
+| PUT    | Replace/update a resource          |
+| PATCH  | Partially update a resource        |
+| DELETE | Delete a resource                  |
+
+-----------------------------------------------------------------
+|JSON|
+
+JSON = JavaScript Object Notation
+JSON is a common format for exchanging data between systems.
+----------------------------------------------------------------
+|JSON Data type|
+
+1. string
+{
+    "name": "Arun"
+}
+2. Number
+{
+    "age": 26
+}
+3. Boolean
+{
+    "active": true
+}
+4. null
+{
+    "manager": null
+}
+5. array
+
+{
+    "cities": ["Chennai", "Bangalore", "Mumbai"]
+}
+6. object
+{
+    "customer": {
+        "id": 101,
+        "name": "Arun"
+    }
+}
+---------------------------------------------------------
+|JSON vs Python Dictionary|
+
+A Python dictionary is a Python object in memory.
+JSON is a data representation/serialization format.
+-----------------------------------------------------------
+|Python → JSON|
+
+Python object
+     ↓
+JSON string
+
+import json
+
+customer = {
+    "customer_id": 101,
+    "name": "Arun Kumar"
+}
+
+json_data = json.dumps(customer)
+
+print(json_data)
+-----------------------------------------------------
+|JSON → Python|
+
+data = json.loads(json_data)
+
+
+dump   → Python → JSON/file
+dumps  → Python → JSON string
+
+load   → JSON file → Python
+loads  → JSON string → Python
+------------------------------------------------------------------------
+|API Response|
+
+Python can convert the json intp the dictionary
+------------------------------------------------------------
+|Query Parameters|
+
+GET /customers/101   ---> here i know that i want to see this customer
+
+get/costomer? city = 'chennai' ---> we dont know the customers from chennai location so the api itself search and give the result.
+---------------------------------------------------------
+|Path Parameters|
+
+/customers/101
+Here 101 is a path parameter.
+------------------------------------------------------
+|Request Body|
+
+For POST/PUT/PATCH, data is often sent in the request body.
+
+{
+    "name": "Krishna",
+    "city": "Chennai"
+}
+-------------------------------------------------------------------
+|Headers|
+
+Headers contain additional information about the request.
+Content-Type: application/json
+
+This tells the server:
+The request body contains JSON.
+
+Authorization: Bearer <token>
+This is used for authentication/authorization.
+--------------------------------------------------------------------
+|Authentication vs Authorization|
+
+1. Authentication
+     ↓
+Who are you?
+Username + password
+JWT
+API key
+OAuth token
+
+2. 
+Authorization
+     ↓
+What can you access?
+Customer → view own account
+
+Admin → view customer accounts
+
+Support user → view limited information
+---------------------------------------------------------------------------------
+|HTTP Status Codes|
+
+200 — OK --Request successful.
+Request successful.
+
+201 — Created
+
+Resource successfully created.
+Usually after POST.
+
+204 — No Content
+Operation succeeded but response has no body.
+Often used with DELETE or certain updates.
+
+400 — Bad Request
+Client sent invalid data.
+Example:
+
+{
+    "age": "hello"
+}
+when age should be a number.
+
+401 — Unauthorized
+Authentication is missing/invalid.
+
+Think:
+"I don't know who you are."
+
+403 — Forbidden
+User is authenticated but doesn't have permission.
+
+Think:
+"I know who you are, but you're not allowed."
+
+404 — Not Found
+Resource doesn't exist.
+GET /customers/99999  
+
+409 — Conflict
+Request conflicts with current resource state.
+
+Example:
+Creating a customer with an email that must be unique.
+
+500 — Internal Server Error
+Something went wrong on the server.
+
+502 — Bad Gateway
+A server acting as a gateway/proxy received an invalid response from an upstream server.
+
+503 — Service Unavailable
+Server/service is temporarily unavailable.
+----------------------------------------------------------------------------------------
+2xx → Success
+
+200 → OK
+201 → Created
+204 → No Content
+
+4xx → Client-side/request problem
+
+400 → Bad Request
+401 → Not authenticated
+403 → Not allowed
+404 → Not Found
+409 → Conflict
+
+5xx → Server-side problem
+
+500 → Server Error
+502 → Bad Gateway
+503 → Service Unavailable
+--------------------------------------------
+|Calling an API from Python|
+
+Connect to python:
+
+library  : requests
+install : pip install requests
+
+import requests
+
+response = requests.get(
+    "https://api.example.com/customers/101"
+)
+print(response.status_code)
+print(response.json())
+
+#  "requests" can be used to CALL an API. ******************
+------------------------------------------------------------
+|creating the api|
+
+library : fastapi
+# FastAPI can be used to CREATE an API.  **************
+
+from fastapi import FastAPI
+
+app = FastAPI()
+
+@app.get("/hello")
+def hello():
+    return {"message": "Hello Krishna"}
+----------------------------------------------------------------------
+|response|
+
+The response object contains information returned by the server.
+-------------------------------------------------------
+A Safe API Pattern:
+
+import requests
+
+response = requests.get(
+    "https://api.example.com/customers/101",
+    timeout=10
+)
+
+if response.status_code == 200:
+    data = response.json()
+    print(data)
+else:
+    print("API failed:", response.status_code)
+
+"timeout":
+Suppose the API server hangs. Without a timeout, your application could wait unexpectedly.
+
+--------------------------------------------------------------------------
+|Better Error Handling|
+
+import requests
+
+try:
+
+    response = requests.get(
+        "https://api.example.com/customers/101",
+        timeout=10
+    )
+
+    response.raise_for_status()
+
+    data = response.json()
+
+    print(data)
+
+except requests.exceptions.Timeout:
+    print("API request timed out")
+
+except requests.exceptions.HTTPError as e:
+    print("HTTP error:", e)
+
+except requests.exceptions.RequestException as e:
+    print("Request failed:", e)
+----------------------------------------------------------------
+|raise_for_status()|
+
+What Does raise_for_status() Do?
+raise_for_status() raises an HTTP error.
+
+response.raise_for_status()
+-----------------------------------------------------------------
+|POST Request from Python|
+
+import requests
+
+customer = {
+    "name": "Anu Priya",
+    "city": "Chennai"
+}
+
+response = requests.post(
+    "https://api.example.com/customers",
+    json=customer,
+    timeout=10
+)
+
+print(response.status_code)
+print(response.json())
+
+#The library converts the Python data into JSON for the HTTP request.
+----------------------------------------------------------------------
+|Headers|
+
+headers = {
+    "Authorization": "Bearer YOUR_TOKEN",
+    "Content-Type": "application/json"
+}
+
+then:
+response = requests.get(
+    url,
+    headers=headers,
+    timeout=10
+)
+
+-------------------------------------------------------------------
+|Query Parameters in Python|
+
+params = {
+    "city": "Chennai",
+    "limit": 10
+}
+
+response = requests.get(
+    url,
+    params=params,
+    timeout=10
+)
+The library constructs the query string.
+This is cleaner and safer.
+--------------------------------------------------------------------------
+|API Architecture|
+
+ User
+                  │
+                  ↓
+              REST API
+                  │
+                  ↓
+               Python
+                  │
+                  ↓
+                SQL
+                  │
+                  ↓
+             PostgreSQL
+                  │
+                  ↓
+              Result
+                  │
+                  ↓
+                JSON
+                  │
+                  ↓
+                User
+--------------------------------------------------------------------------
+|External API + Database|
+
+Now imagine your banking system needs bureau information.
+
+Your Application
+       │
+       ↓
+Bureau API
+       │
+       ↓
+Credit information
+       │
+       ↓
+Python
+       │
+       ↓
+PostgreSQL
+
+Or:
+
+Python
+  ↓
+KYC API
+  ↓
+KYC response
+  ↓
+Validate
+  ↓
+Store result
+  ↓
+PostgreSQL
+-------------------------------------------------------------------
+|API → Python → PostgreSQL|   ***********************************************************
+
+External api returns:
+[
+    {
+        "customer_id": 101,
+        "name": "Arun",
+        "city": "Chennai"
+    },
+    {
+        "customer_id": 102,
+        "name": "Priya",
+        "city": "Bangalore"
+    }
+]
+
+python receives it:
+  data = response.json()
+
+Then Python can transform it:
+  for customer in data:
+    print(customer["customer_id"])
+
+Then insert it into PostgreSQL.
+
+----------------------------------------------------------------------
+|Important GenAI Connection|
+
+"Check my loan status."
+
+User
+ ↓
+LLM
+ ↓
+Agent
+ ↓
+Tool
+ ↓
+REST API
+ ↓
+Backend
+ ↓
+PostgreSQL
+ ↓
+Response
+ ↓
+Agent
+ ↓
+LLM
+ ↓
+User
+
+OR:
+
+Agent
+ ↓
+MCP Tool
+ ↓
+API
+ ↓
+Database
+
+#This is exactly why you need to understand APIs before learning advanced agents
+
+----------------------------------------------------------------------------------------
+API Security in GenAI Systems|
+
+Authentication
+Authorization
+Input validation
+Rate limiting
+Timeouts
+Logging
+Error handling
+Secrets management
+-----------------------------------------------------------------------------
+|API Rate Limiting|                    ************************************************************************
+Possible strategies:
+
+retry with backoff
+respect rate limits
+batch requests where supported
+cache repeated results
+reduce unnecessary API calls
+
+This becomes important in production AI systems because LLM agents can make multiple tool calls.
+--------------------------------------------------------------------------
+|Retry Logic|
+
+Imagine:
+
+API request
+   ↓
+Temporary failure
+   ↓
+Retry
+
+A production system may use exponential backoff:
+
+1 second
+   ↓
+2 seconds
+   ↓
+4 seconds
+   ↓
+8 seconds
+
+Don't retry everything blindly.
+
+For example:
+
+401 → authentication problem
+
+Repeated retries won't fix it.
+
+But:
+
+503 → temporary service unavailable
+
+may be retryable.
+-------------------------------------------------------------------------------
+|REST API vs SOAP|
+
+REST
+Usually:
+HTTP
+JSON
+GET
+POST
+PUT
+PATCH
+DELETE
+
+SOAP
+Uses:
+XML
+WSDL
+SOAP envelope
+
+Simplified comparison:
+
+| REST                           | SOAP                                |
+| ------------------------------ | ----------------------------------- |
+| Architectural style            | Protocol                            |
+| Commonly JSON                  | Commonly XML                        |
+| Lightweight                    | More structured/heavy               |
+| HTTP commonly used             | HTTP and other protocols possible   |
+| Very common in modern web APIs | Common in legacy/enterprise systems |
+-----------------------------------------------------------------------------------------
+Interview:
+
+Your API call takes 20 seconds and sometimes fails. What would you do?
+
+Strong answer:
+
+First, I would identify whether the delay is caused by network latency, the upstream service, or my application.
+I would configure appropriate connection and read timeouts, handle specific HTTP errors, use controlled retries with exponential backoff for transient failures such as 503, respect rate limits, 
+add structured logging and metrics, and avoid retrying non-retryable errors such as invalid authentication or bad requests.
+
+An API returns 100,000 records. Would you load everything into memory?
+
+Good answer:
+
+Not necessarily. I would first check whether the API supports pagination, filtering, field selection, or streaming.
+I would retrieve only the required data and process it in batches where appropriate to control memory usage.
+-----------------------------------------------------------------------------
+API Pagination
+
+Large APIs often don't return everything at once.
+
+Instead:
+
+GET /customers?page=1&limit=100
+
+Then:
+
+page 1 → 100 records
+page 2 → 100 records
+page 3 → 100 records
+
+Python might loop through pages.
+
+Conceptually:
+
+API
+ ↓
+100 records
+ ↓
+process
+ ↓
+next 100
+ ↓
+process
+ ↓
+...
+
+This is very common in data pipelines.
+
+50. API Data Pipeline
+
+Now you're starting to see the bigger picture:
+
+             External API
+                  ↓
+                JSON
+                  ↓
+               Python
+                  ↓
+             Validation
+                  ↓
+            Transformation
+                  ↓
+             PostgreSQL
+                  ↓
+               Pandas
+                  ↓
+          Analytics / ML / AI
+
+This is a basic data pipeline.
+-----------------------------------------------------------------
+Q1. What is an API?
+An API is an interface that allows software systems to communicate with each other through defined requests and responses.
+
+Q2. What is REST?
+REST is an architectural style for designing networked APIs, commonly using HTTP methods and resource-oriented URLs.
+
+Q3. What is JSON?
+JSON is a lightweight data representation format commonly used to exchange structured data between applications.
+
+Q4. What is GET?
+GET is an HTTP method generally used to retrieve data.
+
+Q5. What is POST?
+POST is generally used to submit data to a server, commonly to create a resource or trigger an operation.
+
+Q6. Difference between PUT and PATCH?
+PUT generally replaces the complete resource representation, while PATCH is intended for partial updates.
+
+Q7. Difference between 401 and 403?
+401 indicates that authentication is missing or invalid. 403 means the server knows the identity but the client does not have permission to perform the operation.
+
+Q8. Why use timeouts?
+To prevent an application from waiting indefinitely for an upstream service and to make failure handling predictable.
+
+Q9. Why use pagination?
+To avoid transferring and processing unnecessarily large datasets in a single request and to control memory, network usage, and response time.
+
+Q10. How would you build a reliable API integration?
+
+Your answer should include:
+Authentication
+      +
+Timeouts
+      +
+Retries
+      +
+Backoff
+      +
+Rate-limit handling
+      +
+Pagination
+      +
+Validation
+      +
+Logging
+      +
+Monitoring
+      +
+Error handling
+
+Sample answer:
+
+I would use secure authentication, explicit timeouts, response validation, pagination for large datasets, controlled retries with exponential backoff for transient failures, rate-limit handling,
+structured logging, monitoring, and clear separation between API integration, transformation, and persistence logic.
+
+--------------------------------------------------------------------------
+API
+ ↓
+Communication between systems
+REST
+ ↓
+Common API architectural style
+HTTP
+ ↓
+Communication protocol
+GET
+ ↓
+Read
+POST
+ ↓
+Create / submit
+PUT
+ ↓
+Replace
+PATCH
+ ↓
+Partial update
+DELETE
+ ↓
+Delete
+JSON
+ ↓
+Data exchange format
+200 → Success
+201 → Created
+400 → Bad request
+401 → Authentication
+403 → Permission
+404 → Not found
+409 → Conflict
+429 → Rate limit
+500 → Server error
+503 → Service unavailable
+--------------------------------------------------------
+learned:
+
+                 PHASE 1
+
+Python
+  │
+  ├──── SQL
+  │      ↓
+  │   PostgreSQL
+  │
+  └──── REST APIs
+         ↓
+        JSON
+         ↓
+      External Systems
+
