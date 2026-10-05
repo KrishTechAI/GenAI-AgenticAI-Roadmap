@@ -93,5 +93,144 @@ WHERE salary = (
     SELECT MAX(salary)
     FROM employees
 );
+
+Find employees earning the minimum salary.
+
+SELECT *
+FROM employees
+WHERE salary = (
+    SELECT MIN(salary)
+    FROM employees
+);
 ------------------------------------------------------------------------
+|Subquery with IN|
+
+employee
+| employee_id | name    | department | salary |
+| ----------: | ------- | ---------- | -----: |
+|         101 | Arun    | IT         |  60000 |
+|         102 | Priya   | HR         |  50000 |
+|         103 | Krishna | IT         |  75000 |
+|         104 | Ravi    | Finance    |  65000 |
+|         105 | Anu     | IT         |  55000 |
+
+departments
+| department_id | department_name |
+| ------------: | --------------- |
+|             1 | IT              |
+|             2 | HR              |
+|             3 | Finance         |
+
+
+SELECT name
+FROM employees
+WHERE department IN (
+    SELECT department_name
+    FROM departments
+);
+----------------------------------------------
+|IN vs =|
+
+"=" -->  If your subquery returns one value, you can often use
+IN --> If the subquery returns multiple values, use something such as
+--------------------------------------------------------------
+|NOT IN|
+
+Find employees whose department isn't in the departments table.
+
+SELECT *
+FROM employees
+WHERE department NOT IN (
+    SELECT department_name
+    FROM departments
+);
+
+There's an important NULL behavior with NOT IN that can cause surprising results in real SQL. For production queries, NOT EXISTS is often safer when NULLs are possible.
+
+----------------------------------------------------------------------------
+|EXISTS|
+
+Does at least one matching record exist?
+
+Customer:
+| customer_id | customer_name |
+| ----------: | ------------- |
+|         101 | Arun          |
+|         102 | Priya         |
+|         103 | Krishna       |
+|         104 | Ravi          |
+
+orders:
+| order_id | customer_id | amount |
+| -------: | ----------: | -----: |
+|     5001 |         101 |   5000 |
+|     5002 |         103 |   8000 |
+|     5003 |         101 |   3000 |
+
+Find customers who have placed at least one order.
+
+SELECT
+    c.customer_id,
+    c.customer_name
+FROM customers c
+WHERE EXISTS (
+    SELECT 1
+    FROM orders o
+    WHERE o.customer_id = c.customer_id
+);
+---------------------------------------------------------
+
+|Why SELECT 1?|
+
+is a common convention that communicates that intention clearly.
+The database is checking existence, not using the 1 as meaningful business data.
+
+EXISTS mental model:
+
+Customer Arun
+     ↓
+Does an order exist?
+     ↓
+YES → keep Arun
+
+Customer Priya
+     ↓
+Does an order exist?
+     ↓
+NO → exclude Priya
+----------------------------------------------------------------
+|NOT EXISTS|
+
+Find customers who have never placed an order.
+
+SELECT
+    c.customer_id,
+    c.customer_name
+FROM customers c
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM orders o
+    WHERE o.customer_id = c.customer_id
+);
+
+------------------------------------------------------------------
+|EXISTS vs IN|
+
+WHERE EXISTS (
+    SELECT 1
+    FROM orders o
+    WHERE o.customer_id = c.customer_id
+)
+-----------------------------------------------------------------
+IN
+Is this value contained in the returned set?
+
+EXISTS
+Does a matching row exist?
+
+For correlated conditions and existence checks, EXISTS is often a natural choice.
+-------------------------------------------------------------
+To be continued 
+
+
 
