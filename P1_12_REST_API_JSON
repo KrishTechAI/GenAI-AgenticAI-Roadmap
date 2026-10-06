@@ -834,4 +834,28 @@ Python
         JSON
          ↓
       External Systems
+-----------------------------------------------------------------------------
+HTTP is the communication protocol. REST is a design style. A REST API is an API following that style. A Tool is an Agent-callable capability, which can call a REST API using HTTP.
+
+User
+ ↓
+LLM
+ ↓
+Agent
+ ↓
+Tool
+ ↓
+REST API
+ ↓
+Backend
+ ↓
+PostgreSQL
+ ↓
+Response
+ ↓
+Agent
+ ↓
+LLM
+ ↓
+User
 
