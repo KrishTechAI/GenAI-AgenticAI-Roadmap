@@ -1,0 +1,67 @@
+Take a real-world business problem → design the database → insert data → query it → clean it → analyze it → optimize it → explain it in an interview.
+-----------------------------------------------------------------------------
+Project: Banking Customer & Transaction Analytics System
+Customers
+Accounts
+Transactions
+Loans
+------------------------------------------------
+. Real-World Scenario
+
+Imagine you are working as a Data Engineer / AI Data Engineer for a banking company.
+
+The business wants to answer questions like:
+
+How many customers do we have?
+Which city has the most customers?
+What is the total transaction amount?
+Which customers have the highest deposits?
+Which customers have no transactions?
+What is the average account balance?
+Which customers have active loans?
+Which transactions are suspicious?
+Which accounts have unusually large withdrawals?
+-------------------------------------------------------------------
+Project Architecture
+
+CUSTOMERS
+---------
+customer_id PK
+name
+email
+city
+created_at
+     │
+     ├──────────────┐
+     │              │
+     ↓              ↓
+ ACCOUNTS         LOANS
+ --------         -----
+ account_id PK    loan_id PK
+ customer_id FK   customer_id FK
+ account_type     loan_type
+ balance          loan_amount
+ status           status
+     │
+     ↓
+TRANSACTIONS
+------------
+transaction_id PK
+account_id FK
+transaction_type
+amount
+transaction_date
+status
+----------------------------------------------------
+Step 1 — Create Database
+
+Open pgadmin --> servers(create batabase ==>postgreSql) --> right click 'Database" and add database name put database name and passward (and create) --> 
+create table (put create query by right click database name -- click query tool and run) --> click refresh in database name --> check tables (schemas under database name , tables)
+
+
+Open pgadmin
+right click servers --> add names( general name: postgresql , connection: hostname/address : localhost) and add passward : admin
+create table --> right click "databasename: banking_analysis" --> open Query Tool--> put create query and insert query
+right click "databasename: banking_analysis"  --> refresh to see the tables ---> schemas --> tables 
+
+
