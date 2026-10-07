@@ -55,13 +55,789 @@ status
 ----------------------------------------------------
 Step 1 — Create Database
 
-Open pgadmin --> servers(create batabase ==>postgreSql) --> right click 'Database" and add database name put database name and passward (and create) --> 
-create table (put create query by right click database name -- click query tool and run) --> click refresh in database name --> check tables (schemas under database name , tables)
+CREATE DATABASE banking_analytics;
+
+1. Open pgadmin
+2. right click servers --> add names( general name: postgresql , connection: hostname/address : localhost) and add passward : admin
+3. create table --> right click "databasename: banking_analysis" --> open Query Tool--> put create query and insert query
+4. right click "databasename: banking_analysis"  --> refresh to see the tables ---> schemas --> tables 
+--------------------------------------------------------------
+Step 2 — Create Customers Table
+
+CREATE TABLE customers (
+    customer_id BIGINT PRIMARY KEY,
+    customer_name VARCHAR(150) NOT NULL,
+    email VARCHAR(255) UNIQUE,
+    phone VARCHAR(20),
+    city VARCHAR(100),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+----------------------------------------------------------------
+Step 3 — Create Accounts
+
+CREATE TABLE accounts (
+    account_id BIGINT PRIMARY KEY,
+
+    customer_id BIGINT NOT NULL,
+
+    account_type VARCHAR(30) NOT NULL,
+
+    balance NUMERIC(15,2) DEFAULT 0,
+
+    status VARCHAR(20) DEFAULT 'ACTIVE',
+
+    opened_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (customer_id)
+        REFERENCES customers(customer_id),
+
+    CHECK (balance >= 0)
+);
+-------------------------------------------------------
+Step 4 — Create Transactions
 
 
-Open pgadmin
-right click servers --> add names( general name: postgresql , connection: hostname/address : localhost) and add passward : admin
-create table --> right click "databasename: banking_analysis" --> open Query Tool--> put create query and insert query
-right click "databasename: banking_analysis"  --> refresh to see the tables ---> schemas --> tables 
+CREATE TABLE transactions (
+    transaction_id BIGINT PRIMARY KEY,
+
+    account_id BIGINT NOT NULL,
+
+    transaction_type VARCHAR(20) NOT NULL,
+
+    amount NUMERIC(15,2) NOT NULL,
+
+    transaction_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    status VARCHAR(20) DEFAULT 'SUCCESS',
+
+    FOREIGN KEY (account_id)
+        REFERENCES accounts(account_id),
+
+    CHECK (amount > 0)
+);
+-------------------------------------------------------
+Step 5 — Create Loans
+
+CREATE TABLE loans (
+    loan_id BIGINT PRIMARY KEY,
+
+    customer_id BIGINT NOT NULL,
+
+    loan_type VARCHAR(50) NOT NULL,
+
+    loan_amount NUMERIC(15,2) NOT NULL,
+
+    status VARCHAR(20) DEFAULT 'ACTIVE',
+
+    start_date DATE,
+
+    FOREIGN KEY (customer_id)
+        REFERENCES customers(customer_id),
+
+    CHECK (loan_amount > 0)
+);
+
+-------------------------------------------------------------
+To see all tables:
+
+SELECT table_name
+FROM information_schema.tables
+WHERE table_schema = 'public';
+---------------------------------------------------------------
+Step 6 — Insert Customers
+
+INSERT INTO customers
+(customer_id, customer_name, email, phone, city)
+VALUES
+(101, 'Arun Kumar', 'arun@gmail.com', '9876500011', 'Chennai'),
+
+(102, 'Priya Sharma', 'priya@gmail.com', '9876500012', 'Bangalore'),
+
+(103, 'Krishna Raj', 'krishna@gmail.com', '9876500013', 'Chennai'),
+
+(104, 'Ravi Kumar', 'ravi@gmail.com', '9876500014', 'Mumbai'),
+
+(105, 'Anu Priya', 'anu@gmail.com', '9876500015', 'Chennai');
+
+-------------------------------------------------------------------
+Verify the Data
+
+SELECT *
+FROM customers;
+--------------------------------------------------------------------
+Step 7 — Insert Accounts
+
+INSERT INTO accounts
+(account_id, customer_id, account_type, balance, status)
+VALUES
+(10001, 101, 'SAVINGS', 50000, 'ACTIVE'),
+(10002, 101, 'CURRENT', 120000, 'ACTIVE'),
+(10003, 102, 'SAVINGS', 75000, 'ACTIVE'),
+(10004, 103, 'SAVINGS', 30000, 'ACTIVE'),
+(10005, 104, 'CURRENT', 200000, 'ACTIVE'),
+(10006, 105, 'SAVINGS', 45000, 'CLOSED');
+---------------------------------------------------------------------
+Step 8 — Insert Transactions
+
+INSERT INTO transactions
+(transaction_id, account_id, transaction_type, amount, transaction_date, status)
+VALUES
+(1, 10001, 'DEPOSIT', 10000, '2026-09-01 10:00:00', 'SUCCESS'),
+
+(2, 10001, 'WITHDRAWAL', 2000, '2026-09-02 11:00:00', 'SUCCESS'),
+
+(3, 10002, 'DEPOSIT', 50000, '2026-09-03 09:30:00', 'SUCCESS'),
+
+(4, 10003, 'DEPOSIT', 15000, '2026-09-04 14:00:00', 'SUCCESS'),
+
+(5, 10003, 'WITHDRAWAL', 5000, '2026-09-05 15:00:00', 'SUCCESS'),
+
+(6, 10004, 'DEPOSIT', 20000, '2026-09-06 10:30:00', 'SUCCESS'),
+
+(7, 10005, 'DEPOSIT', 100000, '2026-09-07 12:00:00', 'SUCCESS'),
+
+(8, 10005, 'WITHDRAWAL', 25000, '2026-09-08 16:00:00', 'SUCCESS'),
+
+(9, 10001, 'TRANSFER', 5000, '2026-09-09 13:00:00', 'FAILED');
+--------------------------------------------------------------------------
+Step 9 — Insert Loans
+
+INSERT INTO loans
+(loan_id, customer_id, loan_type, loan_amount, status, start_date)
+VALUES
+(501, 101, 'HOME', 5000000, 'ACTIVE', '2025-01-15'),
+
+(502, 102, 'PERSONAL', 500000, 'ACTIVE', '2026-03-10'),
+
+(503, 103, 'CAR', 800000, 'CLOSED', '2024-06-20'),
+
+(504, 104, 'HOME', 3500000, 'ACTIVE', '2025-11-05');
+--------------------------------------------------------------------------
+Project Query 1 — Display All Customers
+
+SELECT *
+FROM customers;
+------------------------------------------------------------------------
+Project Query 2 — Chennai Customers
+
+SELECT
+    customer_id,
+    customer_name,
+    city
+FROM customers
+WHERE city = 'Chennai';
+--------------------------------------------------------------------
+Project Query 3 — Customers Sorted by Name
+
+SELECT
+    customer_id,
+    customer_name,
+    city
+FROM customers
+ORDER BY customer_name ASC;
+-----------------------------------------------------------------
+Project Query 4 — Count Customers
+
+SELECT COUNT(*) AS customer_count
+FROM customers;
+--------------------------------------------------------------------
+Project Query 5 — Customers by City
+
+SELECT
+    city,
+    COUNT(*) AS customer_count
+FROM customers
+GROUP BY city
+ORDER BY customer_count DESC;
+---------------------------------------------------------------------
+Project Query 6 — Total Account Balance
+
+SELECT
+    SUM(balance) AS total_balance
+FROM accounts;
+--------------------------------------------------------------------
+Project Query 7 — Average Account Balance
+
+SELECT
+    AVG(balance) AS average_balance
+FROM accounts;
+-----------------------------------------------------------------------
+Project Query 8 — Customer + Account
+
+SELECT
+    c.customer_id,
+    c.customer_name,
+    a.account_id,
+    a.account_type,
+    a.balance
+FROM customers c
+INNER JOIN accounts a
+    ON c.customer_id = a.customer_id;
+------------------------------------------------------------------------
+Project Query 9 — All Customers Including Those Without Accounts
+
+Use:
+   LEFT JOIN
+
+SELECT
+    c.customer_id,
+    c.customer_name,
+    a.account_id,
+    a.balance
+FROM customers c
+LEFT JOIN accounts a
+    ON c.customer_id = a.customer_id;
+-----------------------------------------------------------------------
+Project Query 10 — Customers Without Accounts
+
+SELECT
+    c.customer_id,
+    c.customer_name
+FROM customers c
+LEFT JOIN accounts a
+    ON c.customer_id = a.customer_id
+WHERE a.account_id IS NULL;
+
+Mental pattern:
+
+LEFT JOIN
+     ↓
+right table NULL
+     ↓
+no matching record
+---------------------------------------------------------------------
+Project Query 11 — Total Balance Per Customer
+
+SELECT
+    c.customer_id,
+    c.customer_name,
+    SUM(a.balance) AS total_balance
+FROM customers c
+JOIN accounts a
+    ON c.customer_id = a.customer_id
+GROUP BY
+    c.customer_id,
+    c.customer_name
+ORDER BY total_balance DESC;
+-----------------------------------------------------------------
+Project Query 12 — Customers With Balance > 100,000
+
+SELECT
+    c.customer_id,
+    c.customer_name,
+    SUM(a.balance) AS total_balance
+FROM customers c
+JOIN accounts a
+    ON c.customer_id = a.customer_id
+GROUP BY
+    c.customer_id,
+    c.customer_name
+HAVING SUM(a.balance) > 100000;
+-------------------------------------------------------------------
+Project Query 13 — Customer Transactions
+
+
+SELECT
+    c.customer_name,
+    a.account_id,
+    t.transaction_id,
+    t.transaction_type,
+    t.amount,
+    t.status
+FROM customers c
+JOIN accounts a
+    ON c.customer_id = a.customer_id
+JOIN transactions t
+    ON a.account_id = t.account_id;
+
+Mental model:
+
+Customer
+   ↓
+Account
+   ↓
+Transaction
+-------------------------------------------------------------------------
+Project Query 14 — Successful Transactions
+
+SELECT
+    t.transaction_id,
+    c.customer_name,
+    t.transaction_type,
+    t.amount
+FROM customers c
+JOIN accounts a
+    ON c.customer_id = a.customer_id
+JOIN transactions t
+    ON a.account_id = t.account_id
+WHERE t.status = 'SUCCESS';
+-------------------------------------------------------------------------------
+Project Query 15 — Total Successful Deposits
+
+SELECT
+    SUM(t.amount) AS total_deposits
+FROM transactions t
+WHERE t.transaction_type = 'DEPOSIT'
+  AND t.status = 'SUCCESS';
+-------------------------------------------------------------------------
+Project Query 16 — Total Deposit Per Customer
+
+SELECT
+    c.customer_id,
+    c.customer_name,
+    SUM(t.amount) AS total_deposit
+FROM customers c
+JOIN accounts a
+    ON c.customer_id = a.customer_id
+JOIN transactions t
+    ON a.account_id = t.account_id
+WHERE t.transaction_type = 'DEPOSIT'
+  AND t.status = 'SUCCESS'
+GROUP BY
+    c.customer_id,
+    c.customer_name
+ORDER BY total_deposit DESC;
+----------------------------------------------------------------------
+Project Query 17 — Customer Loan Details
+
+SELECT
+    c.customer_name,
+    l.loan_type,
+    l.loan_amount,
+    l.status
+FROM customers c
+JOIN loans l
+    ON c.customer_id = l.customer_id;
+--------------------------------------------------------------------------
+31. Project Query 18 — Active Loans
+
+SELECT
+    c.customer_name,
+    l.loan_type,
+    l.loan_amount
+FROM customers c
+JOIN loans l
+    ON c.customer_id = l.customer_id
+WHERE l.status = 'ACTIVE';
+------------------------------------------------------------------
+Project Query 19 — Total Active Loan Amount
+
+SELECT
+    SUM(loan_amount) AS total_active_loans
+FROM loans
+WHERE status = 'ACTIVE';
+-------------------------------------------------------------------
+Project Query 20 — Customer With Highest Loan
+
+SELECT
+    c.customer_name,
+    l.loan_amount
+FROM customers c
+JOIN loans l
+    ON c.customer_id = l.customer_id
+ORDER BY l.loan_amount DESC
+LIMIT 1;
+---------------------------------------------------------------------
+Project Query 21 — CASE WHEN
+
+SELECT
+    account_id,
+    customer_id,
+    balance,
+
+    CASE
+        WHEN balance >= 100000 THEN 'HIGH'
+        WHEN balance >= 50000 THEN 'MEDIUM'
+        ELSE 'LOW'
+    END AS balance_category
+
+FROM accounts;
+
+Result conceptually:
+
+50000   → MEDIUM
+120000  → HIGH
+75000   → MEDIUM
+30000   → LOW
+200000  → HIGH
+45000   → LOW
+------------------------------------------------------------------
+Project Query 22 — Transaction Classification
+
+SELECT
+    transaction_id,
+    amount,
+
+    CASE
+        WHEN amount >= 50000 THEN 'HIGH_VALUE'
+        WHEN amount >= 10000 THEN 'MEDIUM_VALUE'
+        ELSE 'LOW_VALUE'
+    END AS transaction_category
+
+FROM transactions;
+----------------------------------------------------------------
+Project Query 23 — CTE
+
+Find customers whose total account balance exceeds ₹100,000.
+
+WITH customer_balance AS (
+
+    SELECT
+        customer_id,
+        SUM(balance) AS total_balance
+
+    FROM accounts
+
+    GROUP BY customer_id
+)
+
+SELECT
+    c.customer_id,
+    c.customer_name,
+    cb.total_balance
+
+FROM customers c
+
+JOIN customer_balance cb
+    ON c.customer_id = cb.customer_id
+
+WHERE cb.total_balance > 100000;
+------------------------------------------------------------
+Project Query 24 — Window Function
+
+Rank customers based on total account balance.
+
+WITH customer_balance AS (
+
+    SELECT
+        customer_id,
+        SUM(balance) AS total_balance
+
+    FROM accounts
+
+    GROUP BY customer_id
+)
+
+SELECT
+    c.customer_name,
+    cb.total_balance,
+
+    RANK() OVER (
+        ORDER BY cb.total_balance DESC
+    ) AS balance_rank
+
+FROM customers c
+JOIN customer_balance cb
+    ON c.customer_id = cb.customer_id;
+------------------------------------------------------------------
+Project Query 25 — Data Cleaning
+
+SELECT
+    customer_id,
+    customer_name,
+    UPPER(TRIM(city)) AS standardized_city
+FROM customers;
+------------------------------------------------------------------
+Project Query 26 — Data Quality Check
+
+
+SELECT *
+FROM customers
+WHERE customer_name IS NULL
+   OR email IS NULL
+   OR city IS NULL;
+-------------------------------------------------------------------
+Project Query 27 — Duplicate Email Check
+
+SELECT
+    email,
+    COUNT(*) AS email_count
+FROM customers
+GROUP BY email
+HAVING COUNT(*) > 1;
+----------------------------------------------------------------
+Project Query 28 — Failed Transactions
+
+SELECT
+    transaction_id,
+    account_id,
+    amount,
+    transaction_date
+FROM transactions
+WHERE status = 'FAILED';
+-------------------------------------------------------------
+Project Query 29 — High-Value Transactions
+
+SELECT
+    transaction_id,
+    account_id,
+    transaction_type,
+    amount
+FROM transactions
+WHERE amount >= 50000
+ORDER BY amount DESC;
+------------------------------------------------------------
+Project Query 30 — Possible Suspicious Transactions
+
+Suppose:
+
+Transactions above ₹75,000 should be flagged for review.
+
+SELECT
+    transaction_id,
+    account_id,
+    amount,
+
+    CASE
+        WHEN amount >= 75000 THEN 'REVIEW'
+        ELSE 'NORMAL'
+    END AS risk_flag
+
+FROM transactions;
+
+Important:
+
+This is not a real fraud detection model.
+
+It's simply a SQL-based business rule.
+
+Later, when we study Machine Learning, we can build actual predictive fraud models.
+-------------------------------------------------------
+Adding Indexes
+
+Adding Indexes
+
+Now performance.
+
+Suppose we frequently query:
+
+WHERE customer_id = ...
+
+on accounts.
+
+Create:
+
+CREATE INDEX idx_accounts_customer_id
+ON accounts(customer_id);
+
+For transactions:
+
+CREATE INDEX idx_transactions_account_id
+ON transactions(account_id);
+
+And if we frequently filter by transaction status:
+
+CREATE INDEX idx_transactions_status
+ON transactions(status);
+
+But remember:
+Don't create indexes blindly.
+We should inspect actual workload and query plans.
+-----------------------------------------------------------------------------
+EXPLAIN
+
+PostgreSQL provides: EXPLAIN
+to show how it plans to execute a query.
+
+EXPLAIN
+SELECT *
+FROM transactions
+WHERE account_id = 10001;
+
+
+You may see things such as:
+Seq Scan
+Index Scan
+Cost
+Rows
+---------------------------------------------------------------------------
+EXPLAIN ANALYZE
+
+This actually executes the query and provides execution statistics.
+
+EXPLAIN ANALYZE
+SELECT *
+FROM transactions
+WHERE account_id = 10001;
+
+This is useful when investigating slow queries.
+
+Be careful with EXPLAIN ANALYZE on INSERT, UPDATE, or DELETE in production, because it executes the statement.
+
+For read-only SELECT queries, it is safer to practice with it.
+
+----------------------------------------------------------------------------------------
+Our Complete Project Flow
+
+                    BANKING DATABASE
+                           │
+        ┌──────────────────┼──────────────────┐
+        ↓                  ↓                  ↓
+   CUSTOMERS           ACCOUNTS             LOANS
+        │                  │
+        │                  │
+        └──────────────┐   │
+                       ↓   ↓
+                   TRANSACTIONS
+                       │
+                       ↓
+                SQL ANALYTICS
+                       │
+        ┌──────────────┼──────────────┐
+        ↓              ↓              ↓
+    Reporting        ML Data        GenAI
+----------------------------------------------------------------------------------------
+How This Connects to Your AI Data Engineer Role
+
+This is the important part.
+
+Imagine your company has a banking GenAI assistant.
+
+User asks:
+
+"Show me my recent successful transactions."
+
+The architecture might be:
+
+User
+ ↓
+Chat UI
+ ↓
+LLM / Agent
+ ↓
+Tool / API
+ ↓
+Python
+ ↓
+SQL
+ ↓
+PostgreSQL
+ ↓
+Customer + Account + Transaction
+ ↓
+Structured result
+ ↓
+LLM
+ ↓
+Natural-language response
+
+For example, the agent might generate or call a controlled query like:
+
+SELECT
+    t.transaction_date,
+    t.transaction_type,
+    t.amount
+FROM transactions t
+JOIN accounts a
+    ON t.account_id = a.account_id
+WHERE a.customer_id = 101
+  AND t.status = 'SUCCESS'
+ORDER BY t.transaction_date DESC;
+
+
+The LLM shouldn't directly have unrestricted access to your database.
+
+In production, you'd normally use controlled tools/APIs, authorization, parameterized queries, and access controls.
+
+
+----------------------------------------------------------------
+                    USER
+                      │
+                      ▼
+                ┌───────────┐
+                │  AI Agent │
+                │    LLM    │
+                └─────┬─────┘
+                      │
+                 Tool call
+                      │
+                      ▼
+              ┌───────────────┐
+              │ Controlled    │
+              │ Tool / MCP    │
+              └───────┬───────┘
+                      │
+                      ▼
+              ┌───────────────┐
+              │ Backend/API   │
+              │ Authorization │
+              │ Validation    │
+              └───────┬───────┘
+                      │
+                      ▼
+              Parameterized SQL
+                      │
+                      ▼
+              ┌───────────────┐
+              │  PostgreSQL   │
+              └───────────────┘
+----------------------------------------------------------------------------------------
+Tell me about your PostgreSQL project.
+
+Strong answer:
+
+I built a banking customer and transaction analytics system using PostgreSQL. I designed separate tables for customers, accounts, 
+transactions, and loans, using primary and foreign keys to maintain relationships and referential integrity.
+I implemented SQL queries using joins, aggregations, CTEs, CASE expressions, and window functions for customer balance analysis, 
+transaction analysis, and loan reporting. I also added data-quality checks for NULLs and duplicates and created indexes on frequently queried foreign-key columns.
+The project helped me understand relational database design, SQL analytics, data cleaning, and query optimization.
+
+-----------------------------------------------------------------------------------
+
+roject Skills You've Demonstrated
+
+
+                   PostgreSQL Project
+                        │
+       ┌───────────────────┼───────────────────┐
+       ↓                   ↓                   ↓
+Database Design          SQL                 Performance
+       │                   │                   │
+       ├─ PK               ├─ SELECT           ├─ Index
+       ├─ FK               ├─ WHERE            ├─ EXPLAIN
+       ├─ Constraints      ├─ JOIN             └─ Query analysis
+       └─ Normalization    ├─ GROUP BY
+                           ├─ HAVING
+                           ├─ CTE
+                           ├─ CASE
+                           └─ Window
+-------------------------------------------------------------------------------------------
+Business Problem
+      ↓
+Database Design
+      ↓
+Tables
+      ↓
+Primary Keys
+      ↓
+Foreign Keys
+      ↓
+Constraints
+      ↓
+Insert Data
+      ↓
+SELECT
+      ↓
+WHERE
+      ↓
+JOIN
+      ↓
+GROUP BY
+      ↓
+HAVING
+      ↓
+CASE
+      ↓
+CTE
+      ↓
+Window Functions
+      ↓
+Data Cleaning
+      ↓
+Indexes
+      ↓
+EXPLAIN
+      ↓
+Analytics
 
 
