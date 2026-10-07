@@ -1,0 +1,7 @@
+| Method        | Typical command                     | Common use                            |
+| ------------- | ----------------------------------- | ------------------------------------- |
+| Python `venv` | `python -m venv .venv`              | Standard Python projects              |
+| `uv`          | `uv venv`                           | Fast modern Python workflow           |
+| Conda         | `conda create -n myenv python=3.12` | Data science/ML environments          |
+| Poetry        | `poetry install`                    | Dependency + project management       |
+| Docker        | `docker build ...`                  | Production/containerized applications |
