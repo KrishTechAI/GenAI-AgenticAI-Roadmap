@@ -7,3 +7,1086 @@
 | Docker        | `docker build ...`                  | Production/containerized applications |
 
 
+ Python Application
+               ↓
+          SQL Query
+               ↓
+          PostgreSQL
+               ↓
+          Result Data
+               ↓
+             Python
+               ↓
+        Pandas / Analysis
+------------------------------------------------------------------------------------------
+10 million rows
+      ↓
+ PostgreSQL
+      ↓
+SQL filtering
+      ↓
+50 rows
+      ↓
+Python
+----------------------------------------------------------------------
+The Main Python Libraries
+
+library:   psycopg
+It allows Python to communicate with PostgreSQL.
+
+pip install psycopg
+ip install psycopg
+-----------------------------------------------------------------
+Database Connection
+
+import psycopg
+
+connection = psycopg.connect(
+    host="localhost"
+    port=5432,
+    dbname="banking_analytics",
+    user="postgres",
+    password="your_password"
+)
+---------------------------------------------------------------------
+What is a Connection?
+
+python says:
+I need access to the database.
+
+PostgreSQL says:
+"Who are you?"
+
+Python provides:
+host
+port
+database
+username
+password
+
+Python
+  │
+  │ username/password
+  ↓
+PostgreSQL
+  │
+  ↓
+Connection established
+----------------------------------------------------------------------------
+Important: Never Hardcode Passwords
+ex: .env
+
+THEN PYTHON READS THEM
+
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=banking_analytics
+DB_USER=postgres
+DB_PASSWORD=your_password
+---------------------------------------------------------------------------
+Using os.getenv()
+
+import os
+
+from dotenv import load_dotenv
+
+import psycopg
+
+load_dotenv()
+
+print("DB_HOST:", os.getenv("DB_HOST"))
+print("DB_PORT:", os.getenv("DB_PORT"))
+print("DB_NAME:", os.getenv("DB_NAME"))
+print("DB_USER:", os.getenv("DB_USER"))
+
+connection = psycopg.connect(
+    host=os.getenv("DB_HOST"),
+    port=int(os.getenv("DB_PORT")),
+    dbname=os.getenv("DB_NAME"),
+    user=os.getenv("DB_USER"),
+    password=os.getenv("DB_PASSWORD")
+)
+
+print("Connected successfully!")
+
+THEN:
+
+connection = psycopg.connect(
+    host=db_host,
+    port=db_port,
+    dbname=db_name,
+    user=db_user,
+    password=db_password
+)
+
+
+.env
+ ↓
+Environment variables
+ ↓
+Python
+ ↓
+PostgreSQL
+
+
+import psycopg
+       ↓
+load .env
+       ↓
+read configuration
+       ↓
+psycopg.connect()
+       ↓
+connection object
+       ↓
+execute SQL
+       ↓
+close connection
+------------------------------------------------------
+import psycopg --> Load the PostgreSQL driver/library.
+psycopg.connect(...) --> Actually establish a connection to PostgreSQL.
+print("Connected successfully!") --> Print this message.
+-------------------------------------------------------------
+What is a Cursor?
+cursor = connection.cursor()
+Connection
+    ↓
+Database communication channel
+
+Cursor
+    ↓
+Execute SQL + retrieve results
+
+Connection
+Opening a phone call with the database.
+
+Cursor
+The person on the call who sends questions and receives answers.
+
+--------------------------------------------------------------------------
+Execute SQL from Python
+
+python:
+
+cursor.execute("""
+    SELECT *
+    FROM customers;
+""")
+
+then retrive data:
+rows = cursor.fetchall()
+
+IN ai tools:   tool calling get_customer(customer_id) then do sql query then retrive
+
+def get_customer(customer_id):
+    query = """
+        SELECT *
+        FROM customers
+        WHERE customer_id = %s
+    """
+
+    cursor.execute(query, (customer_id,))
+    return cursor.fetchone()
+
+def get_customers_by_city(city):
+
+    query = """
+        SELECT customer_id, customer_name, email
+        FROM customers
+        WHERE city = %s
+    """
+
+    cursor.execute(query, (city,))
+
+    return cursor.fetchall()
+------------------------------------------------
+def get_customers_by_city(city):
+
+    connection = psycopg.connect(
+        host="localhost",
+        port=5432,
+        dbname="banking_analytics",
+        user="postgres",
+        password="your_password"
+    )
+
+    cursor = connection.cursor()
+
+    cursor.execute("""
+        SELECT *
+        FROM customers
+        WHERE city = %s;
+    """, (city,))
+
+    rows = cursor.fetchall()
+
+    cursor.close()
+    connection.close()
+
+    return rows
+
+customers = get_customers_by_city("Chennai")
+
+print(customers)
+--------------------------------------------------------------------
+Understand the Flow
+
+import psycopg
+
+connection = psycopg.connect(...)
+
+cursor = connection.cursor()
+
+cursor.execute("""
+    SELECT *
+    FROM customers;
+""")
+
+rows = cursor.fetchall()
+
+print(rows)
+
+cursor.close()
+connection.close()
+-----------------------------------------------------------------
+fetchone()   ----->Gets one row.
+
+cursor.execute("""
+    SELECT *
+    FROM customers
+    LIMIT 1;
+""")
+
+row = cursor.fetchone()
+
+print(row)
+-------------------------------------------------------------------
+fetchall() ---> Gets all  rows.
+------------------------------------------------------------
+fetchone()
+→ one row
+
+fetchall()
+→ all remaining rows
+----------------------------------------------------------------
+fetchmany()  ---> ou can also retrieve a limited number of rows:
+
+rows = cursor.fetchmany(10)
+This retrieves up to 10 rows.
+---------------------------------------------------------------------
+|Your First Real Python + PostgreSQL Program|
+
+
+import psycopg
+
+connection = psycopg.connect(
+    host="localhost",
+    port=5432,
+    dbname="banking_analytics",
+    user="postgres",
+    password="your_password"
+)
+
+cursor = connection.cursor()
+
+cursor.execute("""
+    SELECT customer_id, customer_name, city
+    FROM customers;
+""")
+
+rows = cursor.fetchall()
+
+for row in rows:
+    print(row)
+
+cursor.close()
+connection.close()
+---------------------------------------------------------------------
+What Happens Internally?
+
+when python executes:
+
+cursor.execute("""
+    SELECT customer_id, customer_name, city
+    FROM customers;
+""")
+
+flow:
+
+Python
+   ↓
+psycopg
+   ↓
+PostgreSQL
+   ↓
+Parse SQL
+   ↓
+Execute query
+   ↓
+Read customers table
+   ↓
+Return rows
+   ↓
+psycopg
+   ↓
+Python
+-------------------------------------------------------
+|Parameterized Queries|
+
+
+
+def get_customers_by_city(city):
+
+    cursor.execute("""
+        SELECT customer_id, customer_name, city
+        FROM customers
+        WHERE city = %s;
+    """, (city,))
+
+    rows = cursor.fetchall()
+
+    return rows   
+
+SQL query       → What should PostgreSQL do?
+%s              → Where should the value go?
+(city,)         → What value should be supplied?
+
+
+
+cursor.execute("""
+    SELECT *
+    FROM customers
+    WHERE customer_name = %s
+      AND city = %s;
+""", (name, city))
+---------------------------------------------------------------------
+|Python + SQL + Pandas|
+
+Instead of keeping database results as tuples, we can create a Pandas DataFrame.
+
+import pandas as pd
+df = pd.DataFrame(
+    rows,
+    columns=["customer_id", "customer_name", "city"]
+)
+print(df)
+----------------------------------------------------------
+Better Approach — pd.read_sql
+
+Depending on the PostgreSQL/Pandas setup, you may also use SQLAlchemy for database integration with Pandas.
+
+install: pip install sqlalchemy psycopg
+
+from sqlalchemy import create_engine
+import pandas as pd
+
+engine = create_engine(
+    "postgresql+psycopg://postgres:password@localhost:5432/banking_analytics"
+)
+
+df = pd.read_sql(
+    "SELECT * FROM customers",
+    engine
+)
+
+print(df)
+
+
+
+
+-----------------------------------------------------------
+|Real Banking Example|
+
+
+import psycopg
+
+with psycopg.connect(
+    host="localhost",
+    port=5432,
+    dbname="banking_analytics",
+    user="postgres",
+    password="your_password"
+) as connection:
+
+    with connection.cursor() as cursor:
+
+        cursor.execute("""
+            SELECT customer_id, customer_name
+            FROM customers;
+        """)
+
+        rows = cursor.fetchall()
+
+        for row in rows:
+            print(row)
+-------------------------------------------------------------
+What If SQL Fails?
+
+import psycopg
+
+try:
+
+    with psycopg.connect(
+        host="localhost",
+        port=5432,
+        dbname="banking_analytics",
+        user="postgres",
+        password="your_password"
+    ) as connection:
+
+        with connection.cursor() as cursor:
+
+            cursor.execute("""
+                SELECT *
+                FROM customers;
+            """)
+
+            rows = cursor.fetchall()
+
+            for row in rows:
+                print(row)
+
+except psycopg.Error as e:
+
+    print("Database error:", e)
+--------------------------------------------------------------------------
+|Production-Style Structure|
+
+banking-python-sql/
+│
+├── app/
+│   ├── database.py
+│   ├── queries.py
+│   ├── services.py
+│   └── main.py
+│
+├── .env
+├── .gitignore
+├── requirements.txt
+└── README.md
+
+
+database.py
+     ↓
+connection management
+
+queries.py
+     ↓
+SQL queries
+
+services.py
+     ↓
+business logic
+
+main.py
+     ↓
+application entry point
+--------------------------------------------------------
+Separate SQL From Business Logic
+
+quries.py
+
+GET_CUSTOMERS_BY_CITY = """
+    SELECT
+        customer_id,
+        customer_name,
+        city
+    FROM customers
+    WHERE city = %s;
+"""
+
+services.py
+
+def get_customers_by_city(cursor, city):
+
+    cursor.execute(
+        GET_CUSTOMERS_BY_CITY,
+        (city,)
+    )
+
+    return cursor.fetchall()
+---------------------------------------------------------------
+|COMMIT and ROLLBACK|
+
+For changes such as:
+INSERT
+UPDATE
+DELETE
+we need transaction control.
+
+Conceptually:
+BEGIN
+  ↓
+Operation 1
+  ↓
+Operation 2
+  ↓
+COMMIT
+
+If something fails:
+BEGIN
+  ↓
+Operation 1
+  ↓
+Operation 2 ❌
+  ↓
+ROLLBACK
+-------------------------------------------------------------------
+Simple Example
+
+try:
+
+    with psycopg.connect(
+        host="localhost",
+        port=5432,
+        dbname="banking_analytics",
+        user="postgres",
+        password="your_password"
+    ) as connection:
+
+        with connection.cursor() as cursor:
+
+            cursor.execute("""
+                UPDATE accounts
+                SET balance = balance - %s
+                WHERE account_id = %s;
+            """, (2000, 10001))
+
+            cursor.execute("""
+                UPDATE accounts
+                SET balance = balance + %s
+                WHERE account_id = %s;
+            """, (2000, 10003))
+
+            connection.commit()
+
+except Exception:
+    connection.rollback()
+    raise
+----------------------------------------------------------------
+User
+ ↓
+LLM
+ ↓
+Agent
+ ↓
+Tool
+ ↓
+Python
+ ↓
+Parameterized SQL  *******************************
+ ↓
+PostgreSQL
+ ↓
+Transaction data
+ ↓
+Python
+ ↓
+Tool result
+ ↓
+LLM
+ ↓
+User
+----------------------------------------------------------------------------
+Better approach
+
+
+Filter and aggregate in PostgreSQL first.
+
+query = """
+    SELECT *
+    FROM transactions
+    WHERE status = 'SUCCESS'
+"""
+
+df = pd.read_sql(query, engine)
+--------------------------------------------------------------------
+PostgreSQL + psycopg + Pandas.                               *************************************************
+The example will:     
+
+Connect to PostgreSQL
+Read successful transactions
+Aggregate total transaction amount by customer
+Load only the aggregated result into Pandas
+Print the DataFrame
+Close the connection
+Complete code
+import psycopg
+import pandas as pd
+
+
+# 1. Connect to PostgreSQL
+connection = psycopg.connect(
+    host="localhost",
+    port=5432,
+    dbname="banking_analytics",
+    user="postgres",
+    password="your_password"
+)
+
+
+# 2. SQL query
+query = """
+    SELECT
+        customer_id,
+        SUM(amount) AS total_amount
+    FROM transactions
+    WHERE status = 'SUCCESS'
+    GROUP BY customer_id
+    ORDER BY customer_id;
+"""
+
+
+# 3. Execute SQL and load result into Pandas
+df = pd.read_sql(query, connection)
+
+
+# 4. Display result
+print(df)
+
+
+# 5. Close database connection
+connection.close()
+
+
+pd.read_sql() is commonly used with a SQLAlchemy engine or a DBAPI connection depending on the Pandas/Python versions and driver support. 
+If your goal is production-style Pandas + PostgreSQL, I'd recommend learning the SQLAlchemy engine approach next,
+because it is the cleaner pattern you'll commonly see in data-engineering projects.
+-------------------------------------------------------
+Pandas and PostgreSQL have different jobs.      
+
+PostgreSQL's job
+
+PostgreSQL is good at:
+
+Storing large amounts of data
+Filtering
+Joining tables
+Aggregating
+Sorting
+Managing data safely
+Pandas' job
+
+Pandas is good at:
+
+Data analysis
+Data cleaning
+Transforming data
+Feature engineering
+Preparing data for ML
+Creating analysis-ready datasets
+
+So the typical flow is:
+
+PostgreSQL
+    ↓
+Filter / JOIN / Aggregate
+    ↓
+Small useful result
+    ↓
+Pandas
+    ↓
+Analysis / Cleaning / ML
+
+Example:
+Suppose PostgreSQL has 10 million transactions.
+
+You want:
+"Give me the total successful transaction amount for each customer."
+
+Let PostgreSQL do this:
+SELECT
+    customer_id,
+    SUM(amount) AS total_amount
+FROM transactions
+WHERE status = 'SUCCESS'
+GROUP BY customer_id;
+
+Then bring the small result into Pandas:
+df = pd.read_sql(query, connection)
+
+Now Pandas might receive only:
+customer_id | total_amount
+------------+-------------
+101         | 85000
+102         | 42000
+103         | 125000
+
+Then you can use Pandas:
+df["total_amount"].mean()
+
+or:
+df.sort_values("total_amount", ascending=False)
+
+or later use it for ML.
+
+------------------------------------------------------------------------
+PROJECT:
+
+banking_ai/
+│
+├── database.py
+├── tools.py
+├── main.py
+├── .env
+└── pyproject.toml
+
+1. .env
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=banking_analytics
+DB_USER=postgres
+DB_PASSWORD=your_password
+
+2. database.py
+
+import os
+
+from dotenv import load_dotenv
+from psycopg_pool import ConnectionPool
+
+# Load values from .env
+load_dotenv()
+
+# Create one connection pool for the application
+pool = ConnectionPool(
+    conninfo=(
+        f"host={os.getenv('DB_HOST')} "
+        f"port={os.getenv('DB_PORT')} "
+        f"dbname={os.getenv('DB_NAME')} "
+        f"user={os.getenv('DB_USER')} "
+        f"password={os.getenv('DB_PASSWORD')}"
+    ),
+    min_size=2,
+    max_size=10
+)
+
+print("Connection pool created")
+
+3. tools.py
+
+Now we create multiple functions.
+
+from database import pool
+
+
+# --------------------------------------------------
+# FUNCTION 1: Get all customers
+# --------------------------------------------------
+
+def get_all_customers():
+
+    with pool.connection() as connection:
+
+        with connection.cursor() as cursor:
+
+            cursor.execute("""
+                SELECT
+                    customer_id,
+                    customer_name,
+                    email,
+                    phone,
+                    city
+                FROM customers
+                ORDER BY customer_id;
+            """)
+
+            rows = cursor.fetchall()
+
+            return rows
+
+
+# --------------------------------------------------
+# FUNCTION 2: Get customers by city
+# --------------------------------------------------
+
+def get_customers_by_city(city):
+
+    with pool.connection() as connection:
+
+        with connection.cursor() as cursor:
+
+            cursor.execute("""
+                SELECT
+                    customer_id,
+                    customer_name,
+                    email,
+                    phone,
+                    city
+                FROM customers
+                WHERE city = %s
+                ORDER BY customer_id;
+            """, (city,))
+
+            rows = cursor.fetchall()
+
+            return rows
+
+
+# --------------------------------------------------
+# FUNCTION 3: Get one customer
+# --------------------------------------------------
+
+def get_customer(customer_id):
+
+    with pool.connection() as connection:
+
+        with connection.cursor() as cursor:
+
+            cursor.execute("""
+                SELECT
+                    customer_id,
+                    customer_name,
+                    email,
+                    phone,
+                    city
+                FROM customers
+                WHERE customer_id = %s;
+            """, (customer_id,))
+
+            row = cursor.fetchone()
+
+            return row
+
+
+# --------------------------------------------------
+# FUNCTION 4: Add a customer
+# --------------------------------------------------
+
+def add_customer(
+    customer_id,
+    customer_name,
+    email,
+    phone,
+    city
+):
+
+    with pool.connection() as connection:
+
+        with connection.cursor() as cursor:
+
+            cursor.execute("""
+                INSERT INTO customers
+                (
+                    customer_id,
+                    customer_name,
+                    email,
+                    phone,
+                    city
+                )
+                VALUES (%s, %s, %s, %s, %s);
+            """, (
+                customer_id,
+                customer_name,
+                email,
+                phone,
+                city
+            ))
+
+            connection.commit()
+
+            return "Customer added successfully"
+
+
+# --------------------------------------------------
+# FUNCTION 5: Update customer city
+# --------------------------------------------------
+
+def update_customer_city(customer_id, city):
+
+    with pool.connection() as connection:
+
+        with connection.cursor() as cursor:
+
+            cursor.execute("""
+                UPDATE customers
+                SET city = %s
+                WHERE customer_id = %s;
+            """, (city, customer_id))
+
+            connection.commit()
+
+            return "Customer city updated successfully"
+
+
+# --------------------------------------------------
+# FUNCTION 6: Delete a customer
+# --------------------------------------------------
+
+def delete_customer(customer_id):
+
+    with pool.connection() as connection:
+
+        with connection.cursor() as cursor:
+
+            cursor.execute("""
+                DELETE FROM customers
+                WHERE customer_id = %s;
+            """, (customer_id,))
+
+            connection.commit()
+
+            return "Customer deleted successfully"
+
+
+4. main.py
+
+Now we use all the functions.
+
+from tools import (
+    get_all_customers,
+    get_customers_by_city,
+    get_customer,
+    add_customer,
+    update_customer_city,
+    delete_customer
+)
+
+
+# --------------------------------------------------
+# 1. Get all customers
+# --------------------------------------------------
+
+print("\n--- ALL CUSTOMERS ---")
+
+customers = get_all_customers()
+
+for customer in customers:
+    print(customer)
+
+
+# --------------------------------------------------
+# 2. Get customers from Chennai
+# --------------------------------------------------
+
+print("\n--- CHENNAI CUSTOMERS ---")
+
+customers = get_customers_by_city("Chennai")
+
+for customer in customers:
+    print(customer)
+
+
+# --------------------------------------------------
+# 3. Get one customer
+# --------------------------------------------------
+
+print("\n--- CUSTOMER 101 ---")
+
+customer = get_customer(101)
+
+print(customer)
+
+
+# --------------------------------------------------
+# 4. Add a customer
+# --------------------------------------------------
+
+print("\n--- ADD CUSTOMER ---")
+
+result = add_customer(
+    106,
+    "Kavya Raj",
+    "kavya@gmail.com",
+    "9876500016",
+    "Chennai"
+)
+
+print(result)
+
+
+# --------------------------------------------------
+# 5. Update customer
+# --------------------------------------------------
+
+print("\n--- UPDATE CUSTOMER ---")
+
+result = update_customer_city(
+    106,
+    "Bangalore"
+)
+
+print(result)
+
+
+# --------------------------------------------------
+# 6. Delete customer
+# --------------------------------------------------
+
+print("\n--- DELETE CUSTOMER ---")
+
+result = delete_customer(106)
+
+print(result)
+
+5. Install required packages
+
+Since you're using uv:
+
+uv add "psycopg[binary]"
+uv add psycopg-pool
+uv add python-dotenv
+
+Then run:
+
+python main.py
+uv run python main.py
+-------------------------------------------
+| File/Command       | Purpose                                |
+| ------------------ | -------------------------------------- |
+| `.env`             | Database/config values                 |
+| `pyproject.toml`   | Project + dependencies                 |
+| `uv.lock`          | Exact dependency versions              |
+| `requirements.txt` | Dependency list for pip-based projects |
+| `database.py`      | Creates DB connection pool             |
+| `tools.py`         | Contains functions/tools               |
+| `main.py`          | Runs/tests the application             |
+
+
+--------------------------------------------------------------------
+
+main.py
+
+Stage 1 — Learning/testing with Python
+
+from tools import get_customer
+
+
+def main():
+
+    customer_id = int(input("Enter customer ID: "))
+
+    customer = get_customer(customer_id)
+
+    if customer:
+        print("Customer found:")
+        print(customer)
+    else:
+        print("Customer not found.")
+
+
+if __name__ == "__main__":
+    main()
+
+Stage 2 — Real application with FastAPI
+
+from fastapi import FastAPI
+
+from tools import get_customer
+
+
+app = FastAPI()
+
+
+@app.get("/customers/{customer_id}")
+def get_customer_api(customer_id: int):
+
+    customer = get_customer(customer_id)
+
+    if customer:
+        return customer
+
+    return {
+        "message": "Customer not found"
+    }
+---------------------------------------------------------------------------
