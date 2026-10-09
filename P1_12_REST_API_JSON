@@ -593,6 +593,9 @@ reduce unnecessary API calls
 This becomes important in production AI systems because LLM agents can make multiple tool calls.
 --------------------------------------------------------------------------
 |Retry Logic|
+The waiting time doubles after each failed attempt
+Why increase the waiting time? It gives the external service time to recover and prevents your application from overwhelming an already struggling server.
+formula ===> Wait time=Base delay×2n
 
 Imagine:
 
@@ -625,7 +628,211 @@ But:
 503 → temporary service unavailable
 
 may be retryable.
+
+
+
+import time
+import requests
+
+url = "https://api.example.com/bureau"
+
+for attempt in range(4):
+    try:
+        response = requests.get(url, timeout=10)
+
+        if response.status_code in (429, 500, 502, 503, 504):
+            response.raise_for_status()
+
+        response.raise_for_status()
+
+        print("API request successful!")
+        print(response.json())
+        break
+
+    except requests.HTTPError as error:
+        status = error.response.status_code
+
+        # Do not retry ordinary client errors such as 401
+        if status not in (429, 500, 502, 503, 504):
+            print(f"Non-retryable error: {status}")
+            break
+
+        if attempt == 3:
+            print("Retry limit reached")
+            break
+
+        wait_time = 2 ** attempt
+        print(f"Request failed. Retrying in {wait_time} seconds...")
+        time.sleep(wait_time)
+
+    except requests.Timeout:
+        if attempt == 3:
+            print("Retry limit reached after timeouts")
+            break
+
+        wait_time = 2 ** attempt
+        print(f"Request timed out. Retrying in {wait_time} seconds...")
+        time.sleep(wait_time)
+----------------------------------------------------------------------
+|API Security in GenAI Systems|      ********************************************************
+
+Authentication
+Authorization
+Input validation
+Rate limiting
+Timeouts
+Logging
+Error handling
+Secrets management
+
+1. Authorization
+
+Meaning: Checking whether a user or application has permission to access a resource or perform an action.
+
+if user_role != "loan_officer":
+    raise PermissionError("Access denied")
+
+This is a simplified example. In production, authorization must be based on verified identity and permissions, not a role value supplied by the user.
+Remember: Authentication asks, "Who are you?" Authorization asks, "What are you allowed to do?"
+
+2. Input validation
+
+Meaning: Checking whether incoming data is valid before processing it.
+
+# Suppose an API expects a customer ID.
+customer_id = 101
+if not isinstance(customer_id, int) or customer_id <= 0:
+    raise ValueError("Invalid customer ID")
+
+This checks that the ID is a positive integer.
+Input validation helps prevent invalid data, unexpected errors, and some security vulnerabilities. SQL queries should also use parameterized statements rather than string concatenation.
+
+3. Rate limiting
+
+Meaning: Restricting how many requests a user or application can make within a period.
+Example:
+A client can make 100 API requests per minute.
+If it sends 150 requests, the additional requests may receive HTTP 429 Too Many Requests.
+Why? To protect the service from overload, abuse, and excessive usage costs.
+Rate limits are normally enforced by an API gateway or server, not just by a check inside an individual client script.
+
+4. Timeouts
+
+Meaning: Setting a maximum time to wait for an API response.
+Imagine the bureau API stops responding. Without a timeout, your application might wait much longer than intended.
+
+import requests
+response = requests.get(
+    "https://api.example.com/bureau",
+    timeout=10
+)
+
+Here, timeout=10 sets the request timeout in seconds. In Requests, this is not necessarily a strict 10-second limit on the entire operation; 
+connection and read timeouts have their own behavior.
+Timeouts help prevent your application from waiting indefinitely.
+
+
+5. Logging
+
+Meaning: Recording useful information about what happened in your application.
+For example, if a bureau API fails, you may need to investigate when it failed and what type of error occurred.
+
+logging.basicConfig(level=logging.INFO)
+logging.info("Bureau API request started")
+logging.warning("Bureau API returned a temporary error")
+
+In production, logs help developers and support engineers troubleshoot failures.
+Security rule: Never log passwords, access tokens, full identity numbers, or sensitive customer information.
+
+6. Error handling
+
+Meaning: Handling failures in a controlled way instead of allowing the application to crash unexpectedly.
+
+import requests
+try:
+    response = requests.get(
+        "https://api.example.com/bureau",
+        timeout=10
+    )
+    response.raise_for_status()
+
+except requests.Timeout:
+    print("The API took too long to respond.")
+
+except requests.HTTPError as error:
+    print(f"API returned an HTTP error: {error.response.status_code}")
+
+except requests.RequestException:
+    print("A network or request error occurred.")
+
+
+#Error handling works together with the exponential backoff strategy you just learned.
+
+7. Secrets management
+
+Meaning: Storing sensitive values securely instead of hardcoding them in source code.
+Bad practice:
+API_KEY = "my-real-secret-key"
+
+Better for local development:
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+API_KEY = os.getenv("BUREAU_API_KEY")
+
+if not API_KEY:
+    raise ValueError("BUREAU_API_KEY is missing")
+
+Add .env to .gitignore so it is not committed to GitHub. In production, use a secrets manager such as a cloud provider's 
+managed secret service, with restricted access and rotation.
+
+8. Authentication
+
+You listed authorization, but authentication is closely related and worth knowing.
+Authentication verifies identity. For example, your application may use an API key or OAuth access token to prove that it is permitted to call a bureau provider's API.
+
+headers = {
+    "Authorization": f"Bearer {API_KEY}"
+}
+This is an illustrative pattern; the actual authentication method depends on the API provider.
+
+---------------------------------------------------------------------------
+Practice                   One-line answer
+Authorization --->        Checks what an identity is allowed to do.
+Input validation          Checks whether input data is acceptable.
+	Rate limiting            Restricts request frequency.
+Timeouts                   Limits how long an operation waits.
+Logging                    Records events for troubleshooting.
+Error handling             Manages failures safely.
+Secrets management         Protects credentials and sensitive keys.
+Authentication             Verifies who is making the request.
 -------------------------------------------------------------------------------
+|retry logic and exponential backoff are not the same|
+
+Retry logic means trying a failed request again.
+Exponential backoff means increasing the waiting time between retries.
+Example: Banking Bureau API
+
+Remember: Exponential backoff is one strategy used within retry logic. 
+Retry logic controls whether to retry; exponential backoff controls how long to wait between retries.
+
+Feature | Retry Logic | Exponential Backoff
+
+Meaning | Tries a failed request again | Retries with increasing wait times
+
+Waiting time | Can be fixed or have no delay | Increases after each failure
+
+Example | 1s -> 1s -> 1s | 1s -> 2s -> 4s -> 8s
+
+Purpose | Recover from temporary failures | Recover while reducing pressure on the API
+
+Banking example | Retry a failed bureau API request after 1 second each time | Retry after 1, 2, and 4 seconds if the bureau API remains unavailable
+
+Limitation | Frequent retries may overload the API | Retries can still fail; set retry limits and timeouts
+
+--------------------------------------------------------------
 |REST API vs SOAP|
 
 REST
