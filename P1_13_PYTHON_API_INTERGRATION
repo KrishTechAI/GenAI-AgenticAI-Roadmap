@@ -1,0 +1,155 @@
+What does "API Integration" mean?
+
+Suppose your application needs customer information from another company.
+Your application sends: GET /customers/101
+The external system responds:
+{
+    "customer_id": 101,
+    "name": "Arun Kumar",
+    "city": "Chennai"
+}
+Your Python program receives this response and does something with it.
+For example:
+API
+ ↓
+Python
+ ↓
+Validate
+ ↓
+Transform
+ ↓
+Store in PostgreSQL
+
+That complete process is API integration.
+--------------------------------------------------------------------------------------
+Real-world example.
+
+Instead of directly accessing their databases, your application communicates through APIs.
+
+Your Application
+       │
+       ├──── KYC API
+       │
+       ├──── Bureau API
+       │
+       ├──── Payment API
+       │
+       └──── Notification API
+-----------------------------------------------------------------------------------------
+                Python Application
+                       │
+                       ↓
+                 Build Request
+                       │
+                       ↓
+                  HTTP Request
+                       │
+                       ↓
+                 External API
+                       │
+                       ↓
+                  HTTP Response
+                       │
+                       ↓
+                      JSON
+                       │
+                       ↓
+              Validate Response
+                       │
+                       ↓
+                 Transform Data
+                       │
+                ┌──────┴──────┐
+                ↓             ↓
+             Pandas       PostgreSQL
+----------------------------------------------------------------------------------------------------
+|Step 1 — Install requests|    ---> access the api through python
+
+pip install requests
+import requests
+
+|Step 2 — Send a GET Request|
+
+import requests
+
+response = requests.get(
+    "https://api.example.com/customers/101"
+)
+#requests.get(). It sends an HTTP GET request.
+----------------------------------------------------------------------
+|What Is response?|
+
+The API doesn't directly give you a Python dictionary.
+It gives you an HTTP response.
+
+print(response.text)
+----------------------------------------------------------------------
+|Convert JSON to Python|
+
+Instead of manually parsing response.text, use:
+data = response.json()
+
+now "data" is a Python dictionary.
+then access it print(data["name"])
+-------------------------------------------------------------------
+|Very Important Flow|
+
+HTTP Response
+      ↓
+response.json()
+      ↓
+Python dictionary/list
+
+response = requests.get(url)
+
+data = response.json()
+
+customer_name = data["name"]
+--------------------------------------------------------------------
+|Always Check the Response|
+
+before this response.json() we need to check the response whether the respose is succeed.
+
+response = requests.get(
+    url,
+    timeout=10
+)
+response.raise_for_status()
+data = response.json()
+
+Request
+  ↓
+Response
+  ↓
+Check status
+  ↓
+Success?
+  ↓
+Parse JSON
+---------------------------------------------------------------------------
+|Why raise_for_status()?|
+
+raise_for_status() raises an exception for HTTP error responses.
+
+try:
+    response = requests.get(
+        url,
+        timeout=10
+    )
+
+    response.raise_for_status()
+
+    data = response.json()
+
+except requests.exceptions.RequestException as e:
+    print("API request failed:", e)
+
+--------------------------------------------------------------------------------
+|Timeout|
+
+requests.get(
+    url,
+    timeout=10         *********************************************************
+)
+
+
