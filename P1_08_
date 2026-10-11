@@ -1,0 +1,72 @@
+33. Data cleaning vs data validation
+
+These are related but different.
+
+Data cleaning:
+Fix the data.
+
+EX: 
+' Chennai ' → 'Chennai'
+
+Data validation
+Check whether the data is acceptable.
+
+Example:
+age = 150 → INVALID
+
+-------------------------------------
+Cleaning
+→ transform/fix
+
+Validation
+→ check/verify
+
+
+Senior-level interview scenario
+
+Interviewer:
+You receive 10 million customer records from an external system. You notice duplicate customers, 
+NULL values, inconsistent status values, and invalid dates. How would you design the SQL cleaning process?
+
+A strong answer:
+First, I would profile the incoming data and identify the business keys and data-quality rules.
+I would check NULL rates, duplicate keys, invalid dates, invalid numeric ranges, and inconsistent categorical values.
+I would then use SQL transformations such as TRIM, LOWER/UPPER, COALESCE, CASE, and appropriate type conversions. For duplicate records, I would use ROW_NUMBER() to retain the correct record based on business rules such as the latest updated_at. I would validate the cleaned data before loading it into the target table and track data-quality
+metrics such as rejected records and NULL percentages.
+
+
+
+                         SQL
+                          │
+        ┌─────────────────┼─────────────────┐
+        ↓                 ↓                 ↓
+      SELECT            FILTER            JOIN
+        │              WHERE              │
+        │                 │                │
+        ↓                 ↓                ↓
+   Aggregation         CASE           Multiple Tables
+   GROUP BY                              │
+   HAVING                                ↓
+        │                           Subqueries
+        │                               │
+        ↓                               ↓
+   Window Functions                    CTE
+        │                               │
+        ├── ROW_NUMBER                  │
+        ├── RANK                        │
+        ├── DENSE_RANK                  │
+        ├── LAG                         │
+        ├── LEAD                        │
+        └── SUM/AVG/COUNT OVER          │
+                                        ↓
+                                Data Cleaning
+                                        │
+                              ┌─────────┼─────────┐
+                              ↓         ↓         ↓
+                            NULL     Duplicate   Invalid
+                              ↓         ↓         ↓
+                           COALESCE   ROW_NUMBER CASE
+                              │
+                              ↓
+                         Clean Data
+
