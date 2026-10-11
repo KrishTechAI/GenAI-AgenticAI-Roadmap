@@ -1,0 +1,51 @@
+1. AI — Artificial Intelligence
+
+Meaning: The broad field of making computers perform tasks that normally require human intelligence.
+What it can do: Predict, classify, recognize patterns, recommend, and make decisions.
+Banking example: A fraud detection model identifies a suspicious transaction based on its patterns.
+
+Think: AI predicts or decides.
+--------------------------------------------------------------------
+2. GenAI — Generative AI
+
+Meaning: A type of AI that creates new content based on its learned patterns and input.
+What it can create: Text, code, images, summaries, and answers.
+Banking example: A chatbot reads a loan policy and generates an answer explaining the eligibility rules.
+
+Think: GenAI generates content.
+-----------------------------------------------------------------------
+3. AI Agent
+
+Meaning: An AI-powered system that can work toward a goal by choosing actions and using tools or systems when needed.
+What it can do: Interpret a request, select a tool, execute an action, inspect the result, and respond.
+Banking example: A support agent checks a customer's ticket status using a ticket-management API and explains the result.
+
+Think: An agent uses tools to accomplish a task.
+-------------------------------------------------------------------------
+4. Agentic AI
+Meaning: An approach in which AI systems can plan and carry out multi-step tasks toward a goal, adapting their actions based on results.
+What it can do: Break down a goal, coordinate tools or agents, check progress, handle failures, and continue within defined limits.
+Banking example: A system investigates a failed transaction by checking transaction records, reviewing service logs, looking up known incidents,
+and preparing a probable root-cause report.
+
+Think: Agentic AI plans and coordinates multiple steps.
+------------------------------------------------------------------------------
+“Why did my transaction fail?”
+
+AI
+Detects a suspicious transaction pattern.
+
+GenAI
+Explains the failure reason in simple language.
+
+AI Agent
+Calls an API to retrieve the transaction status.
+
+Agentic AI
+Checks transaction status, relevant logs, and known incidents, then prepares an evidence-based explanation.
+--------------------------------------------------------------------------
+Concept	Technologies / topics
+AI / ML  ---	Python, NumPy, Pandas, scikit-learn, model evaluation
+Generative AI -----	LLMs, prompting, tokens, embeddings, RAG, vector databases
+AI Agents	-----Tool/function calling, API integration, structured outputs, memory
+Agentic AI	-----> LangGraph, planning, state management, workflows, retries, evaluation, guardrails, multi-agent coordination
