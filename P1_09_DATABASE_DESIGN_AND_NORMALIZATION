@@ -1,0 +1,95 @@
+This is an important interview-level lesson because now we're moving from:
+"How do I query data?"
+
+to:
+"How should I design and organize the data in the first place?"
+
+For your AI Data Engineer / GenAI Engineer goal, you should understand this because real applications use databases behind APIs,
+pipelines, RAG systems, dashboards, and AI agents.
+
+-------------------------------------------------------------------------------------------------------------
+Good design prevents:
+- duplicate data
+- inconsistent data
+- difficult maintenance
+- update problems
+- poor query performance
+-------------------------------------------------------------------
+Bad Database Design Example
+
+| order_id | customer_name | customer_phone | product | product_price | city |
+|---:|---|---|---|---:|---|
+| 1001 | Arun | 98765 | Laptop | 60000 | Chennai |
+| 1002 | Arun | 98765 | Mouse | 1000 | Chennai |
+| 1003 | Priya | 91234 | Laptop | 60000 | Bangalore |
+
+What happens if Arun changes his phone number?
+We need to update multiple rows.
+That creates a risk of inconsistent data.
+-------------------------------------------------------------------------
+Better Design
+Separate the data:
+
+customers                        
+-------------------------    
+customer_id
+customer_name
+phone
+city
+
+products
+-------------------------
+product_id
+product_name
+price
+
+orders
+-------------------------
+order_id
+customer_id
+product_id
+order_date
+
+Customers
+    │
+    │ customer_id
+    ↓
+Orders
+    │
+    │ product_id
+    ↓
+Products
+
+This is the basic idea behind normalization.
+-------------------------------------------------------------
+4. What is Normalization?
+Simple definition:
+Normalization is the process of organizing data into related tables to reduce unnecessary duplication and improve data consistency.
+Don't store the same fact repeatedly when you can store it once and reference it.
+
+-------------------------------------------------------------
+|Why do we need normalization?|
+
+Normalization helps prevent three major problems.
+
+1. Update anomaly
+2. Insert anomaly
+3.Delete anomaly
+---------------------------------------------------------
+Primary Key Rules
+
+Unique
+NOT NULL
+One primary key per table
+Defines identity
+------------------------------------------------------
+Foreign Key Rules:
+
+References another table
+Can contain duplicates
+Can sometimes be NULL
+Defines relationship
+foreign key does not need to be unique.
+-----------------------------------------------------------
+
+
