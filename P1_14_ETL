@@ -1,0 +1,54 @@
+OLTP — Run the business
+
+- Process deposits and transfers.
+- Update current account balances.
+- Maintain transaction integrity.
+- Respond quickly to individual requests.
+                |
+ Data pipeline copies and transforms relevant data
+                |
+OLAP — Understand the business
+
+- Analyze five years of transactions.
+- Calculate monthly revenue and deposits.
+- Identify trends and unusual patterns.
+- Support business decisions and machine learning.
+
+OLTP normalization	OLAP historical tracking
+Organizes current operational data and reduces unnecessary redundancy |	Preserves selected previous versions of data
+A customer may have one current row	|A customer may have multiple historical dimension rows
+Updates commonly change the current row	| ETL may expire an old version and insert a new one
+Designed for operational consistency	| Designed to support historical analysis
+
+How does OLTP data get transferred into OLAP?
+1. OLTP database
+Banking transactions are recorded throughout the day.
+
+2. Extract
+A pipeline reads the required records.
+
+3. Transform
+Apply business rules, validate data and calculate values if needed.
+
+4. Load into OLAP
+Store the records in the data warehouse for analysis.
+
+This is commonly called ETL: Extract, Transform, Load. Some systems use ELT, where raw data is loaded first and transformed afterward.
+
+
+
+ Let's see how historical data builds up day by day
+Imagine the bank starts transferring transaction records to its data warehouse on October 10.
+
+October 10 — First load
+Suppose the bank loads 10,000 existing transaction records. The warehouse now has those records
+
+October 11 — Incremental load
+The pipeline identifies 500 new transactions and adds them. Total: 10,500 records.
+
+October 12 — Another incremental load
+Another 700 new transactions are added. Total: 11,200 records.
+
+
+
+These numbers are illustrative. The key idea is that each successful load adds new data to what was already stored.
