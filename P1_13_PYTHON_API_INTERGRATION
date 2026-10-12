@@ -147,9 +147,643 @@ except requests.exceptions.RequestException as e:
 --------------------------------------------------------------------------------
 |Timeout|
 
+Never assume an external API will always respond quickly.
 requests.get(
     url,
     timeout=10         *********************************************************
 )
+---------------------------------------------------------------
+Why External APIs Fail
+
+Network problem
+Server problem
+Timeout
+Invalid request
+Authentication failure
+Rate limit
+Service unavailable
+Invalid response
+
+API integration
+       ↓
+Error handling is mandatory   *********************************************************
+-------------------------------------------------------------
+Query Parameters
+
+params = {
+    "city": "Chennai",
+    "limit": 10
+}
+
+response = requests.get(
+    url,
+    params=params,
+    timeout=10
+)
+-------------------------------------------
+Why params Is Better
+
+url = f"https://api.example.com/customers?city={city}"
+
+params = {
+    "city": city
+}
+----------------------------------------------------------
+Headers
+
+eaders = {
+    "Authorization": "Bearer YOUR_TOKEN",
+    "Content-Type": "application/json"
+}
+
+response = requests.get(
+    url,
+    headers=headers,
+    timeout=10
+)
+------------------------------------------------------------------
+Environment Variables
+
+For local development, .env plus python-dotenv can be used.
+pip install python-dotenv
+
+from dotenv import load_dotenv
+import os
+load_dotenv()
+token = os.getenv("API_TOKEN")
+-----------------------------------------------
+POST Request
+
+Now let's send data to an API.
+
+customer = {
+    "name": "Krishna",
+    "city": "Chennai"
+}
+
+response = requests.post(
+    url,
+headers=headers,
+    json=customer,
+    timeout=10
+)
+--------------------------------------------------------------------
+PUT
+
+response = requests.put(
+    url,
+    json=data,
+    timeout=10
+)
+
+PATCH:
+
+response = requests.patch(
+    url,
+    json=data,
+    timeout=10
+)
+
+DELETE:
+response = requests.delete(
+    url,
+    timeout=10
+)
+---------------------------------------------------------------------
+Handling JSON Lists
+An API might return:
+[
+    {
+        "id": 101,
+        "name": "Arun"
+    },
+    {
+        "id": 102,
+        "name": "Priya"
+    },
+    {
+        "id": 103,
+        "name": "Krishna"
+    }
+]
+
+Then:
+data = response.json()
+
+for customer in data:
+    print(customer["name"])
+-----------------------------------------------------------------
+|Nested JSON|
+
+{
+    "customer": {
+        "id": 101,
+        "name": "Arun"
+    },
+    "account": {
+        "type": "SAVINGS",
+        "balance": 50000
+    }
+}
+
+data = response.json()
+
+customer_id = data["customer"]["id"]
+customer_name = data["customer"]["name"]
+
+balance = data["account"]["balance"]
+--------------------------------------------------------
+What If a Field Is Missing?
+
+This is important for API data pipelines.
+
+data["city"]  ---> KeyError
+
+Safter :
+
+city = data.get("city")
+city = data.get("city", "Unknown")
+
+-----------------------------------------------------------------
+API Response Validation
+
+Never assume: "The API returned JSON, so the data must be correct."
+
+{
+    "customer_id": "ABC",
+    "name": 12345
+}
+--------------------------------------------------------
+Three Levels of Validation
+
+Level 1 — HTTP validation
+Was the request successful?
+
+exampler :
+200
+201
+
+Level 2 — JSON/schema validation
+Does the response have the expected structure?
+
+Level 3 — Business validation
+Does the data make business sense?
+balance >= 0
+age between 18 and 100
+transaction amount > 0
+-----------------------------------------------------
+Example Validation
+
+data = response.json()
+
+if "customer_id" not in data:
+    raise ValueError("customer_id missing")
+
+if "name" not in data:
+    raise ValueError("name missing")
+
+customer_id = data["customer_id"]
+name = data["name"]
+----------------------------------------------------------------------------
+Better Validation with Pydantic
+
+Pydantic is commonly used for data validation.
+
+pip install pydantic
+
+from pydantic import BaseModel
+
+class Customer(BaseModel):
+    customer_id: int
+    name: str
+    city: str
+
+then:
+customer = Customer(**data)
+--------------------------------------------------------------------------
+API → Python → Validation
+
+API
+ ↓
+JSON
+ ↓
+Python
+ ↓
+Pydantic validation
+ ↓
+Valid Python object
+
+This is much safer than blindly trusting external data.
+-----------------------------------------------------------------------
+Pagination
+
+Imagine an API has:1 million customers
+It won't normally send all 1 million records in one response.
+
+Python can retrieve pages.
+Conceptually:
+It may provide:
+?page=1&limit=100
+
+while True:
+
+    response = requests.get(
+        url,
+        params={
+            "page": page,
+            "limit": 100
+        },
+        timeout=10
+    )
+
+    response.raise_for_status()
+
+    data = response.json()
+
+    if not data:
+        break
+
+    # process data
+
+    page += 1
+The exact stopping condition depends on the API.
+----------------------------------------------------------------------
+Why Pagination Matters
+
+Without pagination:
+API
+ ↓
+1 million records
+ ↓
+Python memory
+ 💥
+
+With pagination:
+API
+ ↓
+100 records
+ ↓
+process
+ ↓
+100 records
+ ↓
+process
+ ↓
+...
+This reduces memory pressure and improves control.
+
+------------------------------------------------------------------------
+Retry Logic
+
+Sometimes an API temporarily fails.
+503 Service Unavailable
+
+But don't do:
+
+while True:
+    requests.get(url)
+That could create an infinite loop.
 
 
+Instead, use:
+Attempt 1
+ ↓
+wait
+ ↓
+Attempt 2
+ ↓
+wait longer
+ ↓
+Attempt 3
+ ↓
+stop
+
+This is called controlled retry.
+------------------------------------------------------------
+Exponential Backoff
+1 second
+ ↓
+2 seconds
+ ↓
+4 seconds
+ ↓
+8 seconds
+Because if the external system is overloaded, continuously sending requests makes the situation worse.
+-------------------------------------------------------------------------
+Which Errors Should We Retry?
+This is a very important interview concept.
+Usually potentially retryable:
+502
+503
+504
+temporary network errors
+timeouts
+
+Usually not fixed by retrying:
+400
+401
+403
+404
+---------------------------------------------------------
+Rate Limiting
+
+An API might say:
+100 requests per minute
+
+If you send 500:
+429 Too Many Requests
+
+Possible strategies:
+Wait
+ ↓
+Retry
+ ↓
+Backoff
+ ↓
+Respect Retry-After if provided
+-----------------------------------------------------------------
+API Integration with PostgreSQL
+
+Suppose an external API provides customer data:
+
+[
+    {
+        "id": 101,
+        "name": "Arun",
+        "city": "Chennai"
+    },
+    {
+        "id": 102,
+        "name": "Priya",
+        "city": "Bangalore"
+    }
+]
+
+External API
+      ↓
+requests
+      ↓
+JSON
+      ↓
+Validation
+      ↓
+Transformation  (clean)
+      ↓
+PostgreSQL
+
+Aspect	  Data validation     	Data cleaning   ****************************************************
+Purpose	Check whether data is acceptable	Correct data quality problems
+Main action	Check, accept, or reject	Fix, standardize, or remove
+When used	Before or during data processing; also after cleaning	When data problems are identified
+Example	Check whether age is greater than 0	Correct an invalid date or handle a missing age
+Python tools	Pydantic, Pandera, custom checks	Pandas, NumPy, custom functions
+
+-----------------------------------------------------------------------
+1. Extract
+
+Get data from API: EXTRACT
+response = requests.get(
+    url,
+    timeout=10
+)
+
+response.raise_for_status()
+data = response.json()
+----------------------------------------------------
+2. Transform
+
+customer_name = data["name"].strip()
+city = data["city"].strip().upper()
+--------------------------------------------------------
+3. Load
+
+cursor.execute(
+    """
+    INSERT INTO customers (
+        customer_id,
+        customer_name,
+        city
+    )
+    VALUES (%s, %s, %s)
+    """,
+    (
+        customer_id,
+        customer_name,
+        city
+    )
+)
+
+connection.commit()
+------------------------------------------------------------------
+Customer submits KYC
+       ↓
+Your Application
+       ↓
+KYC API
+       ↓
+JSON response
+       ↓
+Validate
+       ↓
+Extract required fields
+       ↓
+Store result
+       ↓
+PostgreSQL
+-------------------------------------------------------------------
+Project Structure
+
+phase1_lesson13/
+│
+├── app.py
+├── api_client.py
+├── database.py
+├── transformer.py
+├── .env
+├── .gitignore
+├── requirements.txt
+└── README.md
+
+1. api_client.py
+#Fetch data from API.
+
+import requests
+
+def fetch_customers(url):
+    response = requests.get(
+        url,
+        timeout=10
+    )
+
+    response.raise_for_status()
+
+    return response.json()
+
+2. transformer.py
+
+def transform_customer(customer):
+
+    return {
+        "customer_id": customer["id"],
+        "customer_name": customer["name"].strip(),
+        "city": customer["city"].strip().upper()
+    }
+
+3. database.py
+
+def insert_customer(cursor, customer):
+
+    cursor.execute(
+        """
+        INSERT INTO customers (
+            customer_id,
+            customer_name,
+            city
+        )
+        VALUES (%s, %s, %s)
+        """,
+        (
+            customer["customer_id"],
+            customer["customer_name"],
+            customer["city"]
+        )
+    )
+
+app.py
+
+The orchestration layer:
+fetch
+ ↓
+validate
+ ↓
+transform
+ ↓
+insert
+ ↓
+commit
+
+customers = fetch_customers(url)
+
+for customer in customers:
+
+    cleaned_customer = transform_customer(customer)
+
+    insert_customer(
+        cursor,
+        cleaned_customer
+    )
+
+connection.commit()
+-----------------------------------------------------------------------
+API Integration + Logging
+
+Don't rely only on:
+print("success")
+
+import logging
+
+logging.basicConfig(level=logging.INFO)
+
+logging.info("Starting customer ingestion")
+logging.info("Fetched customer data")
+logging.info("Inserted customer successfully")
+-----------------------------------------------------------
+API Integration + Monitoring
+
+In production, you might monitor:
+API response time
+API error rate
+records fetched
+records inserted
+records failed
+retry count
+database insertion time
+
+Example:
+Records fetched: 10,000
+Records inserted: 9,950
+Records failed: 50
+API failures: 2
+Retries: 4
+
+------------------------------------------------------------
+Production:
+
+Agent
+ ↓
+Loan Status Tool
+ ↓
+REST API
+ ↓
+Banking Backend
+ ↓
+PostgreSQL
+ ↓
+JSON
+ ↓
+Agent
+ ↓
+LLM
+ ↓
+User
+
+ex:
+
+Agent
+ ↓
+Weather API
+ ↓
+JSON
+ ↓
+Python
+ ↓
+LLM
+--------------------------------------------------------------------
+API Integration vs RAG
+
+API Integration
+Gets data from an external service.
+
+API:
+Python
+ ↓
+API
+ ↓
+JSON
+
+
+RAG
+Gets relevant knowledge from documents/vector search.
+
+Question
+ ↓
+Embedding
+ ↓
+Vector Search
+ ↓
+Relevant chunks
+ ↓
+LLM
+
+But they can work together:
+                AI Agent
+              /    |    \
+             /     |     \
+           RAG    API   Database
+
+-----------------------------------------------------------
+                         User
+                           │
+                           ↓
+                       FastAPI
+                           │
+                           ↓
+                    Agent / LLM
+                    /     |      \
+                   /      |       \
+                  ↓       ↓        ↓
+                RAG      API      DB Tool
+                 │        │        │
+                 ↓        ↓        ↓
+              Vector    External PostgreSQL
+                DB       APIs
