@@ -91,5 +91,56 @@ Can sometimes be NULL
 Defines relationship
 foreign key does not need to be unique.
 -----------------------------------------------------------
+One-to-One Relationship
+
+One employee has one passport.
+Usually the foreign key is also constrained to be unique.
+
+One-to-Many Relationship: 
+
+This is extremely common.
+One customer can have many orders.
+The foreign key goes on the many side.
+
+Many-to-Many Relationship
+Suppose:
+And each course can have many students.
+Student A → Python
+Student A → SQL
+Student B → Python
+Student B → Java
+
+You can't directly model this cleanly with one foreign key.
+We create a junction / bridge table:
+
+Students
+    │
+    ↓
+student_courses
+    ↑
+    │
+Courses
+
+#This is a very important database-design concept.
+-------------------------------------------------------------------
+Composite Primary Key
+
+A table can have a primary key made from multiple columns.
+
+CREATE TABLE student_courses (
+    student_id INTEGER,
+    course_id INTEGER,
+
+    PRIMARY KEY (student_id, course_id)
+);
+
+This means:
+student_id + course_id
+together must be unique.
+
+So:
+1 | 101   ✅
+1 | 102   ✅
+2 | 101   ✅
 
 
