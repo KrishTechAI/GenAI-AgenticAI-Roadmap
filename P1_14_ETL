@@ -49,6 +49,44 @@ The pipeline identifies 500 new transactions and adds them. Total: 10,500 record
 October 12 — Another incremental load
 Another 700 new transactions are added. Total: 11,200 records.
 
-
-
 These numbers are illustrative. The key idea is that each successful load adds new data to what was already stored.
+
+
+1. First, let's correct two misunderstandings
+Misunderstanding 1: OLTP removes duplicate values.
+Normalization does not mean removing every repeated value. It means organizing data to reduce unnecessary duplication and maintain consistency.
+For example, many customers can belong to the same branch. The branch name is stored once in the branches table, and customers refer to it using branch_id.
+Misunderstanding 2: OLTP always deletes old values when data changes.
+Not necessarily. A database update usually replaces the current value in a row, but some systems also maintain audit logs, history tables, or change records
+
+
+
+Method 1: Slowly Changing Dimension Type 2 (SCD Type 2)
+This is a common data warehouse technique for preserving historical changes to descriptive information.
+Instead of overwriting the old warehouse record, the ETL process expires the old version and inserts a new version.
+OLAP — dim_customer
+customer_key	customer_id	city	valid_from	valid_to	current
+1	101	Chennai	Oct 1	Oct 10	No
+2	101	Bangalore	Oct 10	NULL	Yes
+Illustrative dates. The end-date convention depends on the warehouse design.
+
+Notice that customer_id = 101 appears twice in the warehouse, but each row has a different customer_key.
+- The first row tells us the customer was associated with Chennai during the earlier period.
+- The second row tells us the customer is currently associated with Bangalore.
+The ETL pipeline detects the change and maintains both versions. It does not have to keep both versions in the current OLTP customer table.
+
+
+4. But how does ETL know that Chennai was the old value?
+This is the key part.
+The pipeline must have access to the previous value or to evidence that a change occurred. Common approaches include:
+
+A. Compare with the warehouse
+The warehouse already stores Chennai. ETL extracts Bangalore from OLTP, compares the incoming data with the current warehouse record, expires the Chennai version, and inserts Bangalore.
+
+B. Use CDC or audit history
+A change-data-capture stream or audit table records the update. Depending on the setup, it can provide the old and new values.
+
+C. Use a source history table
+The operational system explicitly retains previous versions, which the pipeline can extract.
+
+The important condition is that the pipeline must capture the change before the previous value becomes unavailable to it. If the warehouse has never stored Chennai and the source provides only Bangalore, the old value cannot be reconstructed from the current row.
