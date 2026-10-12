@@ -89,4 +89,45 @@ A change-data-capture stream or audit table records the update. Depending on the
 C. Use a source history table
 The operational system explicitly retains previous versions, which the pipeline can extract.
 
-The important condition is that the pipeline must capture the change before the previous value becomes unavailable to it. If the warehouse has never stored Chennai and the source provides only Bangalore, the old value cannot be reconstructed from the current row.
+The important condition is that the pipeline must capture the change before the previous value becomes unavailable to it. If the warehouse has never stored Chennai
+and the source provides only Bangalore, the old value cannot be reconstructed from the current row.
+---------------------------------------------------------------------------------------------------------------------
+
+ETL Architecture:
+
+OLTP - ONLINE transaction protocol  (normalized form) 
+ETL - Extract transform load   
+olap - oline analystic protocol (denormalaized form) 
+
+
+ETL - extract transform load
+
+extract from OLTP ENVIRONMENT ---> transforming the data into ETL ----> load the data into OLAP ENVIRONMENT
+OLTP can have mutiple data sources 
+ETL will have Source area, staging area and Landing area 
+Source = Where data comes from.
+Landing = Where data first arrives.
+Staging = Where data is prepared.
+Target = Where data is stored for its intended use (olap for analysis)
+
+
+What is the difference between a landing area and a staging area?
+Answer: The landing area is typically the first destination for extracted data, often preserving it in raw form. The staging area is used to prepare that data through validation,
+cleaning, and transformation before loading it into the target data warehouse.
+
+
+•	We used IICS ETL tool for  migration and maintaining the workflows  *****************************************************
+OLAP target ---> design (fact table and dimention table)  created as snowflake and star schema design  
+A star schema organizes the data into one central fact table connected to several dimension tables.
+
+------------------------------------------------------------------------------------------------------------------------------
+Normalization:
+
+
+
+
+
+
+
+
+
