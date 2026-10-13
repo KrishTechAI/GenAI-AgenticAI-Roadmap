@@ -123,6 +123,145 @@ A star schema organizes the data into one central fact table connected to severa
 ------------------------------------------------------------------------------------------------------------------------------
 Normalization:
 
+huge data in less storage
+avoid data redundency 
+primary and forign key relationship
+
+3 forms:
+1nf = mutiple data into single cell
+2NF = sata duplocation, data will be in the same table 
+3NF = connect with primary key and foringn key --> mutiple tables
+--------------------------------------------------------------------------------------------------------
+Denormalization:
+
+reduce the table and no.of joins
+number tables will be less in denormalization
+data warehouse will be partially denormalized
+maintain historial data --> can use denormalization
+
+-----------------------------------------------------------------------------------------------
+Normalization vs. denormalization = how data is organized.
+OLTP vs. OLAP = the type of workload the system is designed to handle.
+
+
+-----------------------------------------------------------------------------------------------------------
+OLTP VS OLAP
+
+OLTP - Oline transaction protocol
+
+OLTP can be file or db
+contains normalozed data and current data
+contains regular transaction data   (Transaction data means data that records a business activity or event that happens in a system.)
+here we call it as master and transaction data   
+
+master : it has the customer information (customer registered with the bank)
+transaction:  it contains the transaction details (what action taken by the user eg:, 2000 tranfered) 
+
+
+- OLTP databases commonly use normalized tables to reduce unnecessary duplication and maintain consistency.
+- OLAP databases / data warehouses commonly use dimensional models, such as star schemas, which intentionally repeat some descriptive data to make analytics easier.
+
+---------------------------------------------------------------------------------------------------
+
+OLAP -- Oline analytical protocol
+
+contains historical data and it must be database
+it contains huge value of data and denormalized data
+BI- resport will run on OLAP environment (DATA sourse of BI resport)
+snoflake comes under OLAP 
+call it as dimention and fact table 
+
+2. Fact table	             | 1. Dimension table
+Records business events	| Describes the events' context
+Contains measurable values	|Contains descriptive attributes
+Example: transaction amount	| Example: customer city
+Often has many rows      |	Often has fewer rows than the fact table
+
+-----------------------------------------------------------------------------------------------------------
+
+normalized design:  customer, transaction
+denormalized design : dim_customer, fact_transaction
+------------------------------------------------------------------------
+DB VS DATAWAREHOUSE
+
+contains regular transction data
+is a normalized envirnmemt
+occupy less storage 
+
+Datawherehouse:
+
+contain historial data
+have huge data and will stored in a database only
+using star schema as a data modeling technique 
+warehouse a a partially denormalized and consume huge space
+--------------------------------------------------------
+ETL VS ELT
+
+ETL --> Extract, transform, load
+ELT --> Extract, load, transform
+
+both are data integration mothod  (integration-- combain separate part into single unit) that transform a data from source into data warehpuse
+
+diff:
+
+ETL --> extract the raw data from the source --> transforms the data on a secondary processing server ---> load the data into targect database
+ELT--> does not required transfermations take place before loading process.
+       loads raw data directly to the target data werehouse, instead of moving to a processing server for transfermation. 
+       With ELT, data cleansing, enrichment, and transformation all occur inside the data warehouse itself
+
+
+-----------------------------------------------------------------------------------------------------------------------
+ETL Workflow:
+
+1. Source database
+OLTP — PostgreSQL
+Raw customer and transaction data
+
+2. Extract
+Copy the required data from the source
+
+3. Secondary processing server
+ETL tool or compute environment
+Clean, validate, filter, join and aggregate data
+
+4. Load
+OLAP — target data warehouse
+Prepared data for reporting and analysis
+
+-------------------------------------------------------------------------------------------------------------------
+OLAP -DIMENTION TABLE/  FACT TABLE 
+
+Dimension Tables table
+
+•	Dimension Table contains detailed information of the fact and it has primary keys 
+•	Dimension table will not contain duplicates 
+•	Dimension tables are the parent table of fact tables 
+•	Fact tables will join with Dimension tables.
+•	Dimension tables will have master data, so while loading the data, we have to load the dimension table first, and fact table next. 
+•	While doing the data clean-up, we have to remove the fact table data first and then we have to remove the dimension table data, 
+since fact and dimension tables are having the integrity constraint relationship between them
+•	We follow SCD type 2 in our project
+   SCD Type 2 (Slowly Changing Dimension Type 2) is a data warehouse technique used to maintain historical
+   records when a dimension attribute changes, instead of overwriting the old value.
+  ex:  
+   Suppose a bank customer, Priya, lives in Chennai in January. In June, she moves to Bengaluru.
+  If we simply update her city in the data warehouse, the old value Chennai is lost.
+  SCD Type 2 preserves both the old and new versions.
+
+•	Dimension tables are having the master data, so that we have to load the dimension first
+  and we will have the types like Slowly change dimensions and late arriving dimensions
+
+
+FACT TABLE
+•	It contains foreign keys and has measurement of the business transactions 
+•	One Fact table may associate with multiple dimension tables 
+•	Fact tables will join with Dimension tables.
+
+
+
+
+
+
 
 
 
