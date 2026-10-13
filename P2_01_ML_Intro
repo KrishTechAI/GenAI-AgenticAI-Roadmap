@@ -1,0 +1,83 @@
+What is Machine Learning?
+
+Machine Learning (ML) is a branch of Artificial Intelligence that allows computers to learn patterns from data and use those patterns to make predictions.
+
+learn pattern and do prediction
+--------------------------------------------------
+Step 1: Collect data   (Hostorical data)
+step 2: train the model  (learn patters from examples)
+step 3: prediction (apply leaened patters to new data) 
+-----------------------------------------------------------------
+|Traditional programming vs Machine Learning|
+
+Traditional programming:
+Human writes rules → Computer follows rules → Result
+
+Machine Learning:
+Historical data + known outcomes → Training algorithm → Trained model
+----------------------------------------------------------------
+|Your first ML model in Python|
+
+We will use Linear Regression to predict a house price from its size.
+
+Install: pip install scikit-learn
+
+from sklearn.linear_model import LinearRegression
+
+# X = input feature: house size in square feet
+X = [[500], [700], [1000], [1200], [1500]]    ----> historical data
+
+# y = known house prices in lakhs
+y = [20, 28, 40, 48, 60]     ------------------> known outcomes
+
+# Create the model
+model = LinearRegression()   -----> model, creates algorithm 
+
+# Train the model
+model.fit(X, y)   -------> training a model 
+
+# Predict the price of a 900 sq. ft. house
+prediction = model.predict([[900]])     --------> prediction using the trained model 
+
+print(prediction[0])
+-------------------------------------------------------------
+Features (X) — Input variables given to the model.
+Target variable / Label (y) — The output the model learns to predict.
+LinearRegression()  --Creates the algorithm
+model.fit(X, y) --Trains the model
+model.predict([[900]]) --Predicts the price for new input
+-----------------------------------------------------------------------------------
+\(X\) (capital) represents the input features, often arranged as a matrix containing many rows and columns.
+
+\(y\) (lowercase) represents the target/output values, often arranged as a vector.
+
+X =[
+25000 & 550 & 3
+50000 & 750 & 1
+35000 & 650 & 2
+]
+
+y =[
+Yes
+No
+No]
+
+-----------------------------------------------------------------------------------
+What is Machine Learning?
+Machine Learning is a branch of AI that enables computers to learn patterns from data and make predictions
+without requiring every rule to be explicitly programmed.
+
+Q2. What is a model?
+A model is the result of training an algorithm on data. It uses the patterns learned during training to generate predictions.
+
+Q3. What is the difference between training and prediction?
+- Training: The model learns patterns from historical data.
+- Prediction: The trained model uses those patterns on new data.
+
+Q4. Is Machine Learning always accurate?
+No. Accuracy depends on data quality, the algorithm, the training process, and how well the model generalizes to new data.
+-----------------------------------------------------------------------------------------------------
+
+Algorithm: The method used to learn patterns.
+Model: The result after the algorithm has been trained on data.
+New data: The input supplied to the trained model to generate a prediction.
