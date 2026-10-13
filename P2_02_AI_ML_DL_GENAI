@@ -1,0 +1,59 @@
+Artificial Intelligence (AI) -> The broad field of making machines perform intelligent tasks
+
+Machine Learning (ML)   --> subset of ai
+Learns patterns from data.
+Example: Predicting customer loan default risk.
+
+Deep Learning (DL)  ---> subset of ML
+Uses multi-layer neural networks to learn complex patterns.
+Example: Recognizing faces or understanding speech.
+
+Generative AI (GenAI)   --> Much modern GenAI uses deep learning.
+Generates new content such as text, images, audio or code.
+Example: An LLM generating an answer to a customer query.
+
+#GenAI is not strictly limited to deep learning in every possible approach, but modern LLMs and image generators are deep-learning systems.
+
+Remember: AI is the broad field. ML is one approach within AI. Deep learning is one approach within ML. GenAI focuses on generating content and commonly uses deep learning.
+------------------------------------------------------------------------------------------
+A. Artificial Intelligence (AI)
+AI refers to systems that perform tasks associated with human intelligence, such as reasoning, planning, perception or decision-making.
+Example: A rule-based system that routes banking support tickets to the correct department can be an AI application.
+
+B. Machine Learning (ML)
+ML algorithms learn patterns from examples instead of requiring every decision rule to be written manually.
+Example: Predicting whether a customer may miss a loan payment using historical customer and repayment data.
+
+
+C. Deep Learning (DL)
+DL uses neural networks with multiple layers to learn complex representations from data.
+Example: Detecting patterns in images of identity documents or transcribing customer speech.
+
+
+D. Generative AI (GenAI)
+GenAI creates content based on learned patterns and a user's prompt or other input.
+Example: Generating a summary of a banking support incident, drafting an email or answering questions using a bank's approved documents.
+
+Concept  |	Main purpose  |	Example
+AI	      |Perform intelligent tasks	|  Route a support ticket
+ML	      |Learn patterns and predict	 |Predict loan default risk
+Deep       | Learning	Learn complex patterns with neural networks| 	Recognize text in identity documents
+GenAI	    |Generate new content    |	Draft a customer-support response
+
+--------------------------------------------------------------------------------------------------
+
+1. What is the difference between AI and ML?
+AI is the broader field of building systems that perform intelligent tasks. ML is a subset of AI in which systems learn patterns from data.
+
+Q2. What is the difference between ML and deep learning?
+ML includes many approaches, such as decision trees and linear regression. Deep learning is a subset of ML that uses multi-layer neural networks.
+
+Q3. What is Generative AI?
+Generative AI refers to systems that generate new content, such as text, images, audio or code, based on learned patterns and input prompts.
+
+Q4. Is every AI system a deep-learning system?
+No. Some AI systems use explicit rules, search or planning techniques without deep-learning models.
+
+Q5. Is ChatGPT an example of Generative AI?
+Yes. ChatGPT uses generative models to produce responses to user inputs.
+
