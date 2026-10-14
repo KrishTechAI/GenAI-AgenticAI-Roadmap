@@ -1,0 +1,271 @@
+What is data preprocessing?
+Data preprocessing is the process of cleaning and transforming raw data into a suitable format for machine learning.
+
+Raw banking data
+Income	Age	City	Default?
+30000	25	Chennai	No
+45000	—	Bangalore	Yes
+50000	35	Chennai	No
+9999999	42	Mumbai	No
+
+
+Problems in this data:
+- Age is missing.
+- City contains text, but many ML algorithms need numerical inputs.
+- Income values may be on very different scales.
+- One income value may be an outlier.
+- The model needs a clearly defined target label.
+Our job is to address these issues without accidentally leaking information from the test data.
+--------------------------------------------------------------------------------------------------------
+5 important preprocessing techniques
+
+
+1. Handling missing values
+Fill or otherwise handle empty values. For example, replace a missing age with the median age calculated from training data.
+
+2. Encoding categorical variables
+Convert categories such as Chennai, Mumbai, and Bangalore into numerical features.
+
+3. Feature scaling   (min-max scaling, standardization, robust scaling, lograithimic scaling)
+Put numerical features on comparable scales when the algorithm benefits from it.
+
+4. Handling outliers
+Investigate unusually high or low values and decide whether to correct, retain, cap, or otherwise handle them.
+
+5. Feature engineering
+Create useful features from existing data, such as debt-to-income ratio or number of missed payments.
+---------------------------------------------------------------
+|Handling missing values|
+
+Method A: Remove rows
+Method B: Fill with mean
+Method C: Fill with median
+Method D: Fill with mode
+
+import pandas as pd
+
+df = pd.DataFrame({
+    "age": [25, None, 35, 40, 30],
+    "income": [30000, 45000, 50000, 60000, 35000]
+})
+
+# Calculate the median age
+median_age = df["age"].median()
+
+# Fill missing ages
+df["age"] = df["age"].fillna(median_age)
+
+print(df)
+----------------------------------------------------------------------
+|Encoding categorical variables|
+
+A categorical variable represents a group or label rather than a measured number.
+
+Examples: city, account type, employment type, or payment status.
+
+A. Label encoding
+
+Assigns an integer to each category. This is appropriate for some ordinal variables, where the order has meaning, such as:
+- Low → 0
+- Medium → 1
+- High → 2
+But assigning Chennai = 0, Mumbai = 1, and Delhi = 2 can wrongly suggest that cities have a meaningful numerical order.
+
+
+B. One-hot encoding
+Creates a separate binary column for each category.
+Original data:
+City
+Chennai
+Mumbai
+Bangalore
+After one-hot encoding:
+Chennai	Mumbai	Bangalore
+1     	0	      0
+0    	1	       0
+0     	0       1
+
+
+import pandas as pd
+
+df = pd.DataFrame({
+    "city": ["Chennai", "Mumbai", "Bangalore", "Chennai"]
+})
+
+encoded_df = pd.get_dummies(df, columns=["city"], dtype=int)
+
+print(encoded_df)
+
+
+#One-hot encoding is commonly used for nominal categories. For high-cardinality columns with thousands of categories,
+consider alternatives such as feature hashing or carefully designed categorical encodings.
+
+
+Nominal categorical data means categories that are names or labels with no natural order or ranking.
+Examples:
+- Gender: Male, Female
+- City: Chennai, Mumbai, Delhi
+- Payment method: Cash, UPI, Credit Card
+- Bank account type: Savings, Current
+Remember: Nominal = names only, no order.
+Contrast: Ordinal categories have a meaningful order, such as Low, Medium, High.
+-------------------------------------------------------------------------------------------------------------------
+|Feature scaling: Normalization vs standardization|
+
+
+Suppose a model receives two features:
+- Age: 25
+- Annual income: 600,000
+Income has much larger numerical values than age. Some algorithms can be sensitive to these differences.
+
+A. Min-Max normalization
+Transforms values to a specified range, often 0 to 1.
+\[
+x'=\frac{x-x_{\min}}{x_{\max}-x_{\min}}
+\]
+
+If the minimum age is 20 and the maximum is 60, an age of 40 becomes:
+
+\[
+\frac{40-20}{60-20}=0.5
+\]
+
+
+
+B. Standardization
+Transforms a value using the mean and standard deviation.
+\[
+z=\frac{x-\mu}{\sigma}
+\]
+
+Here, \(\mu\) is the mean and \(\sigma\) is the standard deviation.
+
+A standardized value indicates how far a data point is from the training mean in standard-deviation units.
+---------------------------------------------------------------------------------
+Algorithm	Usually needs scaling?
+
+Logistic Regression-	Often beneficial
+K-Nearest Neighbors (KNN)-	Usually important
+K-Means -	Usually important
+Support Vector Machine (SVM)-	Usually important
+Decision Tree	Usually-  not necessary
+Random Forest	- Usually not necessary
+Linear Regression	-Depends on the solver, regularization, and numerical considerations; often useful for regularized models
+---------------------------------------------------------------------------------------------------------
+|Handling outliers|
+
+An outlier is an observation that is unusually far from the rest of the data.
+
+Example annual incomes:
+250000, 300000, 350000, 400000, 500000, 90000000
+The final value is much larger than the others.
+
+But is it wrong?
+Not necessarily. It might be a data-entry error, or it might belong to a genuinely high-income customer.
+Common approaches:
+
+- Investigate and correct if the value is a confirmed data-entry error.
+- Retain if it is a valid observation.
+- Cap or winsorize values at chosen percentiles when justified.
+- Transform skewed values, for example with a logarithm for suitable positive variables.
+- Use robust methods less sensitive to extreme observations.
+
+The IQR method is one way to flag possible outliers:
+
+\[
+IQR=Q_3-Q_1
+\]
+
+Potential outliers are often defined as values below \(Q_1-1.5IQR\) or above \(Q_3+1.5IQR\). These are flags for investigation, not automatic proof that a value is invalid.
+--------------------------------------------------------------------------------------------
+7. Feature engineering
+
+Feature engineering means creating useful input variables from raw data using domain knowledge.
+
+For banking data, examples include:
+
+Raw data	                      Engineered feature
+Monthly income and monthly     debt	Debt-to-income ratio
+Transaction timestamps	       Transactions per hour
+Transaction amounts	Average    transaction amount
+Missed payment history	       Missed payments in the last 6 months
+Account opening date         	Account age in days
+-----------------------------------------------------------------------------------
+Build a proper preprocessing pipeline:
+
+### Industry-style preprocessing code
+
+```python
+import pandas as pd
+
+from sklearn.compose import ColumnTransformer
+from sklearn.impute import SimpleImputer
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
+
+# Example dataset
+df = pd.DataFrame({
+    "age": [25, 35, None, 45, 30, 40],
+    "income": [30000, 50000, 45000, 70000, None, 60000],
+    "city": [
+        "Chennai", "Mumbai", "Chennai",
+        "Bangalore", None, "Mumbai"
+    ]
+})
+
+# Identify feature types
+numeric_features = ["age", "income"]
+categorical_features = ["city"]
+
+# Preprocess numerical features
+numeric_pipeline = Pipeline([
+    ("imputer", SimpleImputer(strategy="median")),
+    ("scaler", StandardScaler())
+])
+
+# Preprocess categorical features
+categorical_pipeline = Pipeline([
+    ("imputer", SimpleImputer(strategy="most_frequent")),
+    ("encoder", OneHotEncoder(handle_unknown="ignore"))
+])
+
+# Apply the appropriate pipeline to each column group
+preprocessor = ColumnTransformer([
+    ("numeric", numeric_pipeline, numeric_features),
+    ("categorical", categorical_pipeline, categorical_features)
+])
+
+# Fit and transform this demonstration dataset
+X_processed = preprocessor.fit_transform(df)
+
+print("Processed shape:", X_processed.shape)
+print(X_processed)
+```
+
+**Important for real model training:** In this demonstration, the preprocessor is fitted on the whole small dataset just to show how the components work together.
+For honest evaluation, first split the data into training and test sets, then fit the preprocessing pipeline on `X_train` only.
+
+A complete training workflow would place the preprocessor and classifier inside one pipeline, then fit that pipeline on training data. This ensures that imputers, scalers, and encoders learn from the training set only.
+In industry, preprocessing should be repeatable and consistent between training and inference. Scikit-learn's Pipeline and ColumnTransformer help achieve this.
+
+----------------------------------------------------------------------------------------------------------------
+hy use a pipeline?
+1. It prevents inconsistent preprocessing between training and prediction.
+2. It helps prevent data leakage when used with the correct train/test workflow.
+3. It keeps the code organized and easier to maintain.
+4. It works well with cross-validation and hyperparameter tuning.
+----------------------------------------------------------------------------------
+Q1. What is data preprocessing?
+It is the process of cleaning and transforming raw data into a suitable format for a machine learning model. It can include missing-value handling, encoding, scaling, outlier treatment, and feature engineering.
+Q2. What is the difference between normalization and standardization?
+Normalization commonly rescales values to a fixed range such as 0–1. Standardization subtracts the mean and divides by the standard deviation.
+Q3. Why do we use one-hot encoding?
+It converts nominal categories into binary columns without imposing an artificial numerical order on the categories.
+Q4. Why should we fit a scaler only on training data?
+To prevent information from the test set influencing the learned preprocessing parameters. We fit on training data and use the same fitted transformation on test and production data.
+Q5. How do you handle outliers?
+First investigate whether they are data errors or valid observations. Depending on the context, I may correct, retain, cap, transform, or use robust methods. I avoid deleting outliers automatically.
+Q6. What is the benefit of a Scikit-learn Pipeline?
+It combines preprocessing and modeling into a repeatable workflow, reduces inconsistent transformations, and helps prevent leakage when trained correctly.
+Q7. How is feature engineering useful in banking?
+It uses domain knowledge to create informative variables, such as debt-to-income ratio, account age, and recent missed-payment count, which may help a model identify patterns relevant to default risk.
