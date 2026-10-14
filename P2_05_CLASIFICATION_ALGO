@@ -1,0 +1,74 @@
+What is classification?
+Classification is a type of supervised machine learning used to predict a category or class from input features.
+
+Imagine a banking application that needs to predict whether a transaction is fraudulent.
+
+Other real-world examples:
+- Email classification: spam or not spam.
+- Customer churn: likely to leave or likely to stay.
+- Loan applications: default risk or no default risk.
+- Support tickets: technical issue, payment issue, or login issue.
+-----------------------------------------------------------------------------------------------------
+Regression                          	Classification
+
+Predicts a numerical value	       |Predicts a class or category
+Example: predict house price	     | Example: predict fraud or legitimate
+Example: predict monthly spending  |	Example: predict customer churn
+-----------------------------------------------------------------------------------------
+|Important classification algorithms|
+
+A. Logistic Regression
+Despite its name, Logistic Regression is commonly used for classification, not ordinary numerical regression.
+It estimates the probability that an observation belongs to a class.
+
+When is it useful?
+- Predicting customer churn.
+- Predicting loan default.
+- Predicting whether a support ticket belongs to a particular category.
+Advantages: Fast, relatively simple, and interpretable.
+
+
+B. Decision Tree Classifier
+A Decision Tree makes predictions by asking a sequence of questions.
+
+            Transaction amount
+           Is it greater than ₹50,000?
+
+|                                      |
+No                                    Yes
+ |                                     |
+Check location                       Check frequency
+Familiar or unusual?                 Unusually frequent?
+
+# A Decision Tree learns which questions and splits help separate classes in the training data.
+
+Advantages
+
+- Easy to understand and visualize.
+- Can learn nonlinear relationships.
+- Usually needs less feature scaling than many other algorithms.
+
+Limitations
+- A deep tree can overfit: it may memorize training examples instead of learning patterns that generalize.
+- Small data changes can sometimes produce a very different tree.
+
+C. Random Forest Classifier  
+
+A Random Forest combines predictions from multiple Decision Trees.
+Imagine one tree flags a transaction as suspicious, while several other trees consider it legitimate. The forest combines their predictions to produce an overall result.
+
+Advantages: Often performs well on structured/tabular data, handles nonlinear relationships, and is generally more robust than a single unrestricted tree.
+Limitations: More computationally expensive than a small tree and less straightforward to explain as one simple set of rules.
+---------------------------------------------------------------------------------------
+
+Feature                 	Logistic Regression           	Decision Tree	                 Random Forest
+Main idea               	Estimates class probability	    Learns decision rules	          Combines many trees
+Nonlinear patterns	      Limited in basic form           	Yes	                              Yes
+Interpretability	            Good	                      Often very good                  	More difficult
+Overfitting risk           	Depends on model/features	      Can be high	                      Often reduced versus one deep tree
+Typical use              	Baseline classifier	            Rule-like decisions	                 Strong tabular-data baseline
+
+
+There is no universally best algorithm. You choose by testing performance on appropriate validation data and considering latency, interpretability, cost, and business risk.
+
+
