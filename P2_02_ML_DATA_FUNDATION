@@ -1,0 +1,63 @@
+1. What is a dataset?
+A dataset is a collection of data used to analyze patterns, train models, or evaluate results.
+-------------------------------------------------------------
+|Features (\(X\)) vs. target (\(y\))|
+
+Features — X
+Information provided to the model.
+Monthly transactions, complaints, account age, etc.
+           |
+Machine Learning model
+Learns relationships between inputs and the target
+         |
+Target — y
+The value the model learns to predict.
+Whether the customer leaves: Yes or No.
+---------------------------------------------------------------
+Training data vs. testing data
+
+80% , 20%
+------------------------------------------------------------------
+from sklearn.model_selection import train_test_split
+
+X = [
+    [40, 0],
+    [3, 5],
+    [35, 1],
+    [2, 6],
+    [28, 0],
+    [5, 4],
+    [32, 1],
+    [4, 5],
+    [25, 1],
+    [6, 3]
+]
+
+y = [0, 1, 0, 1, 0, 1, 0, 1, 0, 1]
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X,
+    y,
+    test_size=0.2,
+    random_state=42,
+    stratify=y
+)
+
+print("Training records:", len(X_train))
+print("Testing records:", len(X_test))
+---------------------------------------------------------
+1. What is the difference between a feature and a label?
+A feature is an input variable used by the model. A label is the known answer that a supervised model learns to predict.
+Q2. Why do we split data into training and testing sets?
+To evaluate whether a model generalizes to unseen examples instead of measuring only how well it performs on data it has already learned from.
+Q3. What is random_state?
+It controls the randomness of a split or algorithm so results can be reproduced when the same data and settings are used.
+Q4. What is stratify=y?
+It helps preserve the target class proportions across the splits. It is useful for classification, especially when one class is less common than another, provided the class counts permit the split.
+Q5. Can we use the test dataset to tune the model repeatedly?
+We should avoid this. Repeatedly tuning decisions based on test results can indirectly overfit the test set. Use validation data or cross-validation for model selection, then reserve the test set for final evaluation.
+Q6. What is the difference between overfitting and data leakage?
+- Overfitting: The model learns the training data too closely, including noise, and performs poorly on new data.
+- Data leakage: Unavailable or inappropriate information influences model training or evaluation, making results misleading.
+They are different problems, though they can sometimes occur together.
+--------------------------------------------------------------------------
