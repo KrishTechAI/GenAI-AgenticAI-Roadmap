@@ -1,0 +1,140 @@
+How do we know whether our machine learning model is actually good?
+A model may perform very well on the data it learned from but fail when it receives new data. Today, you'll learn how to identify this problem and evaluate models correctly.
+
+-------------------------------------------------------------------------------------------------
+|What is model evaluation?|
+
+Model evaluation is the process of measuring how well a trained model makes predictions on data.
+
+Imagine a banking application that predicts loan defaults.
+- Training accuracy: 99%
+- Test accuracy: 65%
+
+Is this a good model? Probably not. The large difference suggests the model may have memorized the training data instead of learning patterns that generalize.
+A model should perform well on unseen data, not just training data.
+---------------------------------------------------------------------------------------------
+Training, validation and test datasets
+
+Training set
+70%
+The model learns patterns and estimates its parameters from this data.
+
+Validation set
+15%
+Used to compare models and tune hyperparameters, such as tree depth.
+
+Test set
+15%
+Used for a final, relatively unbiased evaluation after model selection.
+
+# These percentages are illustrative. An 80/20 train/test split is also common, and the best split depends on dataset size and structure.
+
+
+Training: The model learns from historical customer information and churn labels.
+Validation: You compare Logistic Regression and Random Forest and tune their settings.
+Testing: Once you've selected your model, you measure its final performance on the untouched test set.
+----------------------------------------------------------------------------------------
+|Overfitting vs underfitting vs good fit|
+
+A.Overfitting
+The model learns the training data too closely, including noise or accidental patterns.
+- Training performance: very good.
+- Test performance: poor or much worse.
+- Example: a very deep Decision Tree memorizes individual loan applications.
+
+B. Underfitting
+The model is too simple to learn important patterns.
+- Training performance: poor.
+- Test performance: also poor.
+- Example: a simple linear model fails to capture a complex nonlinear relationship.
+
+C. Good generalization
+The model learns useful patterns and performs well on unseen data.
+- Training performance: good.
+- Test performance: also good.
+- Example: a properly regularized model performs consistently on new customers.
+---------------------------------------------------------------------------------
+How can we reduce overfitting?
+- Limit Decision Tree depth.
+- Use regularization.
+- Collect more representative training data.
+- Select meaningful features.
+- Use cross-validation to tune model settings.
+- Use Random Forest or other suitable ensemble methods when appropriate.
+
+How can we reduce underfitting?
+- Use a more expressive model.
+- Add useful features.
+- Reduce excessive regularization.
+- Train the model appropriately.
+Simply training for longer is not always the solution.
+---------------------------------------------------------------------------------
+|Bias and variance — the deeper concept|
+
+Bias and variance help explain why models underfit or overfit.
+- High bias: The model makes overly simple assumptions and misses important patterns.
+- High variance: The model is too sensitive to the particular training dataset.
+
+Situation	            Bias	                  Variance
+Underfitting    	    Usually high	          Often low
+Overfitting	        Often low training bias	  Usually high
+Good generalization	 Balanced	                Controlled
+
+
+High bias: You studied too little to understand the subject.
+High variance: You memorized the exact practice questions but cannot solve new ones.
+Good generalization: You understand the concepts and can answer unfamiliar questions.
+
+The goal is not to eliminate all bias or variance. It is to find a model that generalizes well.
+---------------------------------------------------------------------
+Cross-validation
+
+Cross-validation is a technique for evaluating models across multiple train/validation splits.
+
+In K-fold cross-validation, we divide the available training data into \(K\) folds.
+
+The process:
+1. Divide the training data into five folds.
+2. Train on four folds and validate on the remaining fold.
+3. Repeat until each fold has been used for validation.
+4. Calculate the average validation score.
+5. Compare models or hyperparameter settings using the results.
+
+Cross-validation gives a more stable view of performance than relying on one split, although the scores can still vary.
+Important: Keep a final test set separate if you need an unbiased final evaluation. For time-series data, ordinary random K-fold splitting is often inappropriate; use a time-aware split instead.
+-----------------------------------------------------------------------------------
+Model evaluation metrics
+
+The right metric depends on the problem. Let's review the most useful ones.
+
+For classification
+Metric	What it tells you
+Accuracy	 Fraction of predictions that are correct
+Precision	How reliable positive predictions are
+Recall	How many actual positive cases are found
+F1-score	Harmonic mean of precision and recall
+ROC-AUC	  How well scores rank positive examples above negative examples across thresholds
+
+For fraud detection, accuracy alone can be misleading if fraud is rare. Recall, precision, PR-AUC, and the business cost of false alarms and missed fraud can be more informative.
+
+or regression
+Metric	What it tells you
+MAE    	Average absolute prediction error
+MSE	    Average squared prediction error
+RMSE	   Square root of MSE; expressed in target units
+\(R^2\)  	How well the model explains target variation relative to a mean baseline
+
+Remember:
+- Lower MAE, MSE, and RMSE generally indicate better predictions on the same evaluation set.
+- Higher \(R^2\) is generally better relative to the chosen baseline, but it can be negative on test data.
+- Metrics should be interpreted in the context of the target scale and business objective.
+
+------------------------------------------------------------------------------------------------------
+Model evaluation: measures how well predictions generalize.
+Overfitting: strong training performance, weaker unseen-data performance.
+Underfitting: model fails to learn important patterns.
+Cross-validation: evaluates performance across multiple splits.
+Validation set: used for model selection and tuning.
+Test set: reserved for final evaluation.
+Hyperparameters: settings selected by the practitioner.
+Parameters: values learned during training.
