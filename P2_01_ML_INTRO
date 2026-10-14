@@ -1,0 +1,102 @@
+What is Artificial Intelligence (AI)?
+
+Artificial Intelligence is the field of building computer systems that perform tasks that normally require human-like intelligence,
+such as recognizing patterns, understanding language, making predictions, or planning actions.
+
+Examples:
+- A bank detects suspicious transactions.
+- A chatbot answers customer questions.
+- A recommendation system suggests products.
+- An AI agent uses tools to complete a task.
+-------------------------------------------------------------------------------------------
+Artificial Intelligence (AI)
+The broad field of building intelligent systems.
+Example: A system that helps a bank identify suspicious activity.
+
+Machine Learning (ML)
+A branch of AI in which models learn patterns from data and use those patterns to make predictions or decisions.
+Example: Predict whether a customer is likely to leave a bank.
+
+Deep Learning (DL)
+A branch of ML that uses neural networks with multiple layers to learn complex patterns.
+Example: Recognize text in scanned documents or process speech.
+
+Generative AI (GenAI)
+AI that generates new content, such as text, code, images, or audio.
+Example: Generate an answer explaining why a transaction may have failed.
+-----------------------------------------------------------------------------------------------------------
+# Much modern GenAI uses deep learning, and many language models use the Transformer architecture.   ***************************************
+---------------------------------------------------------------------------------------------------------------
+|The three main types of Machine Learning|
+
+A. Supervised Learning
+The model learns from examples that include the correct answers, called labels.
+Examples: fraud classification, customer churn prediction, loan-default prediction.
+Remember: data + correct answers.
+
+B. Unsupervised Learning
+The model finds patterns or groups in data without being given target labels.
+Examples: grouping customers by spending behavior, discovering unusual activity patterns.
+Remember: data without supplied answers.
+
+C. Reinforcement Learning
+An agent learns by taking actions and receiving rewards or penalties from an environment.
+Examples: game-playing agents, robotics, and some sequential decision-making problems.
+Remember: actions + rewards + learning.
+--------------------------------------------------------------------------------------------------
+Use Library:  scikit-learn (Machine learning lib)
+
+installL pip install scikit-learn
+
+
+from sklearn.tree import DecisionTreeClassifier
+
+# Features: [monthly_transactions, complaints]
+X = [
+    [40, 0],
+    [35, 1],
+    [3, 5],
+    [2, 6],
+    [30, 0],
+    [5, 4]
+]
+
+# Labels: 0 = stayed, 1 = left
+y = [0, 0, 1, 1, 0, 1]
+
+# Create the model
+model = DecisionTreeClassifier(random_state=42)
+
+# Train the model
+model.fit(X, y)
+
+# Predict for a new customer
+new_customer = [[4, 5]]
+prediction = model.predict(new_customer)
+
+print("Prediction:", prediction[0])
+-----------------------------------------------------------------------------------
+Code	        Meaning
+X	              Input features the model learns from
+y	               Correct answers for the training examples
+DecisionTreeClassifier()	| Creates a classification model
+model.fit(X, y)	           |Trains the model on the examples
+model.predict(...)         |	Predicts the class for new input
+-----------------------------------------------------------------------------
+Four important ML terms
+- Feature (X): Input information used to make a prediction.
+- Target (y): The value the model is learning to predict.
+- Training: The process of learning patterns from examples.
+- Inference: Using a trained model to make a prediction on new data.
+----------------------------------------------------------------------------------------
+Q1. What is Machine Learning?
+Machine Learning is a branch of AI in which algorithms learn patterns from data to make predictions or decisions without requiring every rule to be explicitly programmed.
+Q2. What is the difference between AI and ML?
+AI is the broader field of intelligent systems. ML is one approach within AI that learns patterns from data.
+Q3. What is the difference between supervised and unsupervised learning?
+Supervised learning uses labeled data to learn a target. Unsupervised learning looks for patterns or groups in data without supplied target labels.
+Q4. What is the difference between training and inference?
+Training is when a model learns from data. Inference is when the trained model processes new input to produce a prediction or output.
+Q5. Is a GenAI chatbot a Machine Learning application?
+Yes. Modern GenAI chatbots commonly use deep learning models trained on large amounts of data to generate responses. Additional components, 
+such as retrieval systems and tools, can extend their capabilities.
