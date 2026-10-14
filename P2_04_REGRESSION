@@ -1,0 +1,141 @@
+Lesson 4 — Regression
+Linear regression, predictions, coefficients, loss functions and evaluation metrics.
+
+Lesson 5 — Classification
+Logistic regression, decision trees, random forests and classification metrics.
+
+Lesson 6 — Data Preprocessing
+Missing values, categorical encoding, scaling, outliers and feature engineering.
+
+Lesson 7 — Model Evaluation
+Train/test split, cross-validation, overfitting, underfitting, precision, recall and F1-score.
+
+Lesson 8 — Unsupervised Learning
+Clustering, K-means, customer segmentation and dimensionality reduction basics.
+
+Lesson 9 — Scikit-learn in Practice
+Build complete ML workflows using Python, Pandas and Scikit-learn.
+
+Lesson 10 — Real-Time ML Project
+Build a banking customer churn or loan-risk prediction project, including evaluation and interview explanations.
+-------------------------------------------------------------------------------------
+1. What is Linear Regression?
+
+Linear Regression is a supervised Machine Learning algorithm used to predict a numerical value by learning a relationship between input features and a target.
+
+Examples:
+- Predicting house prices.
+- Forecasting monthly sales.
+- Estimating customer spending.
+- Predicting transaction volume.
+- Estimating support-ticket resolution time
+
+Linear Regression learns this relationship and uses it to predict spending for a new income value.
+------------------------------------------------
+The Linear Regression equation
+
+          y = mx+b
+
+\(x\)
+Input feature
+The information used to make the prediction, such as monthly income.
+
+\(m\)
+Slope (coefficient)
+How much the predicted value changes when the input increases by one unit.
+
+\(b\)
+Intercept
+The predicted value when \(x=0\).
+
+y^ (y hat)
+Predicted output
+The numerical value estimated by the model.
+---------------------------------------------------------------------------------
+Simple vs. Multiple Linear Regression
+
+Simple Linear Regression
+Uses one input feature.
+\[
+\hat{y}=mx+b
+\]
+
+Example: Predict spending using monthly income alone.
+
+Multiple Linear Regression
+Uses two or more input features.
+\hat{y}=b+m_1x_1+m_2x_2+ ..... +m_px_p
+
+Example: Predict house price using area, number of bedrooms, and property age.
+
+In the multiple-feature equation:
+- \(x_1,x_2,\ldots,x_p\) are input features.
+- \(m_1,m_2,\ldots,m_p\) are their learned coefficients.
+- \(b\) is the intercept.
+
+# Each coefficient represents the model's expected change in prediction for a one-unit increase in that feature, holding the other features constant.
+-------------------------------------------------------------------------------------
+Python practical — Build a Linear Regression model
+
+
+import pandas as pd
+from sklearn.linear_model import LinearRegression
+
+# Historical training data
+data = {
+    "monthly_income": [20000, 30000, 40000, 50000, 60000],
+    "monthly_spending": [12000, 18000, 24000, 30000, 36000]
+}
+
+df = pd.DataFrame(data)
+
+# X = input features; y = target
+X = df[["monthly_income"]]
+y = df["monthly_spending"]
+
+# Create and train the model
+model = LinearRegression()
+model.fit(X, y)
+
+# Predict spending for a new customer
+new_customer = pd.DataFrame({
+    "monthly_income": [70000]
+})
+
+prediction = model.predict(new_customer)
+
+print("Slope:", model.coef_[0])
+print("Intercept:", model.intercept_)
+print("Predicted spending:", prediction[0])
+
+
+
+Step 3: Understand the code
+Code	                             Meaning
+pd.DataFrame(data)	               Creates a table from the data
+X = df[["monthly_income"]]	       Selects the input feature as a two-dimensional table
+y = df["monthly_spending"]       	 Selects the target values
+LinearRegression()	               Creates the regression model
+model.fit(X, y)                    Learns the coefficient and intercept
+model.coef_	                       Returns the learned slope
+model.intercept_                  Returns the learned intercept
+model.predict(...)                Predicts a numerical value
+
+-----------------------------------------------------------------------------------------
+Q1. What is Linear Regression?
+Linear Regression is a supervised learning algorithm used to predict continuous numerical values by modeling a linear relationship between input features and a target variable.
+Q2. Explain the equation \(y=mx+b\).
+Here, \(y\) is the predicted value, \(x\) is the input feature, \(m\) is the slope, and \(b\) is the intercept.
+Q3. What is the cost or loss function in Linear Regression?
+A common objective is to minimize Mean Squared Error (MSE), which measures the average of squared differences between actual and predicted values. Ordinary Least Squares minimizes the sum of squared residuals.
+Q4. What is the difference between MAE and RMSE?
+MAE measures average absolute error. RMSE takes the square root of average squared error, so large errors have a greater influence on it.
+Q5. What does model.fit(X, y) do?
+It estimates the model parameters from the training data. For Linear Regression, these include the coefficients and intercept.
+Q6. What does model.predict(X) do?
+It uses the trained model to estimate target values for the supplied input features.
+Q7. What assumptions should we consider in Linear Regression?
+For standard statistical inference, important assumptions include linearity, independent errors, constant error variance, and normally distributed errors for certain inferential procedures. Multicollinearity is also important in multiple regression. Prediction can still be useful when some assumptions are imperfect, but interpretation and reliability may be affected.
+Q8. What is the difference between Linear Regression and Logistic Regression?
+Linear Regression predicts numerical values. Logistic Regression is commonly used for classification and estimates class probabilities, such as the probability that a transaction is fraudulent.
+
