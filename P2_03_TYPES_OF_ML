@@ -1,0 +1,219 @@
+3 types of Machine Learning
+
+1. Supervised Learning
+Learns from examples that contain the correct answers.
+Examples: fraud detection, loan-default prediction, spam classification.
+
+2. Unsupervised Learning
+Discovers patterns or groups in data without supplied target labels.
+Examples: customer segmentation, exploratory anomaly analysis.
+
+3. Reinforcement Learning (RL)
+An agent learns a strategy by taking actions and receiving rewards or penalties.
+Examples: game-playing agents, robotics, sequential decision-making.
+--------------------------------------------------------------------------------
+Supervised Learning
+
+Suppose a bank has historical loan records. Each record contains customer details and the known outcome
+The model learns patterns connecting the input features to the known outcome.
+X---> Trained model---> y
+
+
+|Two major supervised-learning tasks:|
+
+A. Classification
+Predicts a category or class.
+
+Examples:
+- Fraudulent vs. legitimate transaction
+- Customer will leave vs. will stay
+- Email is spam vs. not spam
+
+Common algorithms: Logistic Regression, Decision Tree, Random Forest, Support Vector Machine.   ********************************
+
+B. Regression
+Predicts a numerical value.
+
+Examples:
+- Predict house price
+- Estimate monthly sales
+- Forecast transaction volume
+Common algorithms: Linear Regression, Decision Tree Regressor, Random Forest Regressor.
+
+
+#  Easy memory trick: Classification predicts which category. Regression predicts how much or how many.
+---------------------------------------------------------------------------------------------------------------------
+|Unsupervised Learning|
+
+Imagine a bank has 10,000 customer records, but it does not have labels describing the types of customers.
+It wants to discover groups based on customer behavior.
+
+For example, the algorithm might discover these groups:
+- Group A: Customers who make frequent transactions.
+- Group B: Customers who maintain high balances but transact less often.
+- Group C: Customers who make frequent small transactions.
+
+Important unsupervised-learning techniques:
+
+A. Clustering
+Groups similar data points together.
+
+Common algorithms:
+- K-Means
+- Hierarchical Clustering
+- DBSCAN
+
+B. Dimensionality reduction
+Reduces the number of variables while trying to preserve useful information.
+
+Common techniques:
+- PCA (Principal Component Analysis)
+- t-SNE (often used for visualization)
+- UMAP (often used for visualization and dimensionality reduction)
+
+C. Anomaly detection
+Identifies observations that differ substantially from typical patterns. 
+Some anomaly-detection methods are unsupervised, while others use labels or semi-supervised approaches.
+
+Supervised vs. unsupervised: a banking example
+Scenario	                                     |Suitable approach
+Historical transactions are labeled fraud/not  |fraud	Supervised classification
+You want to group customers by spending behavior|	Unsupervised clustering
+You want to find unusual transactions without fraud labels	|Unsupervised anomaly detection can help
+-----------------------------------------------------------------------------------------------
+Reinforcement Learning (RL)
+
+Reinforcement Learning is different from the previous two approaches. An agent interacts with an environment, takes actions, and receives rewards or penalties.
+
+Four important RL terms
+- Agent: The learner or decision-maker.
+- Environment: The world in which the agent operates.
+- Action: What the agent chooses to do.
+- Reward: Feedback that helps the agent learn which behavior is desirable.
+
+
+Where is RL used?
+- Robotics and navigation
+- Game-playing systems
+- Resource allocation and scheduling
+- Some approaches to training language models to better follow preferences, including reinforcement learning from human feedback (RLHF)
+
+Interview point: RLHF is one approach used in language-model training, but not every GenAI model or agent is trained using reinforcement learning.
+
+---------------------------------------------------------------------------------------------
+Python practical — Classification vs. Clustering
+
+Example A: Supervised learning with classification
+We have labeled customer examples. We train a model to predict whether a customer will leave.
+
+from sklearn.tree import DecisionTreeClassifier
+
+# Features: [monthly_transactions, complaints]
+X = [
+    [40, 0],
+    [35, 1],
+    [3, 5],
+    [2, 6],
+    [30, 0],
+    [5, 4]
+]
+
+# Labels: 0 = stayed, 1 = left
+y = [0, 0, 1, 1, 0, 1]
+
+model = DecisionTreeClassifier(random_state=42)
+model.fit(X, y)
+
+new_customer = [[4, 5]]
+prediction = model.predict(new_customer)
+
+print("Predicted class:", prediction[0])
+
+
+Line by line:
+1. X contains the input features.
+2. y contains the correct labels.
+3. DecisionTreeClassifier() creates a classification model.
+4. fit(X, y) learns patterns from labeled examples.
+5. predict() predicts the class of a new customer.
+-----------------------------------------------------------------------------------------------
+Example B: Unsupervised learning with K-Means
+Now imagine we have customer activity data, but no labels describing customer groups.
+
+from sklearn.cluster import KMeans
+
+# Features: [monthly_transactions, monthly_spending]
+X = [
+    [40, 20000],
+    [35, 18000],
+    [3, 2000],
+    [5, 2500],
+    [25, 12000],
+    [4, 1800]
+]
+
+model = KMeans(
+    n_clusters=2,
+    random_state=42,
+    n_init=10
+)
+
+model.fit(X)
+
+groups = model.labels_
+
+print("Customer groups:", groups)
+
+------------------------------------------------------------
+|How do you decide which ML approach to use?|
+
+What are you trying to achieve?
+
+Predict a known outcome
+You have historical labels.
+        |
+Supervised learning
+Classification or regression
+
+Discover patterns
+You don't have target labels.
+        |
+Unsupervised learning
+Clustering or dimensionality reduction
+
+
+Learn a strategy through interaction
+Actions affect the environment, and rewards guide learning.
+               |
+Reinforcement learning
+----------------------------------------------------------------------------
+7. Interview questions and answers
+Q1. What are the three main types of Machine Learning?
+Supervised learning learns from labeled data, unsupervised learning discovers patterns in unlabeled data, 
+and reinforcement learning learns a strategy through actions and rewards.
+
+Q2. What is the difference between classification and regression?
+Classification predicts a category, such as fraud or legitimate. Regression predicts a numerical value, such as a house price.
+
+Q3. What is K-Means?
+K-Means is an unsupervised clustering algorithm that partitions data into a specified number of clusters based on distances to cluster centers.
+
+Q4. Why is K-Means sensitive to feature scaling?
+K-Means relies on distances. Features with larger numerical scales can dominate those distances, so scaling can help give features more comparable influence.
+
+Q5. What is a reward in Reinforcement Learning?
+A reward is numerical feedback from the environment that helps an agent learn a strategy for maximizing cumulative reward over time.
+Q6. Can an AI project combine supervised and unsupervised learning?
+Yes. For example, a bank could use clustering to explore customer segments and a supervised classifier to predict churn. The two methods address different tasks.
+
+------------------------------------------------------------------------------------------------------
+Concept	                                  Remember
+Supervised learning	                    Learn from labeled examples
+Classification	                         Predict a category
+Regression	                              Predict a number
+Unsupervised learning                      	Discover patterns without target labels
+Clustering                                	Group similar data points
+Reinforcement learning	                     Learn from actions and rewards
+K-Means	                                     Common clustering algorithm
+Feature scaling	                                  Important for distance-based algorithms such as K-Means
+
