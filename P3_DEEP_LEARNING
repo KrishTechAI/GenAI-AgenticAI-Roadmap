@@ -1,0 +1,236 @@
+Deep Learning (DL)
+Neural networks learn complex patterns using multiple layers
+
+Modern language models
+Transformers, LLMs and many modern GenAI systems
+
+For example, a traditional NLP system might use TF-IDF with Logistic Regression to classify a banking complaint. 
+A modern LLM uses a deep neural network—typically a Transformer—to process and generate language.
+------------------------------------------------------------------------------------------------
+Artificial Intelligence (AI)
+The broad field of intelligent computer systems
+|
+Machine Learning (ML)
+Algorithms learn patterns from data
+|
+Deep Learning (DL)
+Neural networks learn complex patterns using multiple layers
+|
+Modern language models
+Transformers, LLMs and many modern GenAI systems
+-------------------------------------------------------------------------------
+What exactly is Deep Learning?
+
+Deep Learning is a subset of Machine Learning that uses neural networks with multiple layers to learn patterns from data.
+ex:
+Think about teaching a child to recognize a cat. Instead of writing a rule for every possible cat, we show many examples. The child gradually learns useful patterns.
+
+Deep Learning works in a somewhat similar way: it learns patterns by adjusting numerical values inside a neural network during training.
+
+
+Examples of what it can learn:
+- Images: patterns such as edges, shapes, and objects.
+- Speech: sound patterns and spoken words.
+- Text: relationships between words and their context.
+- Language generation: patterns that help predict the next token.
+--------------------------------------------------------------------------------------------------------
+How does a neural network work?
+
+A neural network contains interconnected units called neurons.
+
+There are three main types of layers:
+
+Layer	|Purpose
+Input  |layer	Receives the input data
+Hidden layers	|Transform the data and learn patterns
+Output layer	|Produces a prediction or output
+
+Suppose we want to predict whether a customer may leave a bank. The input features might include:
+- Number of missed payments
+- Account age
+- Customer activity
+
+The neural network processes these inputs through hidden layers and produces an output, such as a churn probability.
+
+In NLP, the input is text that has been converted into numerical representations. The network then learns patterns from those representations.
+----------------------------------------------------------------
+How does a neural network learn?
+
+The learning process has four main steps.
+
+Step 1 — Forward propagation
+Input data passes through the network to produce a prediction.
+
+Step 2 — Calculate the loss
+Compare the prediction with the correct answer. The loss measures how wrong the prediction is according to a chosen objective.
+
+Step 3 — Backpropagation
+Calculate how the loss changes with respect to the network's trainable parameters using the chain rule.
+
+Step 4 — Update weights
+An optimizer, such as gradient descent, adjusts the weights to try to reduce the loss. The process repeats over many training examples.
+
+Important terms
+- Weights: Learned numerical values that influence how inputs are transformed.
+- Bias: A learned value that helps shift a neuron's output.
+- Activation function: Introduces nonlinearity, allowing networks to learn complex patterns.
+- Loss function: Measures prediction error according to a defined objective.
+- Backpropagation: Computes gradients used to train the network.
+- Gradient descent: An optimization method that uses gradients to update parameters.
+An important distinction: backpropagation calculates gradients; the optimizer uses those gradients to update the parameters.
+----------------------------------------------------------------------------------------------------
+What is an activation function?
+An activation function transforms a neuron's output. Common choices include ReLU, sigmoid, and tanh.
+--------------------------------------------------------------------------
+How did Deep Learning evolve toward modern NLP?
+
+CNN — Convolutional Neural Network
+Especially useful for images. CNNs can also be used for text tasks by detecting local patterns such as short word sequences.
+
+RNN — Recurrent Neural Network
+Processes sequences step by step, carrying information from earlier steps to later ones. Long-range dependencies can be difficult to learn.
+
+LSTM and GRU
+Special kinds of recurrent networks designed to manage information over longer sequences more effectively than basic RNNs.
+
+Transformer
+Uses attention to model relationships between tokens and can process training sequences in parallel. It forms the foundation of many modern LLMs.
+-------------------------------------------------------------------------------------
+Why did Transformers become so important?
+
+RNNs process tokens sequentially, which makes parallelizing sequence computation harder. They can also struggle to preserve information across very long sequences.
+LSTMs and GRUs address some of these difficulties, but still retain sequential processing.
+Transformers use self-attention to let each token incorporate information from other relevant tokens. This supports efficient parallel training and effective modeling of long-range relationships,
+although attention cost and context length still have practical limits.
+-------------------------------------------------------------------------------------------------------
+Deep Learning 
+
+What is Deep Learning? 
+Deep Learning is a subset of Machine Learning that uses Neural Networks with multiple hidden layers to learn complex patterns from data.
+
+
+Examples:
+•	Face Recognition 
+•	ChatGPT 
+•	Self-Driving Cars 
+•	Medical Diagnosis 
+
+Neural Network Basics 
+A Neural Network is inspired by the human brain.
+It consists of:
+•	Input Layer 
+•	Hidden Layer(s) 
+•	Output Layer 
+
+Components
+Input Layer
+•	Receives data 
+•	Example: Age, Salary, Experience 
+Hidden Layer
+•	Learns patterns 
+Output Layer
+•	Produces prediction 
+Example:
+•	Loan Approved = Yes/No 
+--------------------------------------------------------------------------------
+Neuron, Weight and Bias 
+
+Each neuron performs:
+
+output = activation(weight × input + bias)
+
+Weight
+•	Importance of input 
+•	Higher weight = More influence 
+Bias
+•	Helps shift prediction 
+•	Improves learning flexibility 
+
+---------------------------------------------------------------
+Forward Propagation:
+    Data moves from input to output.
+
+Activation Functions: 
+    Activation functions help the network learn non-linear relationships.
+ReLU, Sigmoid, Tanh, Softmax
+
+Loss Function: Measures prediction error.
+
+Backpropagation: Backpropagation helps the network learn from mistakes.
+
+steps:
+1.	Predict output 
+2.	Calculate error 
+3.	Send error backward 
+4.	Update weights 
+5.	Improve prediction 
+
+Optimizers:  Optimizers update weights efficiently.
+
+Gradient Descent: 
+Moves towards minimum error.
+
+Adam Optimizer
+Most popular optimizer.
+Advantages:
+•	Fast 
+•	Stable 
+•	Better accuracy 
+---------------------------------------------------------------------------------------------------
+Deep Learning Architectures:
+
+ANN (Artificial Neural Network)
+Used for:
+•	Sales Prediction 
+•	Customer Churn 
+•	Loan Approval 
+
+CNN (Convolutional Neural Network)
+
+Used for Images.
+Examples:
+•	Face Recognition 
+•	Medical Images 
+•	Object Detection 
+
+
+RNN (Recurrent Neural Network)
+Used for Sequential Data.
+Examples:
+•	Speech Recognition 
+•	Time Series Forecasting 
+•	Language Modeling 
+
+
+LSTM
+Improved version of RNN.
+Advantages:
+•	Remembers long-term information 
+•	Solves vanishing gradient problem 
+--------------------------------------------------------------------------------
+Transformer
+The architecture behind modern Generative AI.
+Examples:
+•	ChatGPT 
+•	Gemini 
+•	Claude 
+Advantages:
+•	Faster training 
+•	Better context understanding 
+•	Parallel processing 
+-------------------------------------------------------------------------------
+
+Our learning order from here:
+1. Deep Learning foundations — neurons, activation functions, loss, backpropagation, and gradient descent.
+2. Neural network architectures — CNN, RNN, LSTM, and GRU.
+3. NLP fundamentals — preprocessing, Bag of Words, and TF-IDF.
+4. Word embeddings, attention, and Transformers.
+5. LLMs, RAG, and Agentic AI.
+------------------------------------------------------------------------------------
+ML ---> DL 
+
+
+
+
+
+
