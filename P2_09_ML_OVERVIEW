@@ -1,0 +1,243 @@
+Statistic:
+
+Correlation: 
+    Correlation means how the two variables are moving together.
+
+3 Type:
+
+Positive correlation   -> if the both variables are go up or down together
+Negative correlation   -> one variable goes up and the other one will go down
+No Correlation       -> No links between those variables, Show size and the IQ level
+-------------------------------------------------------
+Co-efficient:
+
+Correlation co-efficient means how much these variables strongly together
+It will be a numeric value measured from minus 1 to plus 1 ( -1 to +1)
+
+Range: Always between -1.0 (perfect negative) and +1.0 (perfect positive).
+Value close to 0: Weak or no linear correlation (e.g., 0.1).
+Value close to +1: Strong positive correlation (e.g., 0.9).
+Value close to -1: Strong negative correlation (e.g., -0.8).
+Answers: "Exactly how strong and in what direction is that relationship?"
+
+----------------------------------------------------------------
+Variance- Var- 
+Variance measures how far data points spread out from their average (mean) value.
+
+Median- Med-
+Median is a middle value of the arranged order dataset
+
+Regression- Reg- 
+Regression is a method to find a best fit of the line or curve through data points to understand how one variable affect the other variable
+
+Regression is useful to 
+✔ Make predictions – like future sales, stock prices, temperature, etc.
+✔ Understand relationships – like how salary depends on experience.
+✔ Measure impact – like how much marketing spend increases sales.
+✔ Forecast trends – like business growth over time.
+✔ Support decisions – helps bankers, business owners, doctors, and engineers make better decisions using data.
+
+----------------------------------------------------------------------------------
+Machine Learning
+
+•	Supervised vs Unsupervised Learning.
+•	Regression & Classification (demo in Python).
+•	Overfitting, Regularization basics.
+•	Evaluation metrics (Accuracy, Precision, Recall, F1).
+-----------------------------------------------------------------------------------
+ML Data types:
+
+Category	    Type	            Description	               Example	                 Math Operations	      Graph
+Qualitative  |	Nominal        |	Names only	             |Gender, City	           |❌ None	              |Bar / Pie
+Qualitative  |	Ordinal         |	Ordered categories	      |Rating, Education	     |➖ Rank, Median	      |Ordered Bar
+Quantitative |	Interval	      |Equal gaps, no true zero	   |Temperature (°C), Year	|➕ ➖ Only          |	Histogram / Line
+Quantitative |	Ratio	          |Equal gaps, true zero       |	Age, Salary, Weight	  |➕ ➖ ✖️ ➗	       |Histogram / Scatter
+----------------------------------------------------------------------------------------
+Supervised sup- vs Unsupervised
+
+Supervised learning:
+maps inputs to a known target using labeled data—for example, predicting loan default or customer churn using past outcomes; we evaluate with metrics like F1 or AUC.
+Learn from labeled examples to predict a target (y).
+
+Unsupervised learning:
+learning finds structure without labels—like clustering customers, detecting anomalies, or reducing dimensions with PCA; we judge it using silhouette score and, importantly, business interpretability.
+Learn from unlabeled data to discover structure/patterns (no y).
+
+I use Supervised when a labeled target exists and I need predictions
+Unsupervised when I’m exploring data or building segments/features to feed into supervised models.
+-----------------------------------------------------------------------------------------------------------------
+• Supervised: “Show me inputs + the correct answer; I’ll learn to map X → y.”    Indioendent, dependent
+• Classification (predict categories): Logistic Regression, Random Forest, XGBoost, SVM, Neural Nets.
+• Regression (predict numbers): Linear/Elastic Net, Random Forest Regressor, XGBoost Regressor.
+
+• Unsupervised: “I only have inputs; I’ll group, compress, or spot oddballs.”
+• Clustering (group similar items): K-Means, Hierarchical, DBSCAN.
+• Dimensionality Reduction (compress features): PCA, t-SNE/UMAP (for visualization).
+• Anomaly/Outlier Detection: Isolation Forest, One-Class SVM, LOF.
+• Association Rules: Apriori, FP-Growth (market-basket).
+
+
+• Do you have a target column today?
+If YES then, it’s a Supervised.
+If NO then, it’s an Unsupervised (to explore, cluster, reduce dimensions, or find anomalies).
+• Is the goal prediction for each future record? It is Supervised.
+• Is the goal insight/structure (segments, patterns, outliers)? It is Unsupervised.
+• Want both? Start with Unsupervised (EDA/segments), then build Supervised models per segment
+--------------------------------------------------------------------------------------------------------------------
+Reinforcement Learning:
+
+Reinforcement Learning is a trial-and-error learning process where a machine (agent) learns by interacting with an environment and getting rewards or penalties for its actions.
+
+Why RL Works Better Here
+•	RL learns from experience, not just fixed past data.
+•	It adapts to new fraud tricks automatically.
+•	The reward system teaches it to find the balance between catching fraud and not annoying customers.
+•	Model adapts to new fraud patterns automatically
+
+•	Now, we train an RL Agent (say using Deep Q-Learning):
+•	It interacts with transactions one by one.
+•	Each time it decides to Block/Approve, it gets a Reward.
+Over time, it learns the best decision pattern.
+------------------------------------------------------------------------------------
+Supervised Learning → Learn from labeled data
+Unsupervised Learning → Find patterns
+Reinforcement Learning → Learn from experience (reward/punishment)
+-------------------------------------------------------------------------------------------
+Regression:
+Regression is a method in Machine Learning and Statistics used to predict a number based on previous data.
+It finds a relationship between input values and output values.
+
+Regression = Prediction + Relationship Finding
+It helps us use past data to predict future values and understand how things are connected.
+------------------------------------------------------------------------------
+Regression Types:
+
+• Simple Linear Regression   *
+• Multiple Linear Regression *
+• Polynomial Regression *
+• Ridge Regression (L2 Regularization) *
+• Lasso Regression (L1 Regularization)  *
+• Elastic Net Regression   *
+• Logistic Regression  *
+• Quantile Regression
+• Support Vector Regression (SVR)
+• Decision Tree Regression  *
+• Random Forest Regression  *
+• XGBoost Regression *
+• Bayesian Regression
+• Poisson Regression
+• Robust Regression
+
+---------------------------------------------------
+Linear Regression:
+
+Simple Linear
+Multi Linear 
+
+1. Simple Linear Regression 
+uses a single independent variable to predict the value of a dependent variable through a straight-line relationship
+
+Independent variable (input): Hours studied because it's the factor we control or observe.
+Dependent variable (output): Exam score because it depends on how many hours were studied.
+
+
+2. Multi linear Regression
+Multiple linear regression allows us to analyze relationship between multiple independent variables and a single dependent variable.
+
+3. Polynomial Regression
+
+Polynomial Regression is a type of regression where the relationship between X and Y is not a straight line, but a curve.
+It’s basically an extended version of Linear Regression.
+
+eg: You can see income increases up to a certain age (45),and then decreases — so it’s curved, not straight.
+
+Corns:
+Overfitting
+Noise
+failed badly on new/unseen data
+------------------------------------------------------------------------------------------------------------
+|Regularization|
+
+•	Regularization is a technique used to avoid overfitting in regression models.
+•	It adds a penalty to the model when the coefficients become too large.
+•	This keeps the model simpler and more stable, especially when you have many correlated or noisy features.
+---------------------------------------------------------------------------------------------------
+4. Ridge Regression (L2 Regularization)
+
+•	Ridge Regression adds a L2 penalty = sum of squares of coefficients to the cost function.
+•	It shrinks all coefficients towards zero but never makes them exactly zero.
+  Ridge keeps all features but reduces their strength to avoid overfitting.
+
+5. Lasso Regression (L1 Regularization)
+•	Lasso Regression adds a L1 penalty = sum of absolute values of coefficients to the cost function.
+•	It can shrink some coefficients exactly to 0 — performing feature selection automatically.
+
+6. Elastic Net Regression
+•	Elastic Net Regression is a type of Regularized Linear Regression that combines both Lasso (L1) and Ridge (L2) penalties.
+•	It gives you the best of both worlds —
+•	Lasso’s ability to remove useless features, and
+•	Ridge’s ability to handle correlated variables.
+•	Elastic Net = Lasso + Ridge
+It both shrinks coefficients and sets some of them to zero.
+
+
+Simple Summary
+•	Before Elastic Net:
+Model memorized data, overreacted to Engine & HP → unstable predictions.
+•	After Elastic Net:
+Model balanced both features, ignored useless ones, and made predictions closer to reality.
+-------------------------------------------------------------------------------------------------------------------
+Classification:
+
+7. Logistic Regression
+Logistic Regression is used for classification problems (Yes/No, 0/1).
+It predicts probability that an event occurs, using the sigmoid (S-shaped) curve.
+When to Use
+•	When output variable is categorical (binary).
+•	When you need to predict events like loan approval, disease detection, fraud risk, etc.
+•	Data has a linear relationship between features and log-odds.
+
+Add Regularization (L1 / L2)
+Now we apply regularization to make the model more general (avoid overfitting).
+
+
+10. Decision Tree Regression
+•	Decision Tree Regression is a tree-based algorithm that splits the data into smaller regions based on feature values.
+•	Decision Trees create clear, rule-based models but can overfit if too deep. Pruning helps.
+•	Decision Tree Regression splits data into groups based on conditions, and predicts the average value in each group.
+•	It behaves like a “if-else rule engine” that makes decisions at each node.
+
+
+Think of it as a flowchart:
+•	At each node → ask a question (like “Is Area < 1500?”)
+•	Depending on answer → go left or right
+•	Continue splitting → until each region has similar values
+•	Output the average value in that final region
+
+11. Random Forest Regression
+  •	Random Forest Regression is an ensemble model that builds many Decision Trees and then takes the average of all their predictions.
+  . Random Forest = Many Decision Trees working together to make one strong prediction.”
+  •	It Reduces variance and overfitting.
+•	It’s like asking 100 experts and taking their average opinion — reducing errors and bias. 
+•	Random Forest gives high accuracy and stability, suitable for large, complex datasets
+
+12. XGBoost Regression
+•	XGBoost (Extreme Gradient Boosting) is an advanced ensemble regression technique that builds multiple Decision Trees sequentially, not in parallel (like Random Forest).
+•	Each new tree tries to correct the errors made by the previous trees — this is called boosting.
+•	It uses gradient descent optimization to minimize the error at every step, making it fast, accurate, and efficient even on large datasets.
+•	XGBoost Regression builds trees one after another —
+each new tree learns from the mistakes of previous trees.
+•	The final prediction is a powerful combination of all trees, giving excellent performance and accuracy.
+
+
+In simple words:
+•	Each tree learns from the mistakes of the previous ones — together they make a strong predictor.
+
+
+
+
+
+
+
+
+
