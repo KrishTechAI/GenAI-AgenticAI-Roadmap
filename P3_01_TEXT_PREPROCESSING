@@ -1,0 +1,68 @@
+Stage 1 — Text preprocessing
+Prepare raw text for processing.
+1. Text preprocessing · 2. Tokenization · 3. Stop words · 4. Stemming · 5. Lemmatization
+--------------------------------------------------------------------------------
+How NLP connects to AI, ML, deep learning and GenAI
+
+NLP — Natural Language Processing
+The field of teaching computers to work with human language
+             |
+Traditional NLP
+BoW, TF-IDF, text classification, NER
+             |
+Deep Learning for NLP
+Neural networks, RNNs, LSTMs, embeddings
+---------------------------------------------------------------------------------
+Text preprocessing
+
+Text preprocessing means cleaning and preparing raw text so a computer can process it more effectively.
+RAW TEXT:
+"  HELLO!!! I am NOT able to login... I tried 3 times.  "
+PROCESSED TEXT:
+hello i am not able to login i tried 3 times
+
+#Notice that we kept the word not. Removing it could change the meaning of the complaint.
+-------------------------------------------------------------------------------
+Common preprocessing techniques
+
+Technique	                     Purpose	                                                  Example
+Lowercasing             	Standardize capitalization	                                HELLO → hello
+Removing extra spaces	    Clean formatting                                            "hello   world" → "hello world"
+Punctuation handling    	Remove or normalize punctuation when appropriate	          hello!!! → hello
+Tokenization	            Split text into units                                     	"hello world" → ["hello", "world"]
+Stop-word removal        	Remove selected frequent words when appropriate           	"the bank" → "bank"
+Stemming	                Reduce a word to a stem	                                     playing → play
+Lemmatization	            Convert a word to its dictionary form	                      better → good in the appropriate context
+
+These steps are task-dependent. For example, punctuation, stop words and capitalization can carry useful information in sentiment analysis, search, and language models.
+------------------------------------------------------------------------------------
+ex:
+
+text = "  HELLO!!! I am NOT able to login...  "
+
+# Step 1: Remove spaces at the beginning and end
+text = text.strip()
+
+# Step 2: Convert text to lowercase
+text = text.lower()
+
+# Step 3: Remove selected punctuation
+text = text.replace("!", "")
+text = text.replace(".", "")
+
+print(text)
+---------------------------------------------------------------------------
+Where is text preprocessing used?
+- Traditional ML: Preparing text before applying TF-IDF and a classifier.
+- Search engines: Normalizing text to improve matching.
+- RAG applications: Preparing documents before chunking, embedding and indexing them.
+- LLMs: Some preprocessing may be useful, but pretrained models generally have their own tokenizers, so we should not automatically apply every traditional cleaning step.
+------------------------------------------------------------------------------
+Q1. What is NLP?
+NLP is a field of AI that enables computers to process, analyze, understand and generate human language.
+Q2. What is text preprocessing?
+Text preprocessing is the process of cleaning and preparing text before using it in an NLP pipeline.
+Q3. Is text preprocessing always required before using an LLM?
+No. Many LLM pipelines use the model's tokenizer directly. Additional cleaning may be useful for documents or particular tasks, but unnecessary preprocessing can remove important meaning.
+Q4. What is the difference between preprocessing and tokenization?
+Preprocessing is the broader preparation process. Tokenization is one specific operation that splits text into tokens, which may be words, subwords or characters.
