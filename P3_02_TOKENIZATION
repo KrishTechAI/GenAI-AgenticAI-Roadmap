@@ -96,3 +96,9 @@ Q5. Does one word always equal one token in an LLM?
 No. A word may map to one token or several tokens, depending on the tokenizer. words with reusable pieces. The exact split depends on the tokenizer, and a word may sometimes remain a single token.
 ----------------------------------------------------------------------------------------------
 
+Five-minute revision
+- Tokenization splits text into tokens.
+- Word, sentence and subword tokenization serve different purposes.
+- LLMs map tokens to token IDs and use embeddings to represent them numerically.
+- A word does not always equal one token.
+- Python's split() is useful for learning but is not a production LLM tokenizer.
