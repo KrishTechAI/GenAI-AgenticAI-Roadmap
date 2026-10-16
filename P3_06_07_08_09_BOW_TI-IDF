@@ -1,0 +1,227 @@
+topics: Bag of Words (BoW), TF-IDF, N-grams, and Cosine Similarity.
+--------------------------------------------------------------------
+Why do we need these techniques?
+Computers cannot directly perform mathematical calculations on sentences as if they were numerical data. Traditional machine-learning algorithms need numerical features.
+
+One clarification: these techniques are not necessarily successive technologies that replaced each other. They address different problems, and many systems combine them.
+====================================================================================
+Lesson 6 — Bag of Words (BoW)
+
+1. What is Bag of Words?
+Bag of Words converts text into numerical features by counting how often each vocabulary word appears.
+Think of it like a bag containing words. We care about which words appear and how often, but the basic method ignores their order.
+
+Vocabulary:
+["I", "love", "AI", "Python", "loves"]
+Next, count each word in each sentence.
+
+Sentence	I	love	AI	Python	loves
+S1	      1	 1	  1    	0	     0
+S2	      1	 1	  0	    1	     0
+S3	      0	 0	  1   	1	     1
+For S1, the numerical representation is:
+[1,1,1,0,0]
+
+#The computer can now use this vector as input to a traditional ML algorithm.
+-----------------------------------------------------------------------------
+
+# Install once:
+# pip install scikit-learn
+
+from sklearn.feature_extraction.text import CountVectorizer
+
+sentences = [
+    "I love AI",
+    "I love Python",
+    "AI loves Python"
+]
+
+vectorizer = CountVectorizer()
+
+X = vectorizer.fit_transform(sentences)
+
+print("Vocabulary:")
+print(vectorizer.get_feature_names_out())
+
+print("\nNumerical vectors:")
+print(X.toarray())
+
+
+CountVectorizer() creates a word-count vectorizer.
+fit_transform() learns the vocabulary and counts word occurrences.
+get_feature_names_out() shows the vocabulary.
+toarray() displays the sparse numerical matrix as an ordinary array.
+---------------------------------------------------------------------------------
+What problem does BoW solve?
+Before BoW, we had raw text. After BoW, we have numerical features that an ML algorithm can process.
+This enables tasks such as spam detection, sentiment classification and basic ticket categorization.
+-------------------------------------------------------------------------------
+What are the limitations of BoW?
+
+Limitation A: It ignores word order
+Compare:
+- "The customer approved the payment."
+- "The payment approved the customer."
+
+Limitation B: It treats frequent and rare words using simple counts
+A common word can receive a high count even if it does not help distinguish one document from another.
+BOW does not understand the importance of the word  . only do word count
+
+Limitation C: It cannot understand semantic similarity
+"Payment failed" and "Transaction unsuccessful" can have similar meanings, but they have no shared content words in a basic BoW representation.
+These limitations motivate the next techniques.
+-----------------------------------------------------------------
+Interview questions
+Q1. What is Bag of Words?
+A text representation method that converts documents into vectors based on vocabulary word counts.
+Q2. Does BoW preserve word order?
+No. Basic BoW ignores the sequence in which words appear.
+Q3. Why do we need BoW?
+It transforms text into numerical features that traditional machine-learning algorithms can use.
+======================================================================================================
+Lesson 7 — TF-IDF
+
+
+1. Why did TF-IDF come after BoW?
+Remember the main limitation of BoW: it counts words, but it doesn't know whether a word is useful for distinguishing one document from another.
+
+TF-IDF was designed to give words higher weights when they are frequent in a particular document but relatively uncommon across the document collection.
+
+F-IDF stands for:
+- TF — Term Frequency: How often does the word appear in this document?
+- IDF — Inverse Document Frequency: How rare is the word across the collection of documents?
+------------------------------------------------------------------------------------
+How TF-IDF works:
+
+Step 1: Calculate TF
+Does the word appear frequently in this particular document?
+
+Step 2: Calculate IDF
+Does the word appear in many documents or only a few?
+
+Step 3: Multiply TF × IDF
+Get a weight reflecting the word's importance to the document within the collection.
+-----------------------------------------------------------------------------------------
+
+Word	                   | Documents containing it	| Expected IDF tendency
+payment	                          3	                             Lower
+failed	1	Higher
+pending	1	Higher
+successful	1	Higher
+Notice that a word appearing once is not automatically more important in every possible sense. TF-IDF measures statistical distinctiveness, not true meaning or business importance.
+---------------------------------------------------------------------------------
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+documents = [
+    "payment failed",
+    "payment pending",
+    "payment successful"
+]
+
+vectorizer = TfidfVectorizer()
+
+X = vectorizer.fit_transform(documents)
+
+print("Vocabulary:")
+print(vectorizer.get_feature_names_out())
+
+print("\nTF-IDF vectors:")
+print(X.toarray().round(3))
+
+What does fit_transform() do here?
+- fit learns the vocabulary and document-frequency statistics.
+- transform creates the weighted numerical vectors.
+- fit_transform performs both operations together.
+--------------------------------------------------------------------------------------
+What problems remain after TF-IDF?
+TF-IDF improves word weighting, but it still has limitations.
+Limitation A — Word order is still missing. The vectors for "customer approved payment" and "payment approved customer" can be identical when using unigram TF-IDF.
+Limitation B — Different words can express similar meanings. "Failed" and "unsuccessful" may be related in context, but TF-IDF does not automatically know that.
+Limitation C — Context is not understood. The word "charge" can refer to a fee or the act of charging a device, depending on context.
+--------------------------------------------------------------------------------------
+Interview questions
+Q1. What is TF-IDF?
+A numerical text representation that weights terms based on their frequency in a document and their distribution across a collection.
+Q2. How is TF-IDF different from BoW?
+BoW usually uses raw word counts; TF-IDF reweights terms to emphasize those that are more distinctive within the document collection.
+Q3. Does TF-IDF understand word meaning?
+No. It is based on word statistics, not a learned understanding of semantic meaning.
+===================================================================================================
+BoW
+Counts word occurrences.
+“payment” appears 3 times → count of 3.
+
+TF-IDF
+Weights words based on how often they occur in the document and how common they are across the document collection.
+Cosine Similarity in NLP
+==============================================================================================
+Lesson-9  Cosine similarity
+
+Cosine similarity measures how similar two numerical vectors are by comparing the angle between them.
+In simple English, it helps us check whether two pieces of text are similar based on their numerical representations.
+For example, in your HR Assistant:
+- Sentence A: “How can I apply for leave?”
+- Sentence B: “What is the process to request leave?”
+The words are different, but the sentences have similar meanings. Cosine similarity can help compare their vectors—especially when those vectors come from a semantic embedding model.
+
+1. First, why do we need cosine similarity?
+Computers cannot directly compare the meaning of sentences the way humans do. NLP systems often convert text into numerical vectors first.
+
+
+or example, a simple illustration:
+- Sentence A → vector \([1, 1]\)
+- Sentence B → vector \([2, 2]\)
+These vectors point in the same direction, so their cosine similarity is \(1\), meaning they have identical direction.
+-------------------------------------------------------------------------------------
+2. How does it work?
+Imagine two arrows representing two vectors.
+The next lesson, N-grams, addresses part of the first limitation.
+
+\[
+\text{Cosine Similarity}(A,B)
+=\frac{A\cdot B}{\|A\|\|B\|}
+\]
+
+- \(A\cdot B\): calculates the dot product of the vectors.
+- \(\|A\|\): measures the length of vector A.
+- \(\|B\|\): measures the length of vector B.
+Dividing the dot product by both vector lengths lets us compare their directions rather than just their sizes.
+--------------------------------------------------------------------------------------------------------
+
+3. Understand the scores
+Cosine similarity	  |General interpretation
+\(1\)	|Same direction; maximum similarity
+\(0.8\)	|Strong directional similarity
+\(0\)	|Perpendicular vectors; no directional similarity
+\(-1\)	|Opposite directions
+
+For non-negative BoW or TF-IDF vectors, scores are generally between 0 and 1. Dense embeddings may also produce negative scores.
+-----------------------------------------------------------------------------------
+How is it used in RAG?
+
+User question
+“How do I request leave?”
+|
+Embedding model
+Converts the question into a numerical vector.
+|
+Cosine similarity search
+Compares the question vector with stored HR document vectors.
+|
+Retrieved HR text
+“Employees must submit leave requests through the HR portal.”
+|
+LLM
+Uses the retrieved text to formulate an answer.
+These scores are not universal percentages of meaning. A score of 0.8 does not automatically mean that two sentences are 80% semantically similar.
+
+======================================================================================================
+5. Quick revision
+Technique	 |Main purpose
+BoW	Counts --> individual words
+TF-IDF-->	Weights words based on their document frequency
+N-grams	--> Represents consecutive sequences of words
+Cosine similarity	C--> ompares the direction of numerical vectors
+
+Interview-ready answer: “An N-gram is a sequence of N consecutive tokens. Unigrams contain one token, bigrams contain two,
+and trigrams contain three. N-grams capture local word-order information and are commonly used as features with traditional NLP and machine-learning models.”
