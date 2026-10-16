@@ -62,3 +62,33 @@ before embedding BOW, TF-IDF used
 -------------------------------------------------------------------------------------
 
                                     Lets do the NLP understanidng from P3_02_NLP...........
+
+
+
+ The payments are FAILING!!! Please check my payments.
+
+2. Text cleaning
+Remove unwanted symbols and extra spaces.
+
+3. Lowercasing
+the payments are failing please check my payments
+
+4. Tokenization
+["the", "payments", "are", "failing", "please", ...]
+
+5. Stop-word removal (optional)
+["payments", "failing", "please", "check", "payments"]
+
+6. Stemming or lemmatization (optional)
+["payment", "fail", "please", "check", "payment"]
+
+7. Text representation
+BoW or TF-IDF converts the text into numerical features.
+
+8. Machine learning model
+Predicts: Payment Issue
+
+
+Key takeaway: Preprocessing prepares the text; feature extraction converts it into useful numerical inputs when needed;
+NER and text classification are tasks performed by a suitable rule-based or trained model. 
+Modern models such as BERT can perform both tasks using task-specific configurations, without requiring a TF-IDF step.
