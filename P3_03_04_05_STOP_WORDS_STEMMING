@@ -1,0 +1,218 @@
+What are stop words?
+Stop words are common words that some NLP systems remove because they may contribute little to a particular task.
+Examples include:
+- is
+- the
+- a
+- an
+- am
+- are
+- of
+- to
+
+Consider this customer-support message:
+"The payment is not completed."
+
+If a traditional text-processing pipeline removes selected stop words, it might produce:
+payment completed
+But notice the problem: removing not changes the meaning!
+The original says the payment was not completed. The processed version might suggest the opposite.
+
+
+Important: Stop-word removal is optional. Not every common word should be removed, and many modern NLP and LLM applications work without a stop-word removal step.
+-------------------------------------------------------------------------------
+We can use the NLTK library's English stop-word list.
+
+
+# Install once in your terminal:
+# pip install nltk
+
+import nltk
+from nltk.corpus import stopwords
+
+nltk.download("stopwords")
+
+text = "The payment is not completed"
+
+words = text.lower().split()
+
+stop_words = set(stopwords.words("english"))
+
+filtered_words = [
+    word for word in words
+    if word not in stop_words or word == "not"
+]
+
+print("Original words:", words)
+print("Filtered words:", filtered_words)
+
+Here, we deliberately preserve not because it carries important meaning.
+The exact stop-word list depends on the library and can be customized for your application.
+--------------------------------------------------------------------------
+3. Where is stop-word removal used?
+- Traditional search and information retrieval.
+- Some TF-IDF or text-classification pipelines.
+- Text analysis where common words add little value.
+
+For a modern RAG chatbot, avoid blindly removing stop words from documents or user questions. Words such as not, without, before, and after can change the meaning of a query.
+--------------------------------------------------------------------------------
+Q1. What are stop words?
+Common words that may be removed during text preprocessing when they are not useful for a specific task.
+Q2. Should we always remove stop words?
+No. Removing them can lose important context, especially in sentiment analysis, question answering and semantic search.
+Q3. Are stop words removed automatically by every LLM?
+No. LLM tokenizers generally tokenize the complete input according to their vocabulary and tokenization rules; they do not universally remove stop words.
+======================================================================================================================================================================================================
+
+Lesson 4 — Stemming
+
+1. What is stemming?
+Stemming is a technique that reduces a word to its stem by removing prefixes or suffixes using simple rules.
+
+For example:
+Original word   	Possible stem
+playing         	play
+played	          play
+plays	           play
+studies           	studi
+connection        	connect
+connected	          connect
+Notice that studi is not a normal English dictionary word. That is okay for a stemmer: it aims to reduce word variations, not necessarily produce grammatically correct words.
+
+#A stemmer doesn't necessarily understand the meaning of a word. It mainly applies linguistic or rule-based transformations.  (because studies because studi in stemming so lemmitization comes in)
+-----------------------------------------------------------------------------------------------------------
+PROGRAM:
+
+
+# Install once:
+# pip install nltk
+
+from nltk.stem import PorterStemmer
+
+stemmer = PorterStemmer()
+
+words = ["playing", "played", "plays", "studies", "studying"]
+
+for word in words:
+    print(word, "->", stemmer.stem(word))
+
+Understand the code
+- PorterStemmer() creates a stemmer.
+- words contains the words we want to process.
+- stemmer.stem(word) applies stemming to each word.
+- The loop prints the original word and its stem.
+-----------------------------------------------------------------------------------
+Advantages and disadvantages
+Advantages
+- Simple and fast.
+- Can reduce the number of different word forms.
+- Useful in some traditional search and text-processing pipelines.
+
+
+Disadvantages
+- May produce words that do not exist.
+- May group words that are not semantically equivalent.
+- Does not reliably understand grammatical context.
+-------------------------------------------------------------------------
+Q1. What is stemming?
+Stemming reduces a word to a stem by applying rules that remove or modify parts of the word.
+Q2. Does stemming always produce a dictionary word?
+No. For example, a stemmer may reduce studies to studi.
+Q3. Where is stemming useful?
+It can be useful in traditional search systems, information retrieval and selected text-analysis tasks.
+Q4. Is stemming required before using an LLM?
+No. LLMs use their own tokenization and learned representations. Stemming the input can even damage its meaning, so it should only be used when the application calls for it.
+=====================================================================================
+Lesson 5 — Lemmatization
+
+1. What is lemmatization?
+Lemmatization converts a word into its dictionary base form, called a lemma.
+Unlike stemming, lemmatization uses vocabulary and often grammatical information to find the appropriate base form.
+
+Original word	Lemma
+playing	   play
+played	   play
+studies  	study
+cars	     car
+am	       be
+better	good (in the appropriate comparative context)
+
+The exact result can depend on the tool, the part of speech and the context.
+-----------------------------------------------------------------------------
+Stemming vs. lemmatization
+
+Stemming:
+studies → studi
+Uses rules to reduce the word. The result might not be a real word.
+
+Lemmatization:
+studies → study
+Uses linguistic information to find the dictionary form.
+
+
+Easy way to remember:
+- Stemming = cut the word down.
+- Lemmatization = find the dictionary form.
+---------------------------------------------------------------------------
+Python example using NLTK
+NLTK's WordNet lemmatizer uses WordNet, a lexical database. For reliable results, you should provide the word's part of speech when appropriate.
+
+# Install once:
+# pip install nltk
+
+import nltk
+from nltk.stem import WordNetLemmatizer
+
+nltk.download("wordnet")
+nltk.download("omw-1.4")
+
+lemmatizer = WordNetLemmatizer()
+
+words = ["playing", "played", "studies", "cars"]
+
+for word in words:
+    lemma = lemmatizer.lemmatize(word, pos="v")
+    print(word, "->", lemma)
+
+
+
+
+Try changing pos="v" to pos="n" for nouns:
+
+print(lemmatizer.lemmatize("cars", pos="n"))
+------------------------------------------------------------------------
+3. Why does lemmatization need context?
+Consider the word better.
+- "This solution is better." — better can have the lemma good.
+- "I want to better my skills." — better is a verb, whose lemma is better.
+The same written word can have different grammatical roles. A lemmatizer may need this information to select the appropriate base form.
+
+Why is it an advantage?
+Lemmatization considers the word's grammatical role and context, so it can return a more meaningful dictionary form.
+
+Why can it be a disadvantage?
+- It may need POS tagging or other linguistic analysis.
+- It can be slower and more computationally expensive than simple stemming.
+- If the context or grammatical information is incorrect, it may choose the wrong lemma.
+-----------------------------------------------------------------------------------
+4. Where is lemmatization used?
+- Search and information retrieval.
+- Traditional NLP pipelines.
+- Text analysis and selected classification tasks.
+- Normalizing word forms when dictionary-based processing is useful.
+-------------------------------------------------------------------------------------------
+Q1. What is lemmatization?
+Lemmatization converts a word into its dictionary base form using vocabulary and, often, grammatical information.
+Q2. What is the main difference between stemming and lemmatization?
+Stemming applies rules to reduce a word and may produce a non-dictionary form. Lemmatization aims to return a valid dictionary form.
+Q3. Which is more accurate?
+Lemmatization generally produces more linguistically meaningful base forms, but it depends on the tool, language and context. It is also usually more computationally involved than simple stemming.
+Q4. Do we need both stemming and lemmatization in the same pipeline?
+Usually not. The choice depends on the task and the benefits of each technique.
+
+
+Final recap
+Technique  	Main purpose	                             Example
+Stop-word  | removal	Remove selected common words	| the payment → payment
+Stemming	  |Reduce word forms using rules	          |    studies → studi
+Lemmatization	| Find the dictionary base form	        |  studies → study
