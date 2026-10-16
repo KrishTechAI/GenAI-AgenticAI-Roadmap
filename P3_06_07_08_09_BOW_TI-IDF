@@ -1,4 +1,7 @@
 topics: Bag of Words (BoW), TF-IDF, N-grams, and Cosine Similarity.
+
+Stage 2 — Traditional NLP techniques
+Convert text into numerical features and compare it.
 --------------------------------------------------------------------
 Why do we need these techniques?
 Computers cannot directly perform mathematical calculations on sentences as if they were numerical data. Traditional machine-learning algorithms need numerical features.
