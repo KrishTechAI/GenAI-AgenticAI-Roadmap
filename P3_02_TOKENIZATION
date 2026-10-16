@@ -1,0 +1,98 @@
+1. What is tokenization?
+Tokenization is the process of splitting text into smaller units called tokens.
+A token can be a word, part of a word, a character, or even punctuation, depending on the tokenizer.
+
+INPUT TEXT
+I love Python!
+
+AFTER WORD TOKENIZATION
+I | love  | Python  |  !
+Each box represents one token in this illustrative example.
+
+The computer can now process these individual units instead of treating the entire sentence as one unstructured string.
+--------------------------------------------------------------------------------
+Types of tokenization
+
+A. Word tokenization
+Splits a sentence into words.
+Example: I love AI → ["I", "love", "AI"]
+Useful for understanding basic NLP and traditional text-processing techniques.
+
+B. Sentence tokenization
+Splits a paragraph into sentences.
+Example: I love AI. I study NLP. → ["I love AI.", "I study NLP."]
+Useful when processing paragraphs, articles and documents.
+
+C. Subword tokenization
+Splits words into smaller pieces when needed.
+Example: unhappiness → un + happi + ness (illustrative only; actual splits depend on the tokenizer).
+Very important for modern LLMs because their vocabularies can represent many words using reusable pieces.
+--------------------------------------------------------------------------------
+Why do LLMs use tokenization?
+
+Suppose you enter this prompt:
+Explain artificial intelligence.
+
+1. Input text
+Explain artificial intelligence.
+          |
+2. Tokenization
+Split the text into tokenizer-specific tokens
+          |
+3. Token IDs
+Map each token to a numerical ID
+         |
+4. Embeddings
+Convert token IDs into numerical vectors
+         |
+5. Transformer
+Processes contextual relationships between tokens
+
+Remember this important distinction:
+- Token: A text unit.
+- Token ID: An integer representing a token in the tokenizer's vocabulary.
+- Embedding: A vector of numbers representing that token for the model.
+
+#  Token IDs are not meanings, and they are not embeddings themselves.
+---------------------------------------------------------------------------
+Let's see tokenization in Python
+
+text = "I love learning NLP"
+tokens = text.split()
+print(tokens)
+print("Number of tokens:", len(tokens))
+
+Try sentence tokenization:
+
+text = "I study NLP. I want to build LLM applications."
+
+sentences = text.split(".")
+
+sentences = [sentence.strip() for sentence in sentences if sentence.strip()]
+
+print(sentences)
+---------------------------------------------------------------------
+How are tokens converted into IDs?
+
+Token	Token ID
+I	12
+love	45
+AI	89
+
+The model uses these IDs to look up learned embedding vectors. The vectors, rather than the raw text or integer IDs alone, become the input representations processed by the Transformer.
+----------------------------------------------------------------------------------------------
+Why not simply split every sentence by words?
+Consider an unfamiliar word such as unbelievability.
+
+Subword tokenization addresses this by representing manyQ1. What is tokenization?
+Tokenization is the process of dividing text into smaller units called tokens.
+Q2. What is the difference between word and subword tokenization?
+Word tokenization treats words as units, while subword tokenization can divide words into smaller pieces. Many LLM tokenizers use subword-based methods.
+Q3. What is a token ID?
+A token ID is the integer associated with a token in a tokenizer's vocabulary.
+Q4. Are tokens and embeddings the same?
+No. A token is a text unit, a token ID is its numerical identifier, and an embedding is a numerical vector.
+Q5. Does one word always equal one token in an LLM?
+No. A word may map to one token or several tokens, depending on the tokenizer. words with reusable pieces. The exact split depends on the tokenizer, and a word may sometimes remain a single token.
+----------------------------------------------------------------------------------------------
+
