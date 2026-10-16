@@ -1,0 +1,64 @@
+Part 1 — Text preprocessing
+Lessons 1–5
+Text preprocessing, tokenization, stop words, stemming, and lemmatization.
+
+Part 2 — Traditional NLP techniques
+Lessons 6–10
+Bag of Words, TF-IDF, N-grams, cosine similarity, and Named Entity Recognition (NER).
+
+Part 3 — Text classification
+Lesson 11
+Train a model to classify text, such as support tickets or customer complaints.
+
+Part 4 — From traditional NLP to LLMs
+Lessons 12 onward
+Word embeddings → contextual embeddings → Transformers → LLMs.
+
+-----------------------------------------------------------------------------------
+Artificial Intelligence (AI)
+│
+├── Machine Learning (ML)
+│      │
+│      └── Deep Learning (DL)
+│
+├── Natural Language Processing (NLP)
+│      │
+│      ├── Traditional NLP
+│      │      ├── Tokenization
+│      │      ├── Stemming
+│      │      ├── Lemmatization
+│      │      ├── TF-IDF
+│      │      └── Rule-Based Systems
+│      │
+│      └── Modern NLP
+│             │
+│             └── Uses Deep Learning
+│                    │
+│                    ├── Embedding Layer
+│                    ├── Attention
+│                    ├── Transformer
+│                    └── LLMs
+│                           │
+│                           └── ChatGPT, Claude, Gemini
+│
+├── Computer Vision
+│
+├── Robotics
+│
+└── Speech Processing
+---------------------------------------------------------------------------------------------
+Before 2010: Treditional NLP (defore deep learning) --> Stop words removal, stemming, lemitization, BOW, TF-IDF, Tokenization
+
+2010: Deep learning (NLP) --> Word2vec, RNN, LSTM
+
+2017: Transformer (One of the deep learning model) --> Leading to modern language models
+
+2020: LLM Powerd application (Belongs to modern DL NLP)
+--------------------------------------------------------------------------------
+Key:
+above are used  for prediction (Novative models increased day by day)
+
+before embedding BOW, TF-IDF used
+-------------------------------------------------------------------------------------
+
+                                    Lets do the NLP understanidng from P3_02_NLP...........
