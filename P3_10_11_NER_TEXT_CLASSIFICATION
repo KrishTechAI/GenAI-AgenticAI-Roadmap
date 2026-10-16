@@ -1,0 +1,329 @@
+Stage 3 — NLP applications
+Extract information and predict text categories.
+10. Named Entity Recognition (NER) · 11. Text classification
+--------------------------------------------------------------------------------------------
+What is Named Entity Recognition?
+
+Named Entity Recognition (NER) is an NLP task that identifies entities in text and classifies them into categories.
+
+onsider this sentence:
+"Krishnapriya transferred ₹25,000 to HDFC Bank in Chennai on 15 October 2026."
+
+Recognized entities
+Krishnapriya -->PERSON
+₹25,000 ->MONEY
+HDFC Bank-> ORG
+Chennai ->GPE / LOCATION
+15 October 2026 -> DATE
+
+#It can identify a multiword entity, such as HDFC Bank, and assign the entire phrase a category.
+-------------------------------------------
+Why do we need NER?
+
+Without NER, the application receives a string of text. With NER, it can extract structured information that other software can use.
+
+This can help with:
+- Document information extraction.
+- Customer-support ticket analysis.
+- Identifying names and organizations in documents.
+- Preparing structured metadata for document search.
+- Supporting downstream workflows that validate or process extracted information.
+--------------------------------------------------------------------------
+How does NER work?
+
+At a high level, a traditional or modern NER pipeline processes text and predicts labels for relevant words or spans.
+
+Raw text
+"Ravi joined Infosys in Bengaluru."
+|
+Tokenization
+Split text into tokens or subword units.
+|
+NER model
+Predict entity spans and their categories.
+|
+Structured output
+Ravi → PERSON; Infosys → ORG; Bengaluru → GPE
+
+Older NER systems may use rules and statistical features. Modern NER systems commonly use machine learning and deep learning models, including Transformer-based models.
+---------------------------------------------------------------------------
+What is the difference between NER and keyword extraction?
+- NER: Identifies entities and assigns categories.
+- Keyword extraction: Selects important words or phrases from a document.
+For example, HDFC Bank can be recognized as an organization by NER. A keyword extraction system might select failed transaction as an important phrase even though it is not a named entity.
+
+-----------------------------------------------------------------------
+Python implementation using spaCy
+
+Let's use a pretrained English model to identify entities.
+
+First, install the required packages in your terminal:
+pip install spacy
+python -m spacy download en_core_web_sm
+
+
+
+import spacy
+
+# Load a pretrained English NLP model
+nlp = spacy.load("en_core_web_sm")
+
+text = (
+    "Ravi joined Infosys in Bengaluru "
+    "on 15 October 2026."
+)
+
+# Process the text
+doc = nlp(text)
+
+# Extract recognized entities
+for entity in doc.ents:
+    print(entity.text, "->", entity.label_)
+
+
+Understand the code line by line
+1. import spacy imports the NLP library.
+2. spacy.load(...) loads a pretrained English model.
+3. nlp(text) processes the text and produces a document object.
+4. doc.ents contains the entity spans recognized by the model.
+5. entity.text returns the extracted text.
+6. entity.label_ returns the entity category.
+You do not need to train an NER model from scratch to use a pretrained model.
+-----------------------------------------------------------
+What are NER's limitations?
+NER is useful, but it is not perfect.
+Limitation 1 — Ambiguous names
+The word Amazon could refer to a company or a geographical region. The surrounding context helps the model decide.
+Limitation 2 — Domain-specific terms
+A general English model may fail to recognize internal banking system names, loan identifiers, or proprietary abbreviations.
+Limitation 3 — Incorrect predictions
+A model might miss an entity or assign the wrong label. Important workflows should validate extracted information.
+Limitation 4 — NER doesn't understand every relationship
+NER may extract Ravi and ₹5,000, but it doesn't necessarily determine whether Ravi paid, received, or was refunded that amount.
+
+This leads to another useful NLP task: text classification, our next lesson.
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+8. Interview questions
+Q1. What is Named Entity Recognition?
+NER is an NLP task that identifies entity mentions in text and classifies them into categories such as person, organization, date, and money.
+Q2. What is the difference between NER and text classification?
+NER identifies and labels specific spans within text, while text classification assigns a category to a larger piece of text.
+Q3. Can NER identify multiple-word names?
+Yes. It can recognize spans such as HDFC Bank or Arun Kumar.
+Q4. Is NER used in RAG applications?
+It can be. NER may extract metadata from documents, improve filtering, or support structured retrieval. However, a RAG system does not always need NER.
+Q5. Does NER verify extracted information?
+No. It identifies and classifies text spans; separate validation or verification is needed to establish factual correctness.
+This leads to another useful NLP task: text classificatio
+Important: NER identifies entity mentions; it does not verify whether a bank transfer actually occurred or whether the extracted details are true.
+================================================================================================================
+Lesson 11: Text Classification
+
+In our previous lessons, we learned BoW, TF-IDF, N-grams, Cosine Similarity, and Named Entity Recognition (NER). Now we’ll learn how to make a machine understand which category a piece of text belongs to.
+
+1. What is text classification?
+Text classification is the process of assigning a category or label to a text.
+
+Customer support ticket
+“I transferred money, but the amount was deducted and the receiver did not get it.”
+
+Text                                    classification
+Predicts the category of the ticket  --> Payment Failure
+
+Input text	         Predicted category
+“I forgot my password.” |	Login Issue
+“My amount was deducted twice.” |	Payment Failure
+“Please update my registered phone number.”	 |Profile Update
+“I want to close my account.” |	Account Closure
+
+# The model learns patterns from examples that already have labels, then uses those patterns to classify new text. ***
+--------------------------------------------------------------------------------------------------
+Why do we need text classification after NER?
+
+NER
+Finds important information inside text
+“Transfer failed on 12 October for ₹5,000.”
+Extracts: DATE = 12 October; MONEY = ₹5,000
+
+Text classification
+Predicts what the text is about
+“Transfer failed on 12 October for ₹5,000.”
+Predicts: Payment Failure
+
+Remember the difference:
+- NER asks: “What information is mentioned?”
+- Text classification asks: “Which category does this text belong to?”
+-------------------------------------------------------------------
+3. How does text classification work?
+
+Let's understand the process step by step.
+Step 1: Collect labelled text
+Example tickets with known categories
+
+Step 2: Convert text into numbers
+TF-IDF or another text representation
+
+Step 3: Train a machine-learning model
+Learn patterns linked to each category
+
+Step 4: Predict a new ticket's category
+Example: Login Issue
+
+
+Explanation:
+
+1. Labelled examples
+Text + correct category
+
+2. TF-IDF
+Converts text into numerical features.
+
+3. Train the ML model
+Learns associations between features and labels.
+
+4. New ticket
+“My password is not working.”
+Predicted category: Login Issue
+----------------------------------------------------------------------
+4. Python code — build a simple classifier
+We'll use two tools from scikit-learn:
+- TfidfVectorizer: converts text into numerical features.
+- LogisticRegression: learns to predict the category from those features.
+
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.linear_model import LogisticRegression
+from sklearn.pipeline import make_pipeline
+
+# 1. Example tickets
+texts = [
+    "I forgot my password",
+    "I cannot log in to my account",
+    "Money was deducted but transfer failed",
+    "My payment failed",
+    "Please change my registered phone number",
+    "Update my profile phone number"
+]
+
+# 2. Correct categories for those tickets
+labels = [
+    "Login Issue",
+    "Login Issue",
+    "Payment Failure",
+    "Payment Failure",
+    "Profile Update",
+    "Profile Update"
+]
+
+# 3. Create a pipeline: text -> TF-IDF -> classifier
+model = make_pipeline(
+    TfidfVectorizer(),
+    LogisticRegression(max_iter=1000)
+)
+
+# 4. Train the model
+model.fit(texts, labels)
+
+# 5. Classify a new ticket
+new_ticket = [
+    "My money was deducted but payment failed"
+]
+
+prediction = model.predict(new_ticket)
+
+print(prediction[0])
+
+
+Code	Meaning
+texts	 | Example customer tickets
+labels	| The correct category for each ticket
+TfidfVectorizer()	| Converts words into numerical features
+LogisticRegression()	|Learns patterns associated with the labels
+model.fit(texts, labels)	|Trains the model using examples
+model.predict(new_ticket)	|Predicts the category of unseen text
+----------------------------------------------------------
+
+6. What are the limitations of text classification?
+This is important for real-world AI engineering interviews.
+Limitation 1: It depends on the training data
+If the model has never seen enough examples of a new type of problem, it may predict the wrong category.
+Limitation 2: TF-IDF does not understand meaning
+Consider these sentences:
+- “My payment failed.”
+- “I could not complete the transaction.”
+They can describe the same problem, but use different words. A TF-IDF-based model may struggle if the training data does not contain similar wording.
+Limitation 3: It can make incorrect predictions
+A model might classify an ambiguous ticket incorrectly. In a banking application, you may want to send low-confidence predictions for human review.
+Limitation 4: Real data needs proper evaluation
+We should not train and evaluate the model on the same examples and then assume it will work well on new tickets.
+
+In real projects, we normally split the data into training and test sets and evaluate metrics such as precision, recall, and F1-score.
+--------------------------------------------------------------------------------
+
+## One important detail: text classification does not have to wait for embeddings or LLMs. 
+It is a task that can be performed using TF-IDF with traditional machine learning, neural networks, or modern transformer-based models.
+
+
+1. Three ways to classify text
+
+Method 1: TF-IDF + Traditional Machine Learning
+- TF-IDF converts words into numerical features.
+- A model such as Logistic Regression learns from labelled messages.
+- It predicts the category.
+Example: “My payment failed” → Payment Issue
+
+Method 2: Neural Networks / Deep Learning
+- The text is converted into numerical inputs, often using embeddings.
+- A neural network learns patterns from the examples.
+- It predicts the category.
+Example: “Money was deducted, but payment failed” → Payment Issue
+
+Method 3: Transformer-based Models
+- A model such as BERT uses contextual representations to process text.
+- It uses the context of words to help classify the message.
+- It predicts the category.
+Example: “The transaction was unsuccessful” → Payment Issue
+
+
+How do these methods differ?        *****************************************************************************     
+
+Method	            How text is represented	              Example model
+Traditional ML	         TF-IDF features                  	Logistic Regression
+Deep Learning	           Often embeddings                   	LSTM
+Transformer-based       	Contextual representations          BERT
+-----------------------------------------------------------------------------------
+How NLP technologies evolved
+
+Stage 1
+Traditional NLP + Machine Learning
+- BoW and TF-IDF: Convert text into numerical features.
+- NER: Identifies names, locations, organizations, and other entities. It can use rules, traditional ML, or deep learning.
+- Text classification: Classifies text into categories using models such as Naive Bayes or Logistic Regression.
+Example: “My payment failed” → Payment Issue
+
+Deep learning introduced more powerful ways to learn patterns and represent language.
+
+Stage 2
+Deep Learning for NLP
+- RNN: Processes text as a sequence of tokens.
+- LSTM: Helps retain important information over longer sequences.
+- Embeddings: Represent words or tokens as numerical vectors.
+Example: Learn patterns in “Money was deducted but the payment failed.”
+
+Transformers later became a major architecture for NLP.
+
+Stage 3
+Transformers and LLMs
+- Transformers: Use attention to process relationships between tokens.
+- BERT: Commonly used for classification and NER.
+- LLMs: Can classify, summarize, answer questions, and generate text.
+Example: Understand a varied customer message and classify or explain the issue.
+
+----------------------------------------------------------------------------------------
+Interview questions
+
+Beginner: What is text classification?
+Text classification assigns a category to text, such as classifying a customer support ticket as a login issue or payment failure.
+Intermediate: Why do we use TF-IDF with Logistic Regression?
+TF-IDF converts text into numerical features, and Logistic Regression learns how those features relate to the categories.
+Advanced: What would you do if a ticket classifier performs poorly on unseen data?
+I would evaluate it on a separate test set, inspect misclassified examples, check class imbalance and data quality, improve the training examples, compare suitable models, and measure precision, recall, and F1-score.
