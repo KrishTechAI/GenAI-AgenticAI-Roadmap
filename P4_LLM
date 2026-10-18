@@ -180,14 +180,16 @@ os.environ["GROQ_API_KEY"] reads your secret API key from your environment.
 Groq(...) uses that key to create a client.
 client is the object you use to send requests to Groq.
 '''''
+#Select the model 
+model = os.environ["GROQ_MODEL"]    #This reads the model name from your environment settings. The model is the AI that generates the response. The ID must be available to your Groq account.
 
-model = os.environ["GROQ_MODEL"]
-
+#Write the prompt   , A prompt is the instruction you give to the AI.
 prompt = """
 Explain three possible reasons for a banking payment failure.
 Do not claim that you know the status of a real transaction.
 """
 
+#Send the prompt to the AI
 response = client.chat.completions.create(
     model=model,
     messages=[
@@ -198,6 +200,58 @@ response = client.chat.completions.create(
     ]
 )
 
+#Extract the answer
 answer = response.choices[0].message.content
 
 print(answer)
+-----------------------------------------------------------------------------
+Why not use only an LLM?
+An LLM alone may not have access to current transaction data, updated internal policies, or customer-specific information.
+- RAG helps provide relevant information from documents.
+- APIs provide current data from authorized systems.
+- The LLM helps interpret the question and formulate a natural-language answer.
+--------------------------------------------------------------------------------
+Beginner level
+Q1. What is an LLM?
+An LLM is a neural network trained on large amounts of data to learn language patterns. It can process prompts and perform tasks such as answering questions, summarizing text, and generating code. Many modern LLMs use the Transformer architecture.
+
+Q2. What is the difference between training and inference?
+Training adjusts the model's parameters based on data and a learning objective. Inference uses the trained model to generate predictions or responses without ordinarily updating those parameters.
+
+Q3. What is a Transformer?
+A Transformer is a neural network architecture that uses attention and feed-forward layers to process sequences and learn contextual relationships. It is the foundation of many modern LLMs.
+Intermediate level
+
+Q4. Why does an LLM use tokens instead of directly processing raw text?
+Computers need numerical representations to perform the model's mathematical operations. A tokenizer converts text into tokens, which are mapped to token IDs. An embedding layer then converts these IDs into numerical vectors that the model can process.
+
+Q5. Why can an LLM hallucinate?
+An LLM generates outputs based on learned patterns and the available context. It can produce plausible-sounding but incorrect information. Retrieval, reliable tools, validation, and appropriate guardrails help reduce this risk, but do not guarantee correctness.
+
+Q6. Does an LLM automatically know the latest banking policy?
+No. Its built-in knowledge may not reflect recent policy changes. A production application can retrieve the current approved policy and provide it to the model, for example through RAG.
+Three-year-experience scenario questions
+
+Q7. Your LLM chatbot returns an incorrect transaction status. How would you investigate?
+A strong answer:
+First, I would trace the request using a correlation ID and determine whether the incorrect status originated in the source API, data transformation, prompt construction, or generated response. I would verify that the API returned the correct transaction for the authenticated customer. Then I would inspect the context sent to the LLM, add validation against the authoritative transaction result, and test failure cases. 
+I would also check whether sensitive information was exposed in logs and add regression tests to prevent recurrence.
+
+
+Q8. Your LLM application is slow and expensive. How would you improve it?
+I would measure latency and token usage by request, then identify whether the bottleneck is network latency, retrieval, prompt length, or model generation. Depending on the evidence, I would reduce unnecessary context, select an appropriately capable model, limit excessive output, cache safe reusable results, and optimize retrieval. I would evaluate quality and latency together before deploying changes.
+
+Q9. Why should we not put the entire banking database into the prompt?
+The prompt has a limited context window, and sending unnecessary data increases cost and latency. It can also expose sensitive information and make answers less focused. I would retrieve only the relevant, authorized records or documents, minimize sensitive fields, and provide the model with the smallest context needed for the task.
+
+Q10. How would you test an LLM application?
+I would test input validation, API integration, error handling, retrieval quality, response correctness, access control, and sensitive-data handling. I would maintain a representative evaluation dataset, measure appropriate quality and latency metrics, and run regression tests whenever prompts, models, or retrieval settings change.
+----------------------------------------------------------------------------------------------------------------
+9. Common mistakes to avoid
+- Saying an LLM is the same as all of Generative AI.
+- Saying a model has automatically accessed a database because it can answer questions about databases.
+- Confusing tokenization with embeddings.
+- Claiming every LLM uses exactly the same architecture.
+- Treating a plausible answer as proof of factual correctness.
+- Putting API keys or confidential customer data directly into source code or logs.
+- Claiming a toy Python dictionary implements an actual LLM.
