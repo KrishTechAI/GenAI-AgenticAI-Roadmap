@@ -1,0 +1,198 @@
+- Transformer: the architecture used to process context and support token prediction.
+- GPT: a model family built using a GPT-style Transformer architecture and trained to predict the next token.
+- LLM: the broader category of large language models; not every LLM uses exactly the same architecture.
+- Next-token prediction: the task the model is trained to perform and uses during autoregressive text generation.
+
+Interview answer: “GPT predicts the next token using its Transformer-based neural network. The Transformer layers process contextual information, 
+and the output layer converts the final representation into scores over the vocabulary.
+The decoding process selects a token and repeats this process until the response is complete.”
+------------------------------------------------------------------------------
+Training: The model learns by adjusting its parameters.
+Inference: The trained model processes a new input and generates an output. Its parameters usually remain fixed during ordinary inference.
+------------------------------------------------------------------------------
+architecture of an LLM
+
+1. Input text
+"Explain a failed payment"
+
+2. Tokenizer
+Text → tokens → token IDs
+
+3. Embedding layer
+Token IDs → numerical vectors, with positional information handled by the architecture
+
+4. Transformer layers
+Attention + feed-forward networks
+
+5. Output layer
+Scores for possible next tokens
+
+6. Token generation
+Select a token, append it to the sequence, and continue until generation stops
+-------------------------------------------------------------------------
+User prompt
+“Why did my payment fail?”
+
+Tokenization
+Text → tokens → token IDs
+
+Embeddings + positional information
+Convert token IDs into model-ready representations
+
+Transformer layers
+Attention + feed-forward networks
+
+Next-token prediction
+Select successive tokens according to the decoding strategy
+
+Generated response
+Convert generated tokens into text
+------------------------------------------------------------------
+1. What is an LLM?
+LLM stands for Large Language Model.
+It is a neural network model trained on large amounts of data to learn patterns in language and perform tasks such as answering questions, summarizing documents, generating text, and writing code.
+Examples include GPT, Claude, and Gemini.
+-------------------------------------------------------------------
+Technology	Example
+AI	- A system that identifies suspicious activity
+ML -	Predicting the probability of loan default
+Deep  - Learning	Learning complex patterns in transaction sequences
+Generative AI	- Generating a customer-support explanation
+LLM	 - Processing a question and generating a text response
+
+Interview answer: Generative AI is a category of AI that creates new content based on patterns learned during training. 
+LLMs are one important type of generative model, particularly for language generation, but Generative AI also includes models that generate images, audio, video, and other content.
+
+What can Generative AI generate?
+
+Text — LLMs
+ChatGPT generates explanations, summaries, emails, and answers.
+Images — Image-generation models
+Generate artwork or product images from prompts.
+Audio — Audio-generation models
+Generate speech, music, or sound effects.
+Code — Code-generation models
+Generate Python functions, SQL queries, and other code.
+---------------------------------------------------------------------------
+LLM architecture — how a question becomes an answer
+1. User prompt
+“Explain a failed payment.”
+
+2. Tokenizer
+Text → tokens → token IDs
+
+3. Embedding layer
+Token IDs → numerical vectors
+
+4. Transformer layers
+Attention + feed-forward networks
+
+5. Output scores and decoding
+Calculate token scores and select the next token
+
+6. Generated response
+Tokens are generated successively and decoded into text.
+
+Component	Responsibility
+Tokenizer	 - Splits text into units the model can process
+Token IDs -	Represent tokens as vocabulary indices
+Embedding layer	- Converts IDs into learned numerical vectors
+Attention - 	Helps each token's representation incorporate relevant context
+Feed-forward network	- Further transforms representations within each transformer layer
+Output layer -	Produces scores for possible next tokens
+Decoding -	Uses a selection strategy to choose the next token
+
+The exact implementation varies between models. For example, a decoder-only Transformer is common in text-generating LLMs.
+-----------------------------------------------------------------
+Self-attention — use the context
+It helps the model determine which other tokens are relevant when processing a token. For example, it helps connect “it” to the thing being discussed earlier in a sentence.
+
+Feed-forward network — transform the information
+It applies learned mathematical transformations to the token representations, helping the model build more useful features.
+
+Self-Attention: Finds relationships between words to understand the context.
+Feed-Forward Network (FFN): Processes the information to learn useful patterns.
+
+Remember: Self-Attention = Connect information. Feed-Forward = Process information.
+-------------------------------------------------------------------------------
+call a real LLM:
+
+
+Python application
+Receives a user's question
+|
+OpenAI Python SDK
+Builds and sends the API request
+|
+Hosted LLM service
+Processes the prompt and generates a response
+|
+Python application
+Reads and displays the response
+
+
+Set your API key as an environment variable instead of hardcoding it in your Python file.
+For Windows PowerShell, for example:
+
+$env:OPENAI_API_KEY="your-api-key"
+
+
+import os
+from openai import OpenAI
+
+client = OpenAI()
+
+model = os.environ["OPENAI_MODEL"]
+
+prompt = """
+Explain three possible reasons for a banking payment failure.
+Do not claim that you know the status of a real transaction.
+"""
+
+response = client.responses.create(
+    model=model,
+    input=prompt
+)
+
+answer = response.output_text
+
+print(answer)
+$env:OPENAI_MODEL="your-supported-model"
+------------------------------------------------------------------------------------
+
+$env:GROQ_API_KEY="dV"
+$env:GROQ_MODEL="t"
+
+
+using groq
+
+
+# ```python
+import os
+# from dotenv import load_dotenv
+from groq import Groq
+
+client = Groq(
+    api_key=os.environ["GROQ_API_KEY"]
+)
+
+model = os.environ["GROQ_MODEL"]
+
+prompt = """
+Explain three possible reasons for a banking payment failure.
+Do not claim that you know the status of a real transaction.
+"""
+
+response = client.chat.completions.create(
+    model=model,
+    messages=[
+        {
+            "role": "user",
+            "content": prompt
+        }
+    ]
+)
+
+answer = response.choices[0].message.content
+
+print(answer)
