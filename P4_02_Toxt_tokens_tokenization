@@ -1,0 +1,247 @@
+What is a token?
+A token is a piece of text that a language model processes.
+Token --> complete word, part of word, punctuation, another text unit. (depends on a tokenizer)
+
+What is tokenization?
+Tokenization is the process of splitting text into tokens according to a tokenizer's rules.
+
+My payment failed yesterday.
+
+2. Tokenizer
+Split the text using model-specific tokenization rules
+
+3. Tokens
+Text pieces produced by the tokenizer
+
+4. Token IDs
+Integer IDs representing the tokens in a vocabulary
+
+5. Model input
+Token IDs are converted into numerical representations for the model
+
+Approach	How it works	Limitation or benefit
+Character-level	 | Splits text into individual characters |	Long sequences for ordinary text
+Word-level	| Splits text into whole words	| Very large vocabulary; unfamiliar words can be difficult to represent
+Subword-level	| Splits text into reusable word pieces	| Balances vocabulary size and sequence length
+
+-----------------------------------------------
+Open-source tokenizer: hands-on Python
+
+We'll start with Hugging Face Transformers. It provides tokenizers associated with many open-weight models.
+The tokenizer should match the model you're using; a different model may split the same text differently
+
+Python text input
+|
+Hugging Face AutoTokenizer
+Loads the tokenizer for Qwen
+
+Install the libraries: pip install transformers
+
+
+from transformers import AutoTokenizer
+
+# Load the tokenizer associated with this model
+model_name = "Qwen/Qwen2.5-1.5B-Instruct"
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+
+# Example input
+text = "My banking payment failed yesterday."
+
+# Convert text into token IDs
+token_ids = tokenizer.encode(
+    text,
+    add_special_tokens=False
+)
+
+# Convert token IDs back into readable token pieces
+tokens = tokenizer.convert_ids_to_tokens(token_ids)
+
+print("Original text:", text)
+print("Tokens:", tokens)
+print("Token IDs:", token_ids)
+print("Token count:", len(token_ids))
+
+# Reconstruct the text from the IDs
+decoded_text = tokenizer.decode(token_ids)
+print("Decoded text:", decoded_text)
+----------------------------------------------------------------
+Run a real open-weight LLM locally
+Now let's go one step further: instead of only tokenizing text, we'll load a small instruction-tuned model and generate a response on your computer.
+
+Architecture
+Prompt
+|
+Tokenizer
+Text → token IDs
+|
+Local model weights
+Transformer inference on your machine
+|
+Generated token IDs
+|
+Tokenizer decodes the answer
+
+Install dependencies: pip install torch transformers
+
+
+import torch
+from transformers import AutoTokenizer, AutoModelForCausalLM
+
+model_name = "Qwen/Qwen2.5-1.5B-Instruct"
+
+# Load tokenizer and model
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+model = AutoModelForCausalLM.from_pretrained(model_name)
+
+# Prepare a prompt
+messages = [
+    {
+        "role": "user",
+        "content": "Explain two possible reasons for a banking payment failure."
+    }
+]
+
+# Convert messages into the model's expected prompt format
+prompt = tokenizer.apply_chat_template(
+    messages,
+    tokenize=False,
+    add_generation_prompt=True
+)
+
+# Convert the prompt into model input IDs
+inputs = tokenizer(prompt, return_tensors="pt")
+
+# Generate a continuation
+with torch.no_grad():
+    output_ids = model.generate(
+        **inputs,
+        max_new_tokens=100,
+        do_sample=False
+    )
+
+# Remove the input tokens from the generated sequence
+new_token_ids = output_ids[0][inputs["input_ids"].shape[1]:]
+
+# Convert generated token IDs into text
+answer = tokenizer.decode(
+    new_token_ids,
+    skip_special_tokens=True
+)
+
+print(answer)
+--------------------------------------------------
+Paid OpenAI API: token counting and generation
+Now let's implement the hosted-model approach. This is useful when building a production application without managing model weights and inference infrastructure yourself.
+OpenAI provides an official Python SDK and a Responses API for generating text.
+
+Python application
+|
+Local token counter
+Estimate tokens for plain text
+|
+OpenAI API request
+Send prompt and model selection
+|
+Hosted OpenAI model
+Processes input and generates output
+|
+Response + usage information
+
+Install the dependencies: pip install openai tiktoken
+
+Configure your API key:
+
+$env:OPENAI_API_KEY="your-api-key"
+$env:OPENAI_MODEL="your-supported-model"
+
+
+import os
+import tiktoken
+from openai import OpenAI
+
+# Read the model configured in the environment
+model_name = os.environ["OPENAI_MODEL"]
+
+# Create the API client
+client = OpenAI()
+
+# Define the text to analyze
+prompt = (
+    "Explain three possible reasons for a banking payment failure."
+)
+
+# Select an encoding for a supported model name
+encoding = tiktoken.encoding_for_model(model_name)
+
+# Count tokens in the plain-text prompt
+token_ids = encoding.encode(prompt)
+print("Local prompt token count:", len(token_ids))
+
+# Call the hosted model
+response = client.responses.create(
+    model=model_name,
+    input=prompt
+)
+
+# Display the generated answer
+print("\nAnswer:")
+print(response.output_text)
+
+# Inspect usage reported by the API
+if response.usage is not None:
+    print("\nInput tokens:", response.usage.input_tokens)
+    print("Output tokens:", response.usage.output_tokens)
+    print("Total tokens:", response.usage.total_tokens)
+------------------------------------------------------------------------------------------
+Production-level engineering considerations
+For a three-year-experience interview, knowing how to call a tokenizer is only the beginning. You should also understand the decisions around it.
+1. Token budget management
+If your prompt contains 8,000 tokens and your output budget is 1,000 tokens, you need enough context capacity for both, plus any applicable request formatting and model-specific requirements.
+2. Language differences
+Tamil, English, code, and mixed-language text may produce different token counts. Don't assume that a fixed number of characters always equals a fixed number of tokens.
+3. Cost and latency
+Longer inputs and outputs can increase processing time and, for token-billed APIs, cost. Measure actual usage rather than relying entirely on character-based estimates.
+4. Batch processing
+When processing thousands of support tickets, consider batching tokenizer inputs where supported. Hugging Face fast tokenizers can be particularly useful for batch processing. 
+5. Error handling
+Your application should handle unavailable model repositories, missing credentials, API rate limits, network failures, and inputs that exceed supported limits.
+6. Security
+Never put customer account numbers, transaction records, API keys, or other sensitive production data into public code examples or unnecessary logs.
+-------------------------------------------------------------------------------------------------
+Beginner level
+Q1. What is tokenization?
+Tokenization is the process of splitting text into smaller units called tokens according to a tokenizer's rules. These tokens are then represented as token IDs for model processing.
+
+Q2. Is one token always one word?
+No. A token can represent a whole word, part of a word, punctuation, or another text unit. Token boundaries depend on the tokenizer.
+
+Q3. What is the difference between a tokenizer and an embedding?
+A tokenizer converts text into tokens and token IDs. An embedding layer maps token IDs to numerical vectors that the model can process.
+
+Intermediate level
+Q4. Why do many LLMs use subword tokenization?
+Subword tokenization helps balance vocabulary size and sequence length.
+It can represent many unfamiliar words by combining reusable pieces rather than requiring every complete word to have its own vocabulary entry.
+
+Q5. Why might two LLMs tokenize the same sentence differently?
+They may use different vocabularies, tokenization algorithms, normalization rules, and special-token configurations.
+Therefore, token counts from one model should not automatically be treated as exact counts for another.
+
+Q6. Why might local token counting differ from OpenAI API usage?
+Local counting generally covers the text passed to the tokenizer. 
+The complete API request can include message formatting, tool definitions, images, files, or other structures that affect the actual input token count.
+
+Three-year-experience scenario questions
+Q7. Your RAG application exceeds the context limit. What would you do?
+I would measure the token count of the complete prompt, including instructions, retrieved documents, conversation history, and the reserved output budget.
+Then I would retrieve fewer or more relevant chunks, remove redundant context, summarize older history where appropriate, and enforce a token budget before making the model call.
+I would evaluate retrieval quality and answer correctness after optimization.
+
+Q8. Your token count increases significantly after changing models. Why?
+The models may use different tokenizers and vocabularies. I would verify the tokenizer associated with each model, 
+compare counts on a representative dataset, and measure the resulting effects on context capacity, latency, and API cost.
+
+Q9. How would you choose between a local model and a hosted API?
+I would compare quality, latency, throughput, hardware costs, operational complexity, privacy requirements, licensing, and scaling needs.
+A local model may offer greater infrastructure control, while a hosted API can reduce the burden of managing inference infrastructure. 
+I would benchmark both against the application's evaluation dataset before choosing.
