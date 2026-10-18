@@ -255,3 +255,9 @@ I would test input validation, API integration, error handling, retrieval qualit
 - Treating a plausible answer as proof of factual correctness.
 - Putting API keys or confidential customer data directly into source code or logs.
 - Claiming a toy Python dictionary implements an actual LLM.
+-----------------------------------------------------------------------------------------------------------
+And remember the engineering distinction:
+- The LLM processes the prompt and generates text.
+- RAG retrieves relevant documents.
+- APIs and databases supply current, authorized data.
+- The application handles validation, access control, errors, monitoring, and integration.
