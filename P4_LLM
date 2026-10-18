@@ -168,13 +168,18 @@ using groq
 
 
 # ```python
-import os
-# from dotenv import load_dotenv
-from groq import Groq
+import os                 ----> helps Python access environment variables stored on your computer.
+# from dotenv import load_dotenv  
+from groq import Groq  ----> lets Python communicate with the Groq API to use an LLM.
 
 client = Groq(
-    api_key=os.environ["GROQ_API_KEY"]
+    api_key=os.environ["GROQ_API_KEY"]     ---> Connect to Groq
 )
+''''
+os.environ["GROQ_API_KEY"] reads your secret API key from your environment.
+Groq(...) uses that key to create a client.
+client is the object you use to send requests to Groq.
+'''''
 
 model = os.environ["GROQ_MODEL"]
 
