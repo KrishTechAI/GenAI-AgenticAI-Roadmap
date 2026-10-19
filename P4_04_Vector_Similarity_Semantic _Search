@@ -1,0 +1,271 @@
+Why do we need vector similarity?
+
+A customer asks:
+How can I borrow money to buy a house?
+
+Your knowledge base contains these documents:
+1. Customers can apply for a home loan.
+2. Credit card statements are available online.
+3. Customers can check their savings account balance.
+
+Which document is most relevant?
+A basic keyword search may struggle because the customer says "borrow money to buy a house," while the document says "apply for a home loan."
+An embedding model converts the question and documents into vectors. A similarity measure then helps rank the documents by how closely their vectors match.
+
+Customer question
+"How can I borrow money to buy a house?"
+|
+Embedding model
+Converts the question into a query vector
+|
+Vector similarity search
+Compares the query vector with stored document vectors
+|
+Ranked documents
+Home loan policy → most relevant candidate
+
+Important distinction: the embedding model represents the text; the similarity calculation compares those representations. Together, they enable semantic search.  **********************************
+Semantic search is the overall process. Vector similarity is one step inside it.
+
+1. User asks a question
+“How can I borrow money for a house?”
+
+2. Embedding model
+Converts the question into a query embedding.
+
+3. Vector similarity
+Compares the query embedding with stored document embeddings.
+
+4. Search results
+Retrieves the most relevant home-loan documents.
+
+Steps 2–4 together form the typical semantic-search workflow.
+
+What should you remember?
+- Semantic search = the overall search process.
+- Embedding model = converts text into vectors.
+- Vector similarity = compares those vectors.
+- Search results = the relevant documents returned.
+
+So, don't treat semantic search as a separate step that happens before vector similarity. It is the overall process that uses vector similarity to find relevant information.
+--------------------------------------------------------------------------------------
+What is semantic search?
+Semantic search retrieves information based on meaning, rather than requiring exact keyword matches.
+
+Keyword search	Semantic search
+Looks for matching words or terms |	Uses vector representations to estimate semantic similarity
+Can miss relevant results when wording differs	|Can retrieve relevant results despite different wording
+Useful for exact names, IDs and terms |	Useful for natural-language questions and paraphrases
+Often uses inverted indexes and methods such as BM25 |	Often uses embedding models and vector indexes
+
+For example:
+- Query: "I forgot my secret banking code."
+- Document: "Follow these steps to reset your banking PIN."
+A semantic search system may recognize the relationship between the query and document even though their words differ.
+
+Semantic search isn't always better. Exact account IDs, product codes, and names may require keyword search. Enterprise systems often combine both approaches through hybrid search, which we'll study in Phase 11.
+-----------------------------------------------------------------------------------------------
+3. Three important similarity measures
+You should understand these three methods for GenAI interviews:
+1. Cosine similarity
+2. Dot product
+3. Euclidean distance
+
+They compare vectors differently, so their scores have different meanings.
+
+A. Cosine similarity
+Cosine similarity measures the angle between two vectors.
+For nonzero vectors, the score ranges from -1 to 1.
+- Close to 1: vectors point in similar directions.
+- Close to 0: vectors are perpendicular.
+- Close to -1: vectors point in opposite directions.
+
+These vectors point in similar directions, so their cosine similarity is high.
+When is it useful? When the direction of embedding vectors is useful for measuring semantic similarity, regardless of their magnitudes.
+
+
+Compare them
+Measure       	What it measures	    Better result
+Cosine similarity|	Angle between vectors	|Usually higher
+Dot product	|Alignment and magnitude |	Usually higher
+Euclidean distance|	Straight-line distance |	Lower
+
+-----------------------------------------------------------------------------
+Python program: compare all three methods
+
+
+```python
+import numpy as np
+
+A = np.array([1.0, 2.0])
+B = np.array([3.0, 4.0])
+
+# 1. Dot product
+dot = np.dot(A, B)
+
+# 2. Cosine similarity
+cosine = np.dot(A, B) / (
+    np.linalg.norm(A) * np.linalg.norm(B)
+)
+
+# 3. Euclidean distance
+distance = np.linalg.norm(A - B)
+
+print("Dot product:", dot)
+print("Cosine similarity:", round(cosine, 4))
+print("Euclidean distance:", distance)
+```
+---------------------------------------------------------------------------------
+Build a small semantic search engine
+
+What is Sentence Transformer?
+A Sentence Transformer is a model used to convert sentences or text into numerical vectors called embeddings, so a computer can compare their meanings.
+It is commonly used in semantic search, document retrieval, and RAG applications.
+
+pip install sentence-transformers numpy
+Set your OPENAI_API_KEY environment variable before running the program.
+
+```python
+import numpy as np
+from sentence_transformers import SentenceTransformer
+
+# Load a pretrained embedding model
+model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
+
+documents = [
+    "Customers can apply for a home loan to purchase a property.",
+    "Credit card bills can be paid through online banking.",
+    "Customers can reset their banking PIN through the official app.",
+    "A savings account allows customers to deposit and withdraw money.",
+    "Personal loans are available to eligible customers."
+]
+
+# Create document embeddings once
+document_vectors = model.encode(
+    documents,
+    normalize_embeddings=True
+)
+
+def semantic_search(query, top_k=3):
+    # Convert the query into an embedding
+    query_vector = model.encode(
+        [query],
+        normalize_embeddings=True
+    )[0]
+
+    # For normalized vectors, dot product equals cosine similarity
+    scores = document_vectors @ query_vector
+
+    # Get indices from highest score to lowest
+    ranked_indices = np.argsort(scores)[::-1][:top_k]
+
+    results = []
+    for index in ranked_indices:
+        results.append({
+            "document": documents[index],
+            "score": float(scores[index])
+        })
+
+    return results
+
+
+query = "How can I borrow money to buy a house?"
+
+for result in semantic_search(query, top_k=3):
+    print(f"Score: {result['score']:.4f}")
+    print(f"Document: {result['document']}")
+    print("-" * 50)
+```
+----------------------------------------------------------------------------------
+What is Top-K retrieval?
+Top-K means retrieving the K highest-ranked results.
+For example, if your search engine has 10,000 banking policy chunks and top_k=5, it returns the five highest-scoring candidates.
+
+Why does Top-K matter in RAG?
+- Too few results may omit important information.
+- Too many results can add irrelevant context and increase token usage.
+- The best value depends on document length, query complexity, retrieval quality, and the model's context budget.
+A similarity threshold can also be applied to filter out weak matches, but it should be calibrated using your own evaluation data. There is no universal threshold that works for every embedding model.
+
+--------------------------------------------------------------------
+Where does a vector database fit?
+
+A vector database or vector index stores embeddings and supports similarity search. It may also store document text, metadata, and identifiers.
+
+Examples from your roadmap:
+- FAISS: a library for efficient similarity search over dense vectors.
+- ChromaDB: a vector database commonly used for prototyping and applications.
+- pgvector: adds vector similarity search to PostgreSQL.
+- Pinecone: a managed vector database service.
+For your banking project, you could use PostgreSQL with pgvector to store vectors alongside policy metadata such as document type, policy version, and department.
+
+A typical retrieval flow is:
+Query → Embedding → Vector Search → Top-K Chunks → LLM
+
+
+Production systems often improve retrieval with:
+- Metadata filtering.
+- Keyword or BM25 search alongside vector search.
+- Reranking candidate documents.
+- Retrieval evaluation using labelled questions and relevant documents.
+- A fallback when no sufficiently relevant evidence is found.
+-----------------------------------------------------------------------------------------------------
+3. Three important similarity measures
+You should understand these three methods for GenAI interviews:
+1. Cosine similarity
+2. Dot product
+3. Euclidean distance
+They compare vectors differently, so their scores have different meanings.
+A. Cosine similarity
+Cosine similarity measures the angle between two vectors.
+\[
+\text{cosine}(A,B)=
+\frac{A\cdot B}{\|A\|\|B\|}
+\]
+
+For nonzero vectors, the score ranges from -1 to 1.
+- Close to 1: vectors point in similar directions.
+- Close to 0: vectors are perpendicular.
+- Close to -1: vectors point in opposite directions.
+Example:
+\[
+A=[1,0],\quad B=[0.8,0.2]
+\]
+
+These vectors point in similar directions, so their cosine similarity is high.
+When is it useful? When the direction of embedding vectors is useful for measuring semantic similarity, regardless of their magnitudes.
+B. Dot product
+The dot product multiplies corresponding vector components and adds the results.
+\[
+A\cdot B=\sum_i A_iB_i
+\]
+
+Example:
+\[
+A=[1,2],\quad B=[3,4]
+\]
+
+\[
+A\cdot B=(1\times3)+(2\times4)=11
+\]
+
+A larger dot product can indicate stronger alignment, but it also depends on vector magnitudes.
+When is it useful? In vector retrieval systems where the embedding model and index are designed to use dot-product similarity. For normalized vectors, dot product equals cosine similarity.
+C. Euclidean distance
+Euclidean distance measures the straight-line distance between two vectors.
+\[
+d(A,B)=\sqrt{\sum_i(A_i-B_i)^2}
+\]
+
+Example:
+\[
+A=[1,2],\quad B=[4,6]
+\]
+
+\[
+d(A,B)=\sqrt{(1-4)^2+(2-6)^2}=5
+\]
+
+Here, a smaller distance means the vectors are closer.
+When is it useful? When distance in the embedding space is an appropriate measure for the model and retrieval task.
+
