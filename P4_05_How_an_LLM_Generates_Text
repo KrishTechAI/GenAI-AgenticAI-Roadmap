@@ -1,0 +1,156 @@
+LLM text-generation architecture
+
+1. User input
+"Why was my loan application rejected?"
+
+2. Tokenization
+Text → token IDs
+
+3. Embedding + positional information
+Token IDs → numerical vectors with position information
+
+4. Transformer layers
+Attention + neural-network processing
+
+5. Next-token prediction
+Scores → probabilities → select a token
+
+6. Repeat and decode
+Append the token and predict the next one until generation stops
+
+Final response
+"Your application may have been rejected because..."
+
+
+Remember: Token ID = number identifying a token; token embedding = learned vector representing it; positional information = information about its place in the sequence.
+-------------------------------------------------------------------------
+How does next-token prediction work?
+
+An LLM does not usually generate an entire paragraph in one step. It predicts the next token based on the tokens already available.
+
+Suppose the current text is:
+The capital of India is
+
+The model might assign these example probabilities:
+
+Candidate next token	Example probability
+New	65%
+Delhi	20%
+Mumbai	10%
+Chennai	5%
+
+Step 1 The capital of India is
+Step 2The capital of India is New
+Step 3 The capital of India is New Delhi
+Step 4 The capital of India is New Delhi .
+-------------------------------------------------------------------
+What happens inside the Transformer?
+
+The Transformer processes token representations through multiple layers. Three important ideas are involved.
+
+
+Multiple layer example: 
+Input token representations
+The · customer · needs · a · home · loan
+|
+Transformer Layer 1
+Processes token information using attention and neural-network operations.
+|
+Transformer Layer 2
+Transforms the representations further using contextual information.
+|
+Transformer Layer 3 ... Layer N
+Repeated processing builds richer contextual representations.
+|
+Final representations → output prediction
+The model calculates scores for possible next tokens.
+
+
+A. Embeddings
+Convert token IDs into vectors (lists of numbers) that the model can process. Positional information helps the model represent the order of tokens.
+
+B. Self-attention
+Helps each token representation use information from relevant earlier tokens. For example, in "Priya deposited money because she received her salary," context helps relate "she" to Priya.
+
+Consider these two sentences:
+- "The customer deposited money into the bank."
+- "The customer sat on the bank of the river."
+The word bank has different meanings in each sentence. The surrounding words help the model represent the correct context.
+Attention helps the model use those relationships
+
+C. Feed-forward networks
+Further transform the representations at each position, helping the model learn complex patterns.
+-------------------------------------------------------------------
+What are logits and probabilities?
+This is an important interview topic.
+After processing the input through its Transformer layers, the model produces logits — raw scores for possible next tokens.
+The model converts these scores into probabilities, commonly using a function called softmax.
+
+Model output
+Logits
+[4.0, 2.0, 1.0]
+
+Softmax
+Converts scores into probabilities
+
+Token A
+84%
+
+Token B
+11%
+
+Token C
+5%
+
+Illustrative probabilities; actual values depend on the model and input.
+---------------------------------------------------------------------
+What is temperature?
+Temperature controls how sharply or broadly the token probabilities are distributed during generation.
+---------------------------------------------------------------
+Python practical: generate text using an open-source model
+We'll use Hugging Face Transformers and the small GPT-2 model to demonstrate autoregressive text generation
+pip install transformers torch
+
+from transformers import AutoTokenizer, AutoModelForCausalLM
+
+# 1. Load the tokenizer and model
+model_name = "gpt2"
+
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+model = AutoModelForCausalLM.from_pretrained(model_name)
+
+# 2. Prepare the input prompt
+prompt = "Artificial intelligence can help banks"
+
+inputs = tokenizer(prompt, return_tensors="pt")
+
+# 3. Generate the continuation
+outputs = model.generate(
+    **inputs,
+    max_new_tokens=40,
+    do_sample=False,
+    pad_token_id=tokenizer.eos_token_id
+)
+
+# 4. Convert token IDs back into readable text
+response = tokenizer.decode(
+    outputs[0],
+    skip_special_tokens=True
+)
+
+print(response)
+-----------------------------------------------------------
+Retrieval can still return irrelevant information, and the LLM can still make mistakes. Production systems need source validation, access controls, evaluation, and appropriate fallback behavior.
+
+Q1. How does an LLM generate text?
+An autoregressive LLM tokenizes the input, processes token representations through Transformer layers, calculates scores for the next token, and selects a token using a decoding strategy. It repeats this process until a stopping condition is reached.
+Q2. What is the difference between logits and probabilities?
+Logits are raw scores produced for candidate tokens. Softmax can transform logits into a probability distribution over the vocabulary.
+Q3. What is the role of temperature?
+Temperature adjusts the probability distribution used during decoding. Lower values generally favor high-probability tokens, while higher values generally allow more varied selections.
+Q4. Why does an LLM need attention?
+Attention helps the model use contextual relationships between tokens to construct useful representations of the input.
+Q5. Why do we need RAG if an LLM can generate answers?
+An LLM may not know private, updated, or domain-specific information. RAG retrieves relevant external information and supplies it to the model as context, improving its ability to answer questions based on those sources.
+---------------------------------------------------------------------------------
+Prompt → Tokens → Embeddings → Transformer and attention → Logits → Probabilities → Token selection → Repeat → Response
