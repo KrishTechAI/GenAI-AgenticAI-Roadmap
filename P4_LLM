@@ -261,3 +261,43 @@ And remember the engineering distinction:
 - RAG retrieves relevant documents.
 - APIs and databases supply current, authorized data.
 - The application handles validation, access control, errors, monitoring, and integration.
+--------------------------------------------------------------------------------
+pip install transformers
+We'll use the Hugging Face transformers library and the GPT-2 tokenizer as an educational example
+# LLM Token Reader
+
+from transformers import AutoTokenizer
+
+# Load a real tokenizer
+tokenizer = AutoTokenizer.from_pretrained("gpt2")
+
+# Read a sentence from the user
+text = input("Enter your sentence: ")
+
+# Step 1: Convert text into tokens
+tokens = tokenizer.tokenize(text)
+
+# Step 2: Convert tokens into token IDs
+token_ids = tokenizer.convert_tokens_to_ids(tokens)
+
+# Step 3: Encode the text directly into IDs
+encoded_ids = tokenizer.encode(text)
+
+# Step 4: Decode the IDs back into text
+decoded_text = tokenizer.decode(encoded_ids)
+
+# Display the results
+print("\n--- LLM Token Reader ---")
+print("Original text:", text)
+print("Tokens:", tokens)
+print("Token IDs:", token_ids)
+print("Number of tokens:", len(encoded_ids))
+print("Decoded text:", decoded_text)
+
+print("\n--- Token-by-token details ---")
+
+for index, (token, token_id) in enumerate(zip(tokens, token_ids)):
+    print(f"Position: {index}")
+    print(f"  Token: {token!r}")
+    print(f"  Token ID: {token_id}")
+
