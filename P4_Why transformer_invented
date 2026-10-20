@@ -1,0 +1,626 @@
+Transformer Roadmap
+Part 0
+Evolution
+
+Traditional NLP
+
+↓
+
+RNN
+
+↓
+
+LSTM
+
+↓
+
+Attention
+
+↓
+
+Transformer
+
+Purpose:
+
+Understand WHY Transformer exists.
+Part 1
+Transformer Overview
+
+We'll answer:
+
+What is Transformer?
+
+Why is it called Transformer?
+
+Encoder
+
+Decoder
+
+Architecture
+
+Applications
+Part 2
+Embeddings
+
+Token Embeddings
+
+Positional Encoding
+
+Why positional encoding?
+Part 3
+Self Attention
+
+Deep understanding
+Part 4
+Query
+
+Key
+
+Value
+
+Most important interview topic.
+Part 5
+Attention Score
+
+Dot Product
+
+Scaling
+
+Softmax
+
+Context Vector
+Part 6
+Multi Head Attention
+
+Why multiple heads?
+
+How many heads?
+
+Advantages
+Part 7
+Feed Forward Network
+
+Residual Connection
+
+Layer Normalization
+
+Dropout
+Part 8
+Encoder
+
+Decoder
+
+GPT
+
+BERT
+
+T5
+
+LLaMA
+
+Differences
+Part 9
+Production Flow
+
+User
+
+↓
+
+Prompt
+
+↓
+
+Tokenizer
+
+↓
+
+Embeddings
+
+↓
+
+Transformer
+
+↓
+
+Next Token
+
+↓
+
+Response
+Part 10
+Interview Masterclass
+
+40+
+
+Questions
+
+Cross questions
+
+Architecture
+
+Coding
+
+Production scenarios
+
+
+-----------------------------------------------------------------------
+
+
+Traditional NLP
+       │
+       ▼
+RNN (1986)
+       │
+       ▼
+LSTM (1997)
+       │
+       ▼
+Attention (2014)
+       │
+       ▼
+Transformer (2017)
+       │
+       ▼
+GPT, BERT, LLaMA, Gemini, Claude
+---------------------------------------------------
+
+Input
+
+↓
+
+Tokenizer
+
+↓
+
+Embeddings
+
+↓
+
+Positional Encoding
+
+↓
+
+Self Attention
+
+↓
+
+Add & Norm
+
+↓
+
+Feed Forward
+
+↓
+
+Add & Norm
+
+↓
+
+Output
+---------------------------------------------------------------
+Before RNN
+Before deep learning became popular, NLP mainly used:
+- Rule-based systems
+- Statistical models
+- Feature engineering
+Example:
+
+Spam Detection
+
+Instead of learning automatically, developers manually wrote rules.
+-----------------------------------------
+Then came Neural Networks (Deep learning) 
+Neural Networks can learn patterns from data.
+But...
+
+A normal neural network has one limitation.
+
+Suppose we have
+I love AI
+
+A normal neural network sees
+I
+
+love
+
+AI
+
+as independent inputs.
+
+It doesn't know
+- which word came first
+- which came second
+- relationships
+Word order is lost.
+
+Interview Question ⭐
+Why can't a normal neural network process sentences effectively?
+Answer
+A traditional feed-forward neural network treats each input independently and does not preserve the order of words.
+Since natural language depends heavily on word order and context, it is not suitable for sequence modeling.
+------------------------------------------------------------
+Then RNN Was Invented
+What is RNN?
+RNN = Recurrent Neural Network
+
+It is a neural network designed for sequential data.
+
+Examples:
+- Text
+- Speech
+- Time series
+- Music
+- Video frames
+Unlike a normal neural network,
+
+RNN has memory.
+
+How RNN Reads a Sentence
+Sentence
+I love AI
+
+Normal Neural Network
+I
+
+love
+
+AI
+
+Everything independently.
+RNN
+I
+
+↓
+
+love
+
+↓
+
+AI
+
+Notice
+
+It reads one word at a time.
+
+Hidden State
+This is the most important concept.
+
+RNN remembers previous information using something called a
+Hidden State
+Think of it as
+Memory.
+
+Example
+I
+
+↓
+
+Hidden State
+
+↓
+
+love
+
+↓
+
+Updated Hidden State
+
+↓
+
+AI
+
+↓
+
+Updated Hidden State
+
+Every new word updates the memory.
+
+RNN Example
+Sentence
+Krishna loves AI.
+
+When RNN reaches
+AI
+
+its memory contains
+Krishna
+
+loves
+
+So it understands
+
+Krishna loves AI.
+Problem 1 — Sequential Processing
+Suppose a sentence has
+
+100 words.
+
+RNN processes like this.
+Word 1
+
+↓
+
+Word 2
+
+↓
+
+Word 3
+
+↓
+
+...
+
+↓
+
+Word 100
+
+Question
+
+Can it jump directly to Word 100?
+
+No.
+
+It must process
+
+99 words first.
+Why is this a problem?
+Modern GPUs can process many computations at the same time.
+
+RNN cannot fully use this advantage because each word depends on the previous hidden state.
+
+This makes training slower.
+
+Interview Question ⭐
+Why is RNN slow?
+Answer
+RNN processes words sequentially. Each word depends on the hidden state from the previous word, so computations cannot be fully parallelized. This increases training time, especially for long sequences.
+
+Problem 2 — Forgetting Earlier Information
+This is called the
+Long-Range Dependency Problem
+Example
+Krishna,
+who studied AI for many years,
+worked on multiple projects,
+completed several certifications,
+joined a new company,
+because she worked very hard.
+
+Question
+
+Who worked hard?
+
+Answer
+Krishna
+
+But "Krishna" appeared a long time ago.
+
+The RNN memory becomes weaker as the sentence grows.
+
+Sometimes it forgets.
+Another Example
+The animal didn't cross the road because it was tired.
+
+Question
+
+Who was tired?
+
+Animal?
+
+Road?
+
+Humans immediately answer
+
+Animal.
+
+RNN may struggle because "animal" appeared much earlier.
+What is Long-Range Dependency?
+Definition
+Long-range dependency occurs when understanding a word depends on another word that is far away in the sentence.
+
+This is a common interview definition.
+Why Was LSTM Invented?
+Researchers realized
+RNN forgets too much.
+
+So they improved it.
+What is LSTM?
+LSTM = Long Short-Term Memory
+
+It is an improved version of RNN.
+
+Its goal:
+
+Remember important information for a longer time.
+
+Forget unnecessary information.
+Real-Life Analogy
+Suppose today you learned
+- Python
+- Your lunch menu
+- Your friend's birthday
+After one year
+
+Which will you remember?
+
+Probably
+- Python
+- Birthday
+You forget
+
+Lunch menu.
+
+LSTM works similarly.
+How LSTM Does This
+Instead of one memory,
+
+it has gates.
+
+Think of them as security guards.
+
+They decide:
+Keep
+
+Forget
+
+Update
+
+These gates help LSTM retain important information longer than a standard RNN.
+Did LSTM Solve Everything?
+No.
+
+It improved memory,
+
+but it still had major problems.
+Problems with LSTM
+1. Still Sequential
+Word1
+
+↓
+
+Word2
+
+↓
+
+Word3
+
+Still one by one.
+2. Still Slow
+Because of sequential processing.
+3. Long Documents Are Still Difficult
+Even with gates,
+
+very long contexts remain challenging.
+4. Hard to Train
+Long sequences require more computation and make optimization more difficult.
+Interview Question ⭐
+Why is LSTM better than RNN?
+Answer
+LSTM introduces memory cells and gates that decide what information to keep, forget, or update. 
+This helps preserve important information over longer sequences and reduces the vanishing gradient problem compared to a standard RNN.
+
+Then Came Attention
+Researchers asked:
+Why should the model try to remember everything?
+
+Instead,
+
+what if
+
+the model simply looks back whenever needed?
+
+This idea became
+Attention
+Instead of remembering every word,
+
+the model focuses only on the most relevant words.
+Then Came Transformer
+Google published
+
+Attention Is All You Need (2017)
+
+Their idea was revolutionary.
+
+Instead of sequential memory,
+
+let every word communicate directly with every other word.
+
+This became the
+Transformer Architecture
+Transformer
+Sentence
+I love Generative AI
+
+Instead of
+I
+
+↓
+
+love
+
+↓
+
+Generative
+
+↓
+
+AI
+
+Every token interacts with every other token.
+I  ←────────→  love
+│ \            / │
+│  \          /  │
+│   \        /   │
+▼    ▼      ▼    ▼
+Generative ←────→ AI
+
+This is called
+Self-Attention
+
+
+RNN vs LSTM vs Transformer
+
+| Feature | RNN | LSTM | Transformer |
+|---------|-----|------|-------------|
+| Reads words | One by one | One by one | All at once (parallel) |
+| Memory | Hidden State | Hidden State + Gates | Self-Attention |
+| Long context | Poor | Better | Excellent |
+| Parallel processing | ❌ | ❌ | ✅ |
+| Training speed | Slow | Slow | Fast |
+| Used in modern LLMs | Rarely | Rarely | Yes |
+
+Why Modern LLMs Use Transformers
+Models like:
+- GPT
+- BERT
+- LLaMA
+- Gemini
+- Claude
+all use the Transformer architecture because it:
+- Understands long context better.
+- Trains efficiently on GPUs.
+- Processes tokens in parallel.
+- Captures relationships between any two words using Self-Attention.
+
+
+Interview Questions (Part 0)
+Q1. What is an RNN?
+Answer:
+RNN, or Recurrent Neural Network, is a neural network designed for sequential data. It processes one element at a time and maintains a hidden state to carry information from previous inputs.
+
+Q2. What is the hidden state in an RNN?
+Answer:
+The hidden state is the RNN's memory. It stores information from previously processed words and passes it to the next step so the model can use past context.
+
+Q3. What are the limitations of an RNN?
+Answer:
+- Sequential processing
+- Slow training
+- Difficulty remembering long-range dependencies
+- Vanishing gradient problem
+Q4. Why was LSTM introduced?
+Answer:
+LSTM was introduced to address the memory limitations of RNNs. It uses memory cells and gates to decide what information to keep, forget, or update, enabling it to preserve important information over longer sequences.
+
+Q5. Why wasn't LSTM enough?
+Answer:
+Although LSTM improves memory, it still processes words sequentially, making training slower and limiting efficient parallel computation. It can also struggle with very long contexts.
+
+Q6. Why was the Transformer introduced?
+Answer:
+The Transformer was introduced to overcome the sequential processing limitations of RNNs and LSTMs. By using Self-Attention, it allows every token to directly attend to every other token while enabling parallel processing, making it faster and more effective for long sequences.
+
+Q7. Why do modern LLMs use Transformers?
+Answer:
+Modern LLMs use Transformers because they can process sequences in parallel, capture long-range dependencies effectively through Self-Attention, and scale efficiently to very large datasets and models.
+
+🎯 Homework (Interview Practice)
+Try answering these aloud without reading:
+1. Why can't a normal neural network understand language properly?
+2. What is a hidden state?
+3. What is the long-range dependency problem?
+4. Why was LSTM invented?
+5. Why wasn't LSTM enough?
+6. Why did Google invent the Transformer?
+7. Explain the evolution from RNN → LSTM → Attention → Transformer in under 2 minutes.
+If you can answer these smoothly, you've built the historical and technical foundation needed to understand the Transformer architecture in the next lesson.
