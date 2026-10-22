@@ -1,0 +1,157 @@
+Transformer architecture:
+
+Input
+| 
+tokiniZER
+Text-> Token-> tokenID
+|
+Token Embedding 
+token ID -> numberical vectore
+|
+Positional information
+Represents token order using Learned possition or RoPE
+|
+Tranformer Block (Repeat for multiple layers)
+|
+1. Layer normalization( pre- norm design)
+|
+2. multi head casual attention   
+Q,K,V -> score-> mask-> softmask -> weighted value -> output projection
+|
+3. Residual addition (add the sublayer input)
+|
+layer Norm 
+|
+Feed forward network (FFN)
+learned information + non linear activation
+|
+Residual addition
+add FFN sub layer input
+|
+Final layer normalization
+used inm many GPT -style architecture 
+|
+Linear output layer -> Logits
+One score for eah vocabulary tokens 
+|
+Softmax / decoder stratergy
+Convert scores to probabilities when required; select or sample the next token
+|
+Generated token
+Append it to the sequence and predict again until a stopping condition
+
+
+
+Mechanism                           	What it does                                          	Why it is needed
+Tokenization	                     Splits text into tokens and assigns IDs                    Converts text into model-readable input
+Token embedding                  	 Converts IDs into vectors                                   Represents tokens numerically
+Positional information	            Encodes token order	                                        Helps distinguish different word arrangements
+Query (Q)	                          Represents a token's matching request	                      Calculates relevance against Keys
+Key (K)	                            Provides matching features	                                  Helps calculate attention scores
+Value (V)	                        Provides information to combine	                                    Contributes to the attention output
+Attention mask	                 Blocks prohibited positions	                                      Prevents future-token access or attention to padding
+Softmax	                           Normalizes attention scores	                                      Produces attention weights
+Multi-head attention	                  Runs multiple attention operations in parallel	              Captures different learned relationships
+Output projection               	Combines the attention heads	                                  Maps their combined output into the model dimension
+Residual connection            	Adds the sublayer input to its output	                        Supports information and gradient flow
+LayerNorm	                     Normalizes feature values                                       	Supports stable training
+Feed-forward network             	Transforms each token's features	                           Adds learned nonlinear processing
+Final linear layer	           Maps representations to vocabulary scores	                    Enables next-token prediction
+Decoding                 	Selects or samples the next token                                       	Generates the response
+
+
+
+Self-attention mixes information across token positions.
+FFN transforms features within each token position.
+Residual connections and normalization help these operations work effectively in deep networks.
+
+Interview-ready explanation:
+“A Transformer converts input text into token IDs and embeddings, incorporates positional information, and processes the representations through stacked Transformer blocks. 
+In each block, multi-head self-attention uses Query, Key, and Value projections to calculate attention scores, applies masking and Softmax, and combines Value vectors. 
+Residual connections and LayerNorm support effective training, while the feed-forward network transforms token features.
+Finally, the output layer produces vocabulary logits, and the decoding process selects the next token repeatedly to generate text.”
+
+
+Complete architecture: one interview-ready explanation
+Practise explaining the full flow in your own words:
+“A Transformer-based language model first tokenizes the input text into tokens and converts them into token IDs.
+An embedding layer maps those IDs into vectors, and a positional mechanism supplies sequence-order information. 
+The vectors pass through stacked Transformer blocks containing self-attention and feed-forward networks, supported by residual connections and normalization. 
+In a decoder-only language model, causal masking prevents future-token information from being used during next-token prediction. 
+The final representation is projected into vocabulary logits, which are converted into probabilities to select or sample the next token.
+The process repeats autoregressively until generation stops.”
+
+nterview question: Why is causal masking necessary?
+
+In autoregressive language-model training, causal masking prevents information leakage from future tokens. 
+It ensures that the prediction at each position uses only the context that would be available when generating the sequence from left to right.
+
+3. What's the difference?
+Residual addition 	                   Layer normalization
+Adds two vectors                     	Adjusts feature values mathematically
+Preserves a direct path for the input 	Helps control activation scale
+input + sublayer output             	Centers and scales the features
+
+
+A. Encoder-only — BERT
+Understand text
+The encoder uses self-attention that can access tokens on both sides of a token. This is called bidirectional attention.
+
+Example: Classify a customer message as a complaint, query, or request. Extract a person's name or identify sentiment.
+
+Why useful? It builds representations of the input text rather than primarily generating a response token by token.
+
+
+B. Decoder-only — GPT-style LLMs
+Generate text
+The decoder uses causal self-attention. Each token can attend to earlier tokens, but not future tokens.
+
+Example: Answer a banking question, generate Python code, or write a customer email.
+
+Why useful? It learns to predict the next token from the tokens that came before it.
+
+
+C. Encoder-decoder — original Transformer
+Transform input into output
+The encoder processes the input. The decoder generates the output using masked self-attention and cross-attention to the encoder's output.
+
+Example: Translate “Good morning” into another language.
+
+Why useful? It separates understanding the source sequence from generating the target sequence.
+---------------------------------------------------------------------------------
+A. Encoder-only — understand text
+Understanding
+Choose this when the main output is a classification, embedding, or extracted information rather than a long generated response.
+
+Banking project examples:
+- Classify a complaint as a payment, KYC, or fraud issue.
+- Create embeddings for semantic search.
+- Identify account numbers or organization names in documents.
+Models: BERT, RoBERTa, embedding models.
+
+Typical use: classification, semantic search, named entity recognition. 
+
+B. Decoder-only — generate text
+Generation
+Choose this when the model needs to generate responses one token at a time.
+
+Banking project examples:
+- Build a banking customer-support chatbot.
+- Generate answers from retrieved policy documents (RAG).
+- Summarize a customer case or draft a support response.
+Models: GPT, Llama, Mistral.
+
+Typical use: chatbots, text generation, code generation and agentic AI. 
+
+
+C. Encoder-decoder — transform input into output
+Sequence-to-sequence
+Choose this when a model reads an input sequence and generates a corresponding output sequence.
+
+Banking project examples:
+- Translate banking policies into another language.
+- Rewrite complex policy text into simpler language.
+- Convert a long document into a concise summary.
+Models: T5, BART, the original Transformer.
+
+Typical use: translation, summarization and text-to-text transformation
