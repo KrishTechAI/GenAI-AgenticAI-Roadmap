@@ -166,3 +166,477 @@ Structured output	Can it return predictable JSON if needed?
 Tool calling	Can it invoke approved backend functions?
 
 Important: A larger or more expensive model is not automatically better for your application. Test candidate models on representative questions and measure their performance.
+------------------------------------------------------------------------------------
+
+
+semantic seacrh:
+
+
+from sentence_transformers import SentenceTransformer
+from sklearn.metrics.pairwise import cosine_similarity
+
+# Load a pretrained embedding model
+model = SentenceTransformer("all-MiniLM-L6-v2")
+
+sentences = [
+    "How can I apply for a personal loan?",
+    "What is the procedure to obtain a personal loan?",
+    "How can I reset my banking password?"
+]
+
+# Generate embeddings
+embeddings = model.encode(sentences)
+
+print("Embedding shape:", embeddings.shape)
+
+# Compare the first sentence with the other sentences
+similarities = cosine_similarity(
+    [embeddings[0]],
+    embeddings
+)
+
+for i, sentence in enumerate(sentences):
+    print(sentence)
+    print("Similarity:", similarities[0][i])
+    print()
+------------------------------------------------------------------
+Model	Embedding dimensions
+OpenAI text-embedding-3-small	1536 by default
+OpenAI text-embedding-3-large	3072 by default
+
+Token embeddings vs sentence embeddings
+This is a common interview question.
+
+You already studied token embeddings during Transformers.
+
+Let's distinguish the two concepts.
+Token embeddings	Sentence embeddings
+Represent individual tokens	Represent a sentence or text passage
+Used inside Transformer architectures	Commonly used for semantic search
+Often form a sequence of vectors	Usually produce one fixed-size vector per input text
+Capture token-level representation	Aim to capture overall semantic meaning
+
+"Transformers generally use token embeddings as their input representation. Positional information is also incorporated to represent token order. Through self-attention and subsequent Transformer layers, the model generates contextualized representations for each token.
+Sentence embeddings are typically obtained by pooling these contextualized token representations, as in Sentence-BERT, for tasks such as semantic search and RAG."
+
+How do we compare embeddings?
+Now we have vectors. How can we identify which two sentences have similar meanings?
+
+We use similarity measurements.
+
+One commonly used measurement is cosine similarity.
+
+Cosine similarity calculates the cosine of the angle between two vectors.
+\[
+\text{Cosine Similarity}(A,B)=
+\frac{A\cdot B}{\|A\|\|B\|}
+\]
+
+
+
+from sentence_transformers import SentenceTransformer
+from sklearn.metrics.pairwise import cosine_similarity
+
+# Load a pretrained embedding model
+model = SentenceTransformer("all-MiniLM-L6-v2")
+
+sentences = [
+    "How can I apply for a personal loan?",
+    "What is the procedure to obtain a personal loan?",
+    "How can I reset my banking password?"
+]
+
+# Generate embeddings
+embeddings = model.encode(sentences)
+
+print("Embedding shape:", embeddings.shape)
+
+# Compare the first sentence with the other sentences
+similarities = cosine_similarity(
+    [embeddings[0]],
+    embeddings
+)
+
+for i, sentence in enumerate(sentences):
+    print(sentence)
+    print("Similarity:", similarities[0][i])
+    print()
+------------------------------------------
+sentence tokenizer important for rag:
+
+Important for your RAG project
+In a banking RAG application, the typical flow is:
+1. Extract text from PDF documents.
+2. Clean the extracted text.
+3. Split the text into sentences if sentence-level processing is useful.
+4. Create meaningful chunks.
+5. Generate embeddings for those chunks.
+6. Store embeddings in a vector database.
+7. Retrieve relevant chunks when a user asks a question.
+--------------------------
+What is a vector database?
+A vector database stores and searches vector representations.
+
+Examples:
+
+FAISS
+A library for efficient similarity search; not a full database service.
+Pinecone
+Managed vector database.
+Chroma
+Vector database commonly used in AI applications.
+OpenSearch
+Supports text search and vector search.
+
+A vector database can store:
+- Embedding vectors.
+- Original document chunks.
+- Document IDs.
+- Metadata such as source, category, and page number.
+-----------------------------------------
+What are embeddings?
+
+Embeddings are numerical vector representations of data such as text. They capture semantic information and allow systems to compare meaning mathematically.
+
+Q2. Why are embeddings important in RAG?
+
+Embeddings convert document chunks and user queries into vectors. The system compares these vectors to retrieve semantically relevant document chunks, which are then passed to an LLM as context.
+
+Q3. What is the difference between keyword search and semantic search?
+
+Keyword search looks for matching words or terms. Semantic search looks for similarity in meaning using embeddings.
+
+Q4. What is cosine similarity?
+
+Cosine similarity measures the cosine of the angle between two vectors. It is commonly used to compare embedding vectors.
+
+
+
+Relevant document not retrieved	Review embedding model, chunking and query formulation
+Too many irrelevant results	Tune Top-K and threshold
+Old policy retrieved	Apply version and active-status metadata filters
+Exact loan ID not found	Add keyword search or hybrid search
+Search takes too long	Use vector indexing and optimize database queries
+Correct document but wrong answer	Review retrieved context, prompt and generation behavior
+User sees unauthorized information	Enforce server-side access control and tenant isolation
+
+Q5. Does an embedding model generate answers?
+
+No. Its primary purpose is to generate vector representations. An LLM generally generates the final natural-language response.
+
+Q6. What is embedding dimension?
+
+It is the number of numerical values in an embedding vector. For example, a 384-dimensional embedding contains 384 numbers.
+
+Q7. Can we use different embedding models for document ingestion and query processing?
+
+It is generally best to use the same embedding model and compatible configuration for both. Otherwise, the vectors may not be comparable in the intended way. If the embedding model changes, the document vectors normally need to be regenerated.
+
+Q8. What happens if the embedding model generates poor representations?
+
+Retrieval quality may decrease. Relevant documents might not be retrieved, and irrelevant chunks might be selected. This can negatively affect the final RAG answer.
+-----------------------------------------------------------------------------------------------------------------
+1. What is semantic search?
+Semantic search is a search technique that identifies information based on its meaning rather than relying only on exact keyword matches.
+
+
+Q1. What is semantic search?
+
+Semantic search is a technique that retrieves information based on meaning rather than exact keyword matching. It uses embeddings and similarity measurements to identify relevant documents.
+
+Q2. Explain the complete semantic search workflow.
+
+First, documents are extracted and divided into chunks. An embedding model converts each chunk into a vector, and the vectors are stored in a vector database. When a user submits a query, the same embedding model converts it into a vector. The vector database compares it with stored vectors and retrieves the most relevant chunks.
+
+Q3. What is Top-K retrieval?
+
+Top-K retrieval selects the K highest-ranked results from a search. For example, K = 5 retrieves up to five of the most relevant document chunks.
+
+Q4. What is a similarity threshold?
+
+It is a minimum similarity score used to filter weak search results. Results below the configured threshold can be rejected.
+
+Q5. What happens if Top-K is too high?
+
+The system may retrieve too many irrelevant chunks, increasing token usage, latency and the possibility of confusing the LLM.
+
+Q6. What happens if Top-K is too low?
+
+The system might miss important information required to answer the user's question.
+
+Q7. What is the difference between cosine similarity and Euclidean distance?
+
+Cosine similarity compares the direction of vectors, while Euclidean distance measures the straight-line distance between vectors. The choice depends on the embedding model, normalization and retrieval setup.
+
+Q8. What is ANN?
+
+Approximate Nearest Neighbor is a search technique used to find likely nearest vectors efficiently in large vector collections without exhaustively comparing every vector.
+
+Q9. What is hybrid search?
+
+Hybrid search combines keyword-based retrieval and semantic vector search to improve retrieval quality, especially when queries contain both natural-language meaning and exact identifiers.
+
+Q10. How would you improve semantic search accuracy in a banking RAG application?
+
+I would evaluate the embedding model, improve document extraction and chunking, use metadata filters, tune Top-K and similarity thresholds, introduce hybrid search, and evaluate retrieval quality using representative banking questions.
+
+
+14. Practical exercises
+Exercise A – Theory
+Answer these in your own words:
+1. What is the difference between keyword search and semantic search?
+2. Explain Top-K retrieval with an example.
+3. What is a similarity threshold?
+4. Why do vector databases use ANN?
+5. What is hybrid search?
+6. Why do we use metadata filtering in banking applications?
+7. What happens if the query embedding and document embeddings are generated using incompatible models?
+
+"In a RAG system, query embeddings are compared with document embeddings using a similarity metric such as cosine similarity. 
+If the embeddings come from incompatible models, their representations may belong to different vector spaces. If their dimensions differ, the comparison can fail.
+Even when the dimensions match, the similarity scores may be misleading, resulting in poor retrieval and potentially incorrect LLM responses.
+To avoid this, I use the same embedding model for queries and documents, or use specifically designed compatible encoders. 
+When changing models, I regenerate the document embeddings and rebuild the vector index."
+
+What if you change the embedding model?
+If you switch to a different embedding model, you generally need to regenerate the document embeddings and rebuild the vector index using the new model.
+
+
+Remember this flow
+Document → Same embedding model → Document embeddings → Vector database
+
+Customer query → Same embedding model → Query embedding → Similarity search
+--------------------------------------------------
+Exercise B – Coding
+Modify the semantic search program from today's lesson.
+
+Your requirements:
+1. Add at least eight banking documents.
+2. Generate embeddings for all documents.
+3. Accept a customer question.
+4. Calculate cosine similarity.
+5. Retrieve the Top 3 documents.
+6. Apply a similarity threshold.
+7. Print document ID, text and similarity score.
+8. Display "No relevant documents found" when nothing passes the threshold.
+
+10 Banking Documents
+|
+Generate Document Embeddings
+|
+all-MiniLM-L6-v2
+|
+Customer Enters Question
+|
+Generate Query Embedding
+|
+Cosine Similarity
+|
+Sort Results → Apply Threshold → Top 3
+|
+Display Relevant Documents
+
+
+
+from sentence_transformers import SentenceTransformer
+from sklearn.metrics.pairwise import cosine_similarity
+
+# --------------------------------------------------
+# STEP 1: Load the embedding model
+# --------------------------------------------------
+
+model = SentenceTransformer("all-MiniLM-L6-v2")
+
+
+# --------------------------------------------------
+# STEP 2: Create banking documents
+# --------------------------------------------------
+
+documents = [
+    {
+        "id": "DOC001",
+        "text": "Customers can apply for a personal loan through the bank website or mobile application."
+    },
+    {
+        "id": "DOC002",
+        "text": "To reset your banking password, visit the login page and select forgot password."
+    },
+    {
+        "id": "DOC003",
+        "text": "Customers must submit identity proof and address proof to complete KYC verification."
+    },
+    {
+        "id": "DOC004",
+        "text": "Home loan applicants must submit income proof, property documents and identity proof."
+    },
+    {
+        "id": "DOC005",
+        "text": "Credit card customers can pay their outstanding balance through net banking or UPI."
+    },
+    {
+        "id": "DOC006",
+        "text": "Customers should immediately report a lost or stolen debit card to the bank."
+    },
+    {
+        "id": "DOC007",
+        "text": "A savings account can be opened by submitting identity proof and address proof."
+    },
+    {
+        "id": "DOC008",
+        "text": "Personal loan approval depends on income, credit score and repayment capacity."
+    },
+    {
+        "id": "DOC009",
+        "text": "Customers can download monthly bank statements through internet banking."
+    },
+    {
+        "id": "DOC010",
+        "text": "Fixed deposits provide interest on money deposited for a selected period."
+    }
+]
+
+
+# --------------------------------------------------
+# STEP 3: Generate embeddings for all documents
+# --------------------------------------------------
+
+document_texts = [doc["text"] for doc in documents]
+
+document_embeddings = model.encode(document_texts)
+
+print("Document embeddings generated successfully!")
+print("Embedding shape:", document_embeddings.shape)
+
+
+# --------------------------------------------------
+# STEP 4: Accept customer question
+# --------------------------------------------------
+
+query = input("\nEnter your banking question: ")
+
+
+# --------------------------------------------------
+# STEP 5: Generate query embedding
+# --------------------------------------------------
+
+query_embedding = model.encode([query])
+
+
+# --------------------------------------------------
+# STEP 6: Calculate cosine similarity
+# --------------------------------------------------
+
+similarity_scores = cosine_similarity(
+    query_embedding,
+    document_embeddings
+)[0]
+
+
+# --------------------------------------------------
+# STEP 7: Combine documents and similarity scores
+# --------------------------------------------------
+
+results = []
+
+for index, score in enumerate(similarity_scores):
+
+    results.append({
+        "id": documents[index]["id"],
+        "text": documents[index]["text"],
+        "similarity": float(score)
+    })
+
+
+# --------------------------------------------------
+# STEP 8: Sort by similarity score
+# --------------------------------------------------
+
+results = sorted(
+    results,
+    key=lambda x: x["similarity"],
+    reverse=True
+)
+
+
+# --------------------------------------------------
+# STEP 9: Apply Top 3 and similarity threshold
+# --------------------------------------------------
+
+TOP_K = 3
+SIMILARITY_THRESHOLD = 0.40
+
+top_results = [
+    result for result in results
+    if result["similarity"] >= SIMILARITY_THRESHOLD
+][:TOP_K]
+
+
+# --------------------------------------------------
+# STEP 10: Display retrieved documents
+# --------------------------------------------------
+
+print("\n========== SEARCH RESULTS ==========")
+
+if not top_results:
+
+    print("No relevant documents found")
+
+else:
+
+    for result in top_results:
+
+        print("\nDocument ID:", result["id"])
+        print("Document Text:", result["text"])
+        print("Similarity Score:", round(result["similarity"], 4))
+        print("-----------------------------------")
+------------------------------------------------------------------
+Imagine an interviewer asks:
+
+"You developed a banking RAG chatbot. A customer asks about personal loan prepayment, but the system retrieves a home loan policy. How would you troubleshoot and fix this?"
+
+RAG troubleshooting flow
+1. Query analysis
+   
+   Check whether the customer's question is understood correctly.
+2. Document preprocessing and chunking
+   
+   Check whether personal loan and home loan policies were extracted and split correctly.
+3. Embedding generation
+   
+   Verify that the correct embedding model was used for documents and queries.
+4. Vector database
+   
+   Check whether document metadata and embeddings are stored correctly.
+5. Retrieval and ranking
+   
+   Inspect similarity scores and determine why the home loan document ranked higher.
+6. LLM response generation
+   
+   Verify that the LLM receives the correct retrieved context and follows it.
+
+
+I would troubleshoot the issue systematically across the RAG pipeline.
+First, I would inspect the customer query to verify whether the system correctly identifies the loan type as a personal loan and the intent as prepayment.
+Second, I would check document extraction and chunking to ensure that personal loan and home loan policies are stored as separate, meaningful chunks.
+Third, I would verify the embedding model, dimensions and document-to-vector mapping to ensure that query and document embeddings are compatible.
+Next, I would inspect the vector database metadata and similarity scores. Since the query specifically mentions a personal loan, I would apply metadata filtering using the loan_type field so that only personal loan documents are considered during retrieval.
+I would also consider adding a reranking model to improve the relevance of the retrieved documents.
+Finally, I would validate the context passed to the LLM and ensure that it answers only from the correct policy document. If the relevant policy is unavailable, the chatbot should not generate unsupported information.
+I would test the solution using multiple personal loan and home loan queries and monitor retrieval accuracy to ensure that the issue is resolved.
+
+----------------------------------------------------------------------------
+
+What is a vector database?
+A vector database is a system designed to store, index and retrieve numerical vectors based on similarity.
+
+In simple English:
+
+A vector database stores embeddings and helps us find the vectors that are most similar to a query vector.
+
+It can also associate each vector with:
+- Original document text.
+- Document ID.
+- Page number.
+- Category.
+- Source.
+- Other metadata.
