@@ -1,0 +1,168 @@
+12. Model selection — How do you choose an LLM?
+A GenAI Engineer should not choose a model only because it is popular.
+
+The correct choice depends on the task and the application's constraints.
+
+| Factor | Questions to ask |
+|---|---|
+| Quality | Does the model perform well on our actual tasks? |
+| Latency | How quickly does it respond? |
+| Cost | What are the inference or hosting costs? |
+| Context window | Can it handle the required input and output sizes? |
+| Privacy | Can the data be sent to the provider, or must the model run in a controlled environment? |
+| Tool support | Can it reliably support the required tool-calling workflow? |
+| Structured output | Can it produce the required format reliably? |
+| Deployment | Is hosted API access or self-hosting more appropriate? |
+| Evaluation | How does it perform on representative test cases? |
+
+
+Banking example
+Suppose you're building two applications.
+
+Application A: Simple ticket classification
+
+You may be able to use a smaller model or even a traditional classifier, depending on accuracy requirements.
+
+Application B: Complex document analysis
+
+A more capable model with suitable context capacity may be needed, potentially combined with document retrieval.
+
+The best choice is the model that meets the requirements at an acceptable cost and operational complexity.
+
+Interview answer:
+"I select an LLM based on task-specific evaluation, response quality, latency, cost, context capacity, privacy, deployment constraints, and tool support. I compare candidate models using representative test cases instead of relying only on benchmark rankings."
+
+import os
+from openai import OpenAI
+
+if not os.getenv("OPENAI_API_KEY"):
+    raise RuntimeError("OPENAI_API_KEY is not configured")
+
+client = OpenAI()
+
+response = client.responses.create(
+    model="gpt-4.1-mini",
+    input="Explain compound interest in simple English."
+)
+
+print(response.output_text)
+
+------------------------------
+import os
+from openai import OpenAI
+
+if not os.getenv("OPENAI_API_KEY"):
+    raise RuntimeError("OPENAI_API_KEY is not configured")
+
+client = OpenAI()
+
+def banking_assistant(question: str) -> str:
+    response = client.responses.create(
+        model="gpt-4.1-mini",
+        instructions=(
+            "You are a banking information assistant. "
+            "Explain general financial concepts in simple English. "
+            "Do not invent bank-specific policies, interest rates, "
+            "customer records, or eligibility decisions. "
+            "If information is missing, say that it needs verification."
+        ),
+        input=question
+    )
+
+    return response.output_text
+
+question = "Explain the difference between a secured and unsecured loan."
+
+answer = banking_assistant(question)
+
+print("Question:", question)
+print("Answer:", answer)
+
+
+15. Important interview questions
+Q1. What is the difference between an LLM and a Transformer?
+A Transformer is a neural-network architecture. An LLM is a large language model trained to perform language tasks. Many modern LLMs use Transformer architectures, but the terms are not interchangeable.
+Q2. Does fine-tuning always improve a model?
+No. Fine-tuning can improve performance on a target task, but poor training data, inappropriate settings, or insufficient evaluation can make performance worse or reduce generalization.
+Q3. What is the difference between inference and fine-tuning?
+Inference uses the existing model parameters to produce predictions. Fine-tuning performs additional training to adapt the model, updating all or selected trainable parameters.
+Q4. Does a larger context window eliminate the need for RAG?
+No. A larger context window allows more input tokens, but it does not guarantee accurate retrieval, reliable use of every detail, or current information. RAG can help retrieve relevant external information instead of placing an entire knowledge base into every prompt.
+Q5. Can temperature prevent hallucinations?
+No. Temperature changes the probability distribution used for sampling. Lower temperature can reduce variation, but it cannot guarantee factual accuracy.
+Q6. When would you use an API instead of a local model?
+I would compare quality, latency, cost, privacy, deployment requirements, operational complexity, and available infrastructure. A hosted API may reduce infrastructure-management work, while a local model may be preferable when deployment control or data-handling requirements make it suitable.
+------------------------------------------------------
+"I select an LLM based on task-specific evaluation, response quality, latency, cost, context capacity, privacy, deployment constraints, and tool support. I compare candidate models using representative test cases instead of relying only on benchmark rankings."
+------------------------------
+1. What is the difference between pretraining and fine-tuning?
+
+2. A model gives a different answer every time you ask the same question. Which generation settings would you investigate, and why?
+
+3. Your banking assistant generates an incorrect interest rate. How would you investigate and reduce this problem?
+
+4. Your prompt contains 12,000 tokens, but your chosen model has a smaller context limit. What would you do?
+
+5. You need to build a banking policy assistant. How would you decide between prompting, fine-tuning, and RAG?
+
+6. Explain the complete flow from a Python application calling an LLM API to receiving the generated response.
+
+------------------------
+Pretraining
+Fine-tuning
+Instruction tuning
+Inference
+Greedy decoding
+Sampling
+Temperature
+Top-k and top-p
+Context windows
+Hallucinations
+Model selection
+LLM APIs
+----------------------------
+========================================================
+How do you select the right model for a business requirement?
+When do you use a hosted API versus a locally deployed model?
+How do you balance accuracy, latency, cost, and privacy?
+How do you call an LLM from a Python application?
+How do you evaluate whether the model is suitable?
+
+What is model selection?
+
+Model selection means choosing the most suitable LLM for a particular application.
+
+You have several possible models:
+- GPT models through an API.
+- Claude models through an API.
+- Gemini models through an API.
+- Llama models deployed on your infrastructure.
+- Mistral models deployed on your infrastructure.
+
+Ollama is a tool that helps you download and run AI models on your own computer.
+you can use Ollama to run models such as:
+- Mistral
+- Llama
+- Gemma
+- Qwen
+
+- Mistral, Llama and Qwen are AI models.
+- Ollama helps you download and run models easily.
+- vLLM helps deploy and serve models efficiently, particularly in production environments.
+Think of vLLM as software that helps your server handle many people asking an AI model questions at the same time.
+
+
+How do you select a model for a banking RAG chatbot?
+
+
+Selection criterion	What to check
+Accuracy	Does it answer correctly?
+Grounding	Does it use retrieved policy content?
+Context window	Can it handle the retrieved passages?
+Latency	How quickly does it respond?
+Cost	What is the cost at expected usage?
+Privacy	Is the deployment approved for banking data?
+Structured output	Can it return predictable JSON if needed?
+Tool calling	Can it invoke approved backend functions?
+
+Important: A larger or more expensive model is not automatically better for your application. Test candidate models on representative questions and measure their performance.
