@@ -1,0 +1,490 @@
+aws betrack = LLM 
+titan - emb
+opensearch  - vectore db = keyword search + semantic search 
+
+
+
+banking_rag_project/
+│
+├── .venv/                 # Virtual environment
+│
+├── documents/
+│   ├── personal_loan_policy.pdf
+│   ├── home_loan_policy.pdf
+│   └── kyc_policy.pdf
+│
+├── src/
+│   ├── extract_text.py
+│   ├── chunk_documents.py
+│   ├── generate_embeddings.py
+│   ├── store_vectors.py
+│   ├── retrieve_chunks.py
+│   └── chat.py
+│
+├── chroma_db/
+├── requirements.txt
+└── README.md
+
+1. Create folders
+mkdir documents
+mkdir src
+mkdir chroma_db
+
+
+Create Python files
+
+New-Item src\extract_text.py -ItemType File
+New-Item src\chunk_documents.py -ItemType File
+New-Item src\generate_embeddings.py -ItemType File
+New-Item src\store_vectors.py -ItemType File
+New-Item src\retrieve_chunks.py -ItemType File
+New-Item src\chat.py -ItemType File
+
+3. Create project files
+
+New-Item requirements.txt -ItemType File
+New-Item README.md -ItemType File
+
+
+New virtual environment?
+
+Run:
+python -m venv .venv
+
+Activate it
+
+.\.venv\Scripts\Activate.ps1
+
+Verify Python
+python -c "import sys; print(sys.executable)"
+-------------------------------------------------
+
+Step 2 — Install the required Python libraries
+requirements.txt
+pymupdf
+chromadb
+sentence-transformers
+langchain-text-splitters
+
+python -m pip install -r requirements.txt
+
+
+What are we installing?
+Library	Why do we need it?
+pymupdf |	Extract text from PDF documents
+chromadb	|Store and search document embeddings
+sentence-transformers|	Convert text into numerical vectors
+langchain-text-splitters	| Divide large documents into smaller chunks
+---------------------------------------------------------
+Supported document formats
+File format	Example	How we extract text
+PDF (.pdf)	Home loan policy	|PyMuPDF
+Word (.docx)	Loan agreement	|python-docx
+Text (.txt)	KYC instructions	|Python file handling
+CSV (.csv)	Loan interest-rate table|	pandas
+Excel (.xlsx)	Loan eligibility details	|openpyxl / pandas
+HTML (.html)	Bank policy webpage	|BeautifulSoup
+Scanned PDF	Image-based loan document	|OCR using Tesseract or AWS Textract
+---------------------------------------------
+Step 3 — PDF text extraction
+
+
+
+import fitz
+from pathlib import Path
+
+# Get the project root directory
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+
+# Define the documents folder
+DOCUMENTS_FOLDER = PROJECT_ROOT / "documents"
+
+# Find all PDF files
+pdf_files = list(DOCUMENTS_FOLDER.glob("*.pdf"))
+
+if not pdf_files:
+    print("No PDF files found!")
+
+for pdf_file in pdf_files:
+
+    print(f"\nProcessing: {pdf_file.name}")
+
+    # Open PDF
+    document = fitz.open(pdf_file)
+
+    extracted_text = ""
+
+    # Extract text from each page
+    for page_number, page in enumerate(document, start=1):
+
+        page_text = page.get_text()
+
+        extracted_text += (
+            f"\n--- Page {page_number} ---\n"
+            + page_text
+        )
+
+    # Save extracted text
+    output_file = pdf_file.stem + ".txt"
+    output_path = DOCUMENTS_FOLDER / output_file
+
+    output_path.write_text(
+        extracted_text,
+        encoding="utf-8"
+    )
+
+    print(f"Text saved: {output_file}")
+
+    document.close()
+
+print("\nPDF extraction completed!")
+
+Output:
+
+Processing: home_loan_policy.pdf
+Text saved: home_loan_policy.txt
+
+Processing: personal_loan_policy.pdf
+Text saved: personal_loan_policy.txt
+
+Processing: kyc_policy.pdf
+Text saved: kyc_policy.txt
+
+PDF extraction completed!
+-------------------------------------------------------------
+Step 4 — Document Chunking
+
+What documents are required for a home loan?"
+
+We don't need to send all 100 pages to the LLM. We only need the section that explains the required documents.
+
+Chunking helps us:
+- Divide large documents into smaller pieces.
+- Retrieve relevant information efficiently.
+- Reduce unnecessary information sent to the LLM.
+- Improve retrieval accuracy.
+
+
+Important chunking concepts:
+
+1. Chunk size
+
+The maximum number of characters in each chunk.
+
+Example:
+chunk_size = 500
+
+2. Chunk overlap
+
+The number of characters repeated between consecutive chunks.
+
+Example:
+
+chunk_overlap = 100
+
+
+from pathlib import Path
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+
+# 1. Find the project directory
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+
+# 2. Define the documents folder
+DOCUMENTS_FOLDER = PROJECT_ROOT / "documents"
+
+# 3. Configure the text splitter
+text_splitter = RecursiveCharacterTextSplitter(
+    chunk_size=500,
+    chunk_overlap=100,
+    separators=["\n\n", "\n", " ", ""]
+)
+
+# 4. Find extracted TXT files
+text_files = list(DOCUMENTS_FOLDER.glob("*.txt"))
+
+if not text_files:
+    print("No extracted TXT files found. Run extract_text.py first.")
+
+# 5. Process each text file
+for text_file in text_files:
+
+    print(f"\nProcessing: {text_file.name}")
+
+    # Read extracted text
+    text = text_file.read_text(encoding="utf-8")
+
+    # Split text into chunks
+    chunks = text_splitter.split_text(text)
+
+    print("Total chunks:", len(chunks))
+
+    # Save chunks into a separate TXT file
+    output_file = text_file.stem + "_chunks.txt"
+    output_path = DOCUMENTS_FOLDER / output_file
+
+    with output_path.open("w", encoding="utf-8") as file:
+
+        for index, chunk in enumerate(chunks, start=1):
+
+            file.write(f"\n\n--- CHUNK {index} ---\n")
+            file.write(chunk)
+
+    print("Chunks saved:", output_file)
+
+print("\nDocument chunking completed!")
+
+
+Code	Explanation
+RecursiveCharacterTextSplitter	LangChain text-splitting utility
+chunk_size=500	Maximum chunk size in characters
+chunk_overlap=100	Repeated characters between chunks
+split_text(text)	Divides the text into chunks
+enumerate(chunks, start=1)	Numbers the chunks
+write()	Saves each chunk to a file
+
+
+output:
+
+Processing: home_loan_policy.txt
+Total chunks: 25
+Chunks saved: home_loan_policy_chunks.txt
+
+Processing: personal_loan_policy.txt
+Total chunks: 18
+Chunks saved: personal_loan_policy_chunks.txt
+
+Document chunking completed!
+
+--------------------------------------------------------------------
+Q1. What is chunking in RAG?
+
+Chunking is the process of splitting large documents into smaller text segments so that relevant information can be retrieved efficiently.
+
+Q2. What is chunk overlap?
+
+Chunk overlap is the repeated text shared between consecutive chunks. It helps preserve context when information spans chunk boundaries.
+
+Q3. What happens if chunk size is too large?
+
+Chunks may contain unrelated information, reducing retrieval precision and increasing the amount of context passed to the LLM.
+
+Q4. What happens if chunk size is too small?
+
+Important context may be separated, making it harder for the retriever to find complete answers.
+
+Q5. Is chunk size measured in tokens or characters in our implementation?
+
+Our RecursiveCharacterTextSplitter is configured using characters, not tokens.
+-----------------------------------------------------------------------------
+Step 5 — Generate Embeddings using Sentence Transformers
+
+What are embeddings?
+Computers cannot directly understand the meaning of sentences like humans do.
+
+For example:
+- "What is the home loan interest rate?"
+- "How much interest do I need to pay for a housing loan?"
+These sentences use different words, but their meanings are similar.
+
+An embedding model converts text into numerical vectors so that semantically similar sentences can have vectors that are close together in vector space.
+
+Which embedding model will we use?
+We'll use:
+
+all-MiniLM-L6-v2
+
+It is a Sentence Transformers model that generates a 384-dimensional embedding for each input text.
+Property	Value
+Model	all-MiniLM-L6-v2
+Library	Sentence Transformers
+Embedding dimension	384
+Input	Text
+Output	Numerical vector
+Use case	Semantic search and RAG
+
+
+
+from pathlib import Path
+from sentence_transformers import SentenceTransformer
+import json
+
+# 1. Get the project directory
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+
+# 2. Define the documents folder
+DOCUMENTS_FOLDER = PROJECT_ROOT / "documents"
+
+# 3. Load the embedding model
+print("Loading embedding model...")
+
+model = SentenceTransformer("all-MiniLM-L6-v2")
+
+print("Embedding model loaded successfully!")
+
+# 4. Find all chunk files
+chunk_files = list(
+    DOCUMENTS_FOLDER.glob("*_chunks.txt")
+)
+
+if not chunk_files:
+    print("No chunk files found. Run chunk_documents.py first.")
+
+# 5. Process each chunk file
+for chunk_file in chunk_files:
+
+    print(f"\nProcessing: {chunk_file.name}")
+
+    # Read the chunk file
+    content = chunk_file.read_text(encoding="utf-8")
+
+    # Separate individual chunks using our chunk markers
+    raw_chunks = content.split("--- CHUNK ")
+
+    chunks = []
+
+    for raw_chunk in raw_chunks:
+
+        if "---" not in raw_chunk:
+            continue
+
+        chunk_text = raw_chunk.split("---", 1)[1].strip()
+
+        if chunk_text:
+            chunks.append(chunk_text)
+
+    if not chunks:
+        print("No valid chunks found.")
+        continue
+
+    # 6. Convert chunks into embeddings
+    embeddings = model.encode(
+        chunks,
+        convert_to_numpy=True,
+        normalize_embeddings=True
+    )
+
+    print("Total chunks:", len(chunks))
+    print("Embedding shape:", embeddings.shape)
+
+    # 7. Save embeddings and text
+    output_data = []
+
+    for index, (chunk, embedding) in enumerate(
+        zip(chunks, embeddings), start=1
+    ):
+
+        output_data.append({
+            "chunk_id": f"{chunk_file.stem}_{index}",
+            "text": chunk,
+            "embedding": embedding.tolist()
+        })
+
+    output_file = chunk_file.stem + "_embeddings.json"
+
+    output_path = DOCUMENTS_FOLDER / output_file
+
+    with output_path.open("w", encoding="utf-8") as file:
+        json.dump(output_data, file, indent=4)
+
+    print("Embeddings saved:", output_file)
+
+print("\nEmbedding generation completed!")
+
+
+banking_rag_project/
+│
+├── .venv/
+│
+├── documents/
+│   ├── home_loan_policy.pdf
+│   ├── home_loan_policy.txt
+│   ├── home_loan_policy_chunks.txt
+│   ├── home_loan_policy_chunks_embeddings.json
+│   │
+│   ├── personal_loan_policy.pdf
+│   ├── personal_loan_policy.txt
+│   ├── personal_loan_policy_chunks.txt
+│   ├── personal_loan_policy_chunks_embeddings.json
+│   │
+│   ├── kyc_policy.pdf
+│   ├── kyc_policy.txt
+│   ├── kyc_policy_chunks.txt
+│   └── kyc_policy_chunks_embeddings.json
+│
+├── src/
+│   ├── extract_text.py
+│   ├── chunk_documents.py
+│   ├── generate_embeddings.py
+│   ├── store_vectors.py
+│   ├── retrieve_chunks.py
+│   └── chat.py
+│
+├── chroma_db/
+├── requirements.txt
+└── README.md
+
+5.8 Interview questions
+Q1. What are embeddings in Generative AI?
+
+Embeddings are numerical representations of text, images or other data in a vector space. They help systems identify semantic relationships and retrieve relevant information.
+
+Q2. Why do we generate embeddings in RAG?
+
+We generate embeddings to convert document chunks and user queries into vectors. This allows us to retrieve semantically relevant information using vector similarity search.
+
+Q3. What is embedding dimension?
+
+Embedding dimension is the number of numerical values in a vector. Our all-MiniLM-L6-v2 model generates 384-dimensional vectors.
+
+Q4. Why should we use the same embedding model for documents and queries?
+
+The document and query vectors must be compatible in the same vector space. Using the same model is the simplest way to ensure this compatibility.
+
+Q5. What is the difference between an embedding model and an LLM?
+
+An embedding model converts text into numerical vectors. An LLM generates or understands responses based on input text and its learned parameters. They perform different roles in a RAG system.
+------------------------------------------------------------------------------
+Step	What we did	Technology
+3	Extract text from PDFs	PyMuPDF
+4	Split text into chunks	LangChain
+5	Convert chunks into vectors	Sentence Transformers
+6	Store vectors and documents	ChromaDB
+
+
+Step 6 — Store Embeddings in ChromaDB
+
+6.1 First, understand what ChromaDB does
+Imagine we have generated 25 chunks from a home-loan PDF.
+
+Each chunk has:
+- A unique ID
+- Original text
+- An embedding (384 numerical values)
+- Metadata (source document, page number, loan type, etc.)
+
+
+6.2 Understand important ChromaDB concepts
+Concept	Meaning
+Client	Connects to ChromaDB
+Collection	Groups related documents and vectors
+ID	Unique identifier for each record
+Documents	Original text chunks
+Embeddings	Numerical vector representations
+Metadata	Additional information about chunks
+Persistence	Saves database data so it remains available after program execution
+
+
+home_loan_policy_chunks_embeddings.json
+                    |
+                    v
+              Read JSON data
+                    |
+                    v
+          Extract IDs, text, vectors
+                    |
+                    v
+                ChromaDB
+                    |
+                    v
+             Persistent storage
+                 chroma_db/
