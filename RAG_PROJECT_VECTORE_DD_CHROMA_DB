@@ -488,3 +488,394 @@ home_loan_policy_chunks_embeddings.json
                     v
              Persistent storage
                  chroma_db/
+-------------------------------------------------------------
+Step 7 — Retrieve Relevant Chunks from ChromaDB
+
+1. What is retrieval in RAG?
+Imagine a customer asks:
+What is the minimum salary required to apply for a personal loan?
+
+Our system must:
+1. Convert the customer's question into an embedding.
+2. Search the embeddings stored in ChromaDB.
+3. Find the chunks that are semantically closest to the question.
+4. Return the relevant text and its source metadata.
+
+2. Understand the retrieval architecture
+Customer question
+"What is the minimum salary for a personal loan?"
+|
+Sentence Transformer
+Converts the question into a 384-dimensional embedding
+|
+ChromaDB
+Compares the question embedding with stored document embeddings
+|
+Top 3 relevant chunks
+Returns document text, metadata and distances
+
+
+
+from pathlib import Path
+import chromadb
+from sentence_transformers import SentenceTransformer
+
+# 1. Get the project root directory
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+
+# 2. Define the ChromaDB folder
+CHROMA_FOLDER = PROJECT_ROOT / "chroma_db"
+
+# 3. Connect to the existing ChromaDB
+client = chromadb.PersistentClient(
+    path=str(CHROMA_FOLDER)
+)
+
+# 4. Access the existing collection
+collection = client.get_collection(
+    name="banking_documents"
+)
+
+print("Connected to ChromaDB!")
+print("Total stored chunks:", collection.count())
+
+# 5. Load the same embedding model
+model = SentenceTransformer("all-MiniLM-L6-v2")
+
+# 6. Get the customer's question
+question = input("\nEnter your banking question: ")
+
+# 7. Convert the question into an embedding
+query_embedding = model.encode(
+    question,
+    normalize_embeddings=True
+)
+
+# 8. Retrieve the top 3 relevant chunks
+if collection.count() == 0:
+
+    print("No documents are stored in ChromaDB.")
+
+else:
+
+    results = collection.query(
+        query_embeddings=[query_embedding.tolist()],
+        n_results=min(3, collection.count()),
+        include=[
+            "documents",
+            "metadatas",
+            "distances"
+        ]
+    )
+
+    # 9. Display retrieved results
+    print("\nRETRIEVED RESULTS")
+
+    for index in range(len(results["ids"][0])):
+
+        print("\nResult:", index + 1)
+
+        print("Chunk ID:", results["ids"][0][index])
+
+        print("Document:")
+        print(results["documents"][0][index])
+
+        print("Metadata:")
+        print(results["metadatas"][0][index])
+
+        print("Distance:")
+        print(results["distances"][0][index])
+
+
+Try this question:
+What is the minimum salary required for a personal loan?
+Then try:
+What documents are required for KYC verification?
+
+Parameter	Meaning
+query_embeddings	Customer question's embedding
+n_results	Number of nearest chunks to retrieve
+documents	Original chunk text
+metadatas	Source and document category
+distances	How far each result is from the query
+
+Important: We configured ChromaDB to use cosine distance in Step 6. A smaller distance means a closer match. Distance is not a probability or a guaranteed relevance percentage.
+
+
+6. Interview questions
+Q1. What is semantic search?
+
+Semantic search retrieves information based on the meaning and context of a query rather than relying only on exact keyword matches.
+
+Q2. Why do we convert a customer question into an embedding?
+
+Because ChromaDB searches using vector representations. Converting the question into an embedding allows it to compare the question with stored document embeddings.
+
+Q3. Why should we use the same embedding model for documents and queries?
+
+Because both embeddings need to belong to a compatible vector space for meaningful similarity comparisons.
+
+Q4. What is n_results=3?
+
+It asks ChromaDB to return the three nearest matching chunks. These are commonly called the top-k results, where k is 3.
+
+Q5. What is the difference between retrieval and generation?
+- Retrieval finds relevant information from the knowledge base.
+- Generation uses an LLM to create a natural-language answer using the retrieved information.
+7. Your task
+Run the program and test these three questions:
+1. What is the minimum salary for a personal loan?
+2. What are the KYC verification requirements?
+3. What is the eligibility criteria for a home loan?
+----------------------------------------------------------
+Step 8 — Generate Answers Using an LLM (Complete Your Banking RAG Pipeline)
+
+
+1. Understand the complete RAG architecture
+
+Our application follows this process:
+1. Question: Receive the customer's question.
+2. Embedding: Convert the question into a vector.
+3. Retrieval: Search ChromaDB for relevant policy chunks.
+4. Prompt construction: Combine the question with the retrieved chunks.
+5. LLM generation: Send the prompt to the LLM.
+6. Answer: Return an answer grounded in the retrieved policy information.
+
+$env:OPENAI_API_KEY="your_api_key_here"
+
+
+2. Create src/chat.py
+python -m pip install openai
+
+from pathlib import Path
+import os
+import chromadb
+from sentence_transformers import SentenceTransformer
+from openai import OpenAI
+
+# 1. Get the project directory
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+
+# 2. Define the ChromaDB folder
+CHROMA_FOLDER = PROJECT_ROOT / "chroma_db"
+
+# 3. Connect to ChromaDB
+client = chromadb.PersistentClient(
+    path=str(CHROMA_FOLDER)
+)
+
+collection = client.get_collection(
+    name="banking_documents"
+)
+
+# 4. Load the embedding model
+embedding_model = SentenceTransformer(
+    "all-MiniLM-L6-v2"
+)
+
+# 5. Configure the OpenAI client
+if not os.getenv("OPENAI_API_KEY"):
+    raise ValueError(
+        "OPENAI_API_KEY is not configured."
+    )
+
+llm_client = OpenAI()
+
+# 6. Get the customer's question
+question = input(
+    "Ask a banking question: "
+)
+
+# 7. Convert the question into an embedding
+query_embedding = embedding_model.encode(
+    question,
+    normalize_embeddings=True
+)
+
+# 8. Retrieve relevant chunks
+if collection.count() == 0:
+    raise ValueError(
+        "No documents found. Run store_vectors.py first."
+    )
+
+results = collection.query(
+    query_embeddings=[query_embedding.tolist()],
+    n_results=min(3, collection.count()),
+    include=["documents", "metadatas"]
+)
+
+retrieved_chunks = results["documents"][0]
+
+if not retrieved_chunks:
+    raise ValueError(
+        "No relevant chunks were retrieved."
+    )
+
+# 9. Combine retrieved chunks into context
+context = "\n\n".join(retrieved_chunks)
+
+# 10. Create the prompt and call the LLM
+response = llm_client.responses.create(
+    model="gpt-4.1-mini",
+    instructions=(
+        "You are a banking policy assistant. "
+        "Answer using only the supplied context. "
+        "Do not invent banking policies or figures. "
+        "If the context does not contain the answer, "
+        "say that the available documents do not "
+        "provide enough information."
+    ),
+    input=(
+        f"Context:\n{context}\n\n"
+        f"Customer question:\n{question}"
+    )
+)
+
+# 11. Display the final answer
+print("\nBanking Assistant Answer:")
+print(response.output_text)
+
+
+6. Interview questions and answers
+Q1. What is RAG?
+
+RAG stands for Retrieval-Augmented Generation. It retrieves relevant information from an external knowledge base and supplies that information to an LLM to generate an answer.
+
+Q2. Why do we use an LLM in RAG?
+
+The vector database retrieves relevant text, but it does not normally create a complete conversational answer. The LLM uses the retrieved text to generate a natural-language response.
+
+Q3. What is context in RAG?
+
+Context is the relevant information retrieved from the knowledge base and provided to the LLM along with the user's question.
+
+Q4. Does RAG eliminate hallucinations?
+
+No. RAG can reduce hallucinations by grounding answers in retrieved information, but the model may still misunderstand the context or produce unsupported statements.
+
+Q5. What is the difference between an embedding model and an LLM?
+
+An embedding model converts text into numerical vectors for similarity search. An LLM generates or understands text and produces responses.
+
+Q6. Where does ChromaDB fit into RAG?
+
+ChromaDB stores document chunks, embeddings, and metadata, and retrieves relevant chunks for a user's query.
+
+
+7. Your complete RAG pipeline so far
+Step	Component	Purpose
+3	PyMuPDF	Extract text from PDFs
+4	RecursiveCharacterTextSplitter	Split text into chunks
+5	Sentence Transformers	Generate embeddings
+6	ChromaDB	Store chunks and vectors
+7	ChromaDB retrieval	Retrieve relevant chunks
+8	OpenAI API	Generate answers using retrieved context
+
+
+python -m pip install ollama
+
+from pathlib import Path
+import chromadb
+from sentence_transformers import SentenceTransformer
+from ollama import chat
+
+# 1. Get the project directory
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+
+# 2. Define the ChromaDB folder
+CHROMA_FOLDER = PROJECT_ROOT / "chroma_db"
+
+# 3. Connect to ChromaDB
+client = chromadb.PersistentClient(
+    path=str(CHROMA_FOLDER)
+)
+
+collection = client.get_collection(
+    name="banking_documents"
+)
+
+print("Connected to ChromaDB!")
+print("Total stored chunks:", collection.count())
+
+# 4. Load the embedding model
+embedding_model = SentenceTransformer(
+    "all-MiniLM-L6-v2"
+)
+
+# 5. Get the customer's question
+question = input("\nAsk a banking question: ")
+
+# 6. Convert the question into an embedding
+query_embedding = embedding_model.encode(
+    question,
+    normalize_embeddings=True
+)
+
+# 7. Retrieve relevant chunks
+if collection.count() == 0:
+    raise ValueError(
+        "No documents found. Run store_vectors.py first."
+    )
+
+results = collection.query(
+    query_embeddings=[query_embedding.tolist()],
+    n_results=min(3, collection.count()),
+    include=["documents", "metadatas"]
+)
+
+retrieved_chunks = results["documents"][0]
+
+if not retrieved_chunks:
+    raise ValueError(
+        "No relevant chunks were retrieved."
+    )
+
+# 8. Build the context
+context = "\n\n".join(retrieved_chunks)
+
+# 9. Ask the local LLM to generate an answer
+print("\nGenerating answer using the local LLM...")
+
+response = chat(
+    model="llama3.2:3b",
+    messages=[
+        {
+            "role": "system",
+            "content": (
+                "You are a banking policy assistant. "
+                "Answer using only the supplied context. "
+                "Do not invent banking rules, figures, "
+                "eligibility criteria, or interest rates. "
+                "If the context does not contain enough "
+                "information, clearly say so. "
+                "Keep the answer simple and concise."
+            )
+        },
+        {
+            "role": "user",
+            "content": (
+                f"Banking policy context:\n{context}\n\n"
+                f"Customer question:\n{question}"
+            )
+        }
+    ]
+)
+
+# 10. Display the final answer
+print("\nBanking Assistant Answer:")
+print(response.message.content)
+
+Try asking:
+What is a personal loan? Explain in simple English.
+
+6. Important concepts for your interview
+Concept	Simple explanation
+Ollama	Runs supported LLMs locally on your computer.
+Llama 3.2	The language model generating answers in this example.
+ChromaDB	Stores document chunks and embeddings and retrieves relevant information.
+Sentence Transformers	Converts text into embeddings for semantic search.
+RAG	Combines retrieval with LLM-based answer generation.
+Local inference	Running the model on your own computer instead of calling a paid hosted model API.
+
+
+Does a local model guarantee correct answers? No. A local LLM can still hallucinate or misunderstand a policy. For a banking application, you should validate answers and provide source citations before considering it production-ready.
