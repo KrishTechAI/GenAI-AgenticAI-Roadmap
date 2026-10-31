@@ -1,3 +1,78 @@
+| Lesson | Topic | What you will learn |
+|---|---|---|
+| 1 | LLM fundamentals | What an LLM is, how it works, and how it differs from a traditional ML model |
+| 2 | Pretraining | How an LLM learns language patterns from large datasets |
+| 3 | Fine-tuning | How an existing model is adapted to a specific task |
+| 4 | Instruction tuning | How a model learns to follow instructions |
+| 5 | Pretraining vs. fine-tuning vs. instruction tuning | The differences, use cases, and interview questions |
+| 6 | Inference | How an LLM generates a response when a user sends a prompt |
+| 7 | Sampling and decoding | Greedy decoding, temperature, top-k, and top-p |
+| 8 | Context windows | Tokens, input limits, output limits, and long-context handling |
+| 9 | Hallucinations | Why LLMs generate incorrect information and how to reduce the risk |
+| 10 | Model selection | How to choose a model based on quality, latency, cost, and requirements |
+| 11 | LLM APIs | How to integrate a hosted LLM into a Python application |
+| 12 | Practical project | Build a basic LLM-powered banking assistant |
+| 13 | Interview preparation | Technical questions, scenario-based questions, and troubleshooting |
+
+| Feature | Pretraining | Fine-tuning | Instruction tuning |
+|---|---|---|---|
+| Main purpose | Learn general patterns | Adapt to a particular task or domain | Improve instruction following |
+| Data | Large general-purpose training corpus, depending on model design | Task- or domain-specific examples | Instruction-response examples |
+| Starting point | Often randomly initialized parameters | Usually a pretrained model | Usually a pretrained model |
+| Training performed? | Yes | Yes | Yes |
+| Parameters updated? | Yes | Yes, or selected trainable components | Yes, or selected trainable components |
+| Example | Learning general language patterns | Classifying banking tickets | Following a request to summarize a policy |
+
+9. Sampling and decoding — How does an LLM choose its next token?
+| Token | Probability |
+|---|---:|
+| `loan` | 0.60 |
+| `account` | 0.25 |
+| `payment` | 0.10 |
+| `card` | 0.05 |
+
+
+Different decoding strategies can produce different outputs from the same distribution.
+A. Greedy decoding
+Greedy decoding chooses the highest-probability token at each step.
+
+In this example, it selects loan.
+
+It is straightforward and usually deterministic for a fixed model, prompt, and execution configuration.
+B. Sampling
+Sampling selects a token randomly according to the model's probability distribution, potentially allowing lower-probability tokens to be selected.
+
+This can increase output variety.
+C. Temperature
+Temperature changes the sharpness of the probability distribution before sampling.
+- Lower temperature generally concentrates probability on higher-scoring tokens.
+- Higher temperature generally spreads probability more broadly.
+Temperature is not a measure of factual accuracy or model intelligence.
+D. Top-k sampling
+Top-k sampling restricts the candidate set to the k highest-scoring tokens before sampling.
+
+For example, with top_k=3, only the three highest-scoring tokens in our hypothetical distribution remain eligible.
+E. Top-p sampling
+Top-p, also called nucleus sampling, restricts the candidate set to the smallest set of highest-probability tokens whose cumulative probability reaches a chosen threshold.
+
+For example, if top_p=0.8, the candidate set is built until its cumulative probability reaches at least 0.8.
+
+Top-k and top-p can be combined with temperature and sampling, depending on the generation implementation.
+
+
+| Method | Main behavior |
+|---|---|
+| Greedy decoding | Selects the highest-scoring token |
+| Sampling | Selects a token probabilistically |
+| Temperature | Changes probability concentration during sampling |
+| Top-k | Limits candidates by rank |
+| Top-p | Limits candidates by cumulative probability |
+
+Which settings would you use for a banking assistant?
+For tasks requiring precise, structured answers, I would start with conservative decoding settings and evaluate the results.
+
+However, a low temperature does not guarantee factual accuracy. Correctness also depends on the model, prompt, retrieval quality, validation, and application design.
+
 12. Model selection — How do you choose an LLM?
 A GenAI Engineer should not choose a model only because it is popular.
 
