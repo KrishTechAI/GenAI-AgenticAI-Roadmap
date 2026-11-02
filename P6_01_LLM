@@ -715,3 +715,60 @@ It can also associate each vector with:
 - Category.
 - Source.
 - Other metadata.
+
+
+13. Interview questions and answers
+Q1. What is a vector database?
+
+A vector database is a system designed to store and search numerical vector representations using similarity measurements. In GenAI applications, it is commonly used to retrieve semantically relevant documents.
+
+Q2. Why do we need a vector database in RAG?
+
+RAG applications need to retrieve relevant document chunks based on user queries. A vector database stores document embeddings and supports similarity search to find relevant information efficiently.
+
+Q3. What is the difference between FAISS and ChromaDB?
+
+FAISS is a vector similarity-search library that provides indexing and retrieval capabilities. ChromaDB is a vector database that supports storing vectors, document text, IDs and metadata together.
+
+Q4. What is HNSW?
+
+HNSW stands for Hierarchical Navigable Small World. It is a graph-based approximate nearest-neighbor indexing algorithm used to perform efficient vector searches.
+
+Q5. What is the difference between a vector and a vector index?
+
+A vector is a numerical representation of data. A vector index is a data structure that organizes vectors to make similarity searches more efficient.
+
+Q6. Why do we normalize embeddings?
+
+Normalization scales vectors to unit length. When both vectors are normalized, their dot product equals cosine similarity, simplifying similarity calculations.
+
+Q7. What happens if the embedding model changes?
+
+The new model may produce vectors in a different vector space or with different dimensions. Existing document vectors should generally be regenerated using the new model before searching with new query embeddings.
+
+Q8. Can FAISS store document text?
+
+FAISS primarily stores and searches vectors. We generally maintain a separate mapping or document store to associate returned vector positions with the original text and metadata.
+
+Q9. Why would we use OpenSearch instead of FAISS?
+
+OpenSearch is useful when the application needs a broader search platform, including keyword search, vector search, metadata filtering and hybrid retrieval. FAISS focuses primarily on vector similarity search.
+
+Q10. How would you handle outdated banking policies in a vector database?
+
+I would maintain document IDs, version numbers, effective dates and status metadata. During ingestion, I would update or remove superseded records and filter retrieval to approved, currently valid policies.
+I would also enforce access controls and maintain audit records.
+
+
+Temperature → Controls randomness in generation.
+Context window → Controls how much information the model can process.
+Weights → Learned numerical parameters inside the model.
+Fine-tuning → Additional training that updates model parameters.
+------------------------
+
+Keyword search: Finds information based on matching words.
+Keyword search looks for exact words or matching terms in documents.
+
+Semantic search: Finds information based on meaning and contex
+Semantic search understands the meaning of the question rather than depending only on exact word matches.
+------------------------------------------------------------------------
