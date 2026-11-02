@@ -769,6 +769,144 @@ Fine-tuning → Additional training that updates model parameters.
 Keyword search: Finds information based on matching words.
 Keyword search looks for exact words or matching terms in documents.
 
+
 Semantic search: Finds information based on meaning and contex
 Semantic search understands the meaning of the question rather than depending only on exact word matches.
+----------------------------------------------
+AWS authentication
+Boto3 supports AWS authentication through configured credentials, IAM roles, and other supported credential providers.
+Boto3 searches for credentials through its supported credential-provider chain.
 ------------------------------------------------------------------------
+simple rag application
+
+
+from openai import OpenAI
+
+client = OpenAI()
+
+# Simple banking knowledge base
+banking_policy = """
+Personal Loan Policy:
+
+Customers must meet the lender's eligibility criteria.
+
+The lender may consider employment, income, credit history,
+and other information when assessing an application.
+
+Required documents and eligibility rules depend on the
+specific loan product and the current bank policy.
+"""
+
+# Ask the user for a question
+question = input("Ask a banking question: ")
+
+# Prepare instructions and context
+instructions = """
+You are a banking policy assistant.
+
+Answer in simple English using the supplied policy.
+Do not invent eligibility rules or document requirements.
+If the policy does not contain the answer, say so clearly.
+"""
+
+prompt = f"""
+Banking Policy:
+{banking_policy}
+
+Customer Question:
+{question}
+"""
+
+try:
+    # Call the LLM API
+    response = client.responses.create(
+        model="YOUR_AVAILABLE_MODEL",
+        instructions=instructions,
+        input=prompt
+    )
+
+    # Display the answer
+    print("\nBanking Assistant:")
+    print(response.output_text)
+
+except Exception as error:
+    print(f"Unable to generate an answer: {error}")
+
+---------------------------------------------------
+Financial Documents
+        |
+        v
+S3 / Document Storage
+        |
+        v
+OCR and Text Extraction
+        |
+        v
+Chunking and Embeddings
+        |
+        v
+Vector Search / Retrieval
+        |
+        v
+Relevant Financial Evidence
+        |
+        v
+Python Application
+        |
+        v
+Amazon Bedrock Converse API
+        |
+        v
+Generated Credit Review Summary
+        |
+        v
+Validation and Audit Logging
+        |
+        v
+Human Credit Analyst Review
+
+------------------------------------------
+Q: How would you integrate an LLM API into a banking document-processing application?
+
+Answer: I would use Python to communicate with the LLM through an API such as Amazon Bedrock's Converse API. The application would extract text from banking documents, retrieve relevant information from a knowledge base, and include that information in the prompt. The LLM would generate a structured summary or answer. I would also implement error handling, access controls, logging, output validation, and human review for high-impact decisions.
+
+
+Q1. What is the difference between an API and an SDK?
+An API defines how an application communicates with a service.
+
+An SDK is a collection of libraries and tools that makes it easier to use that service from a programming language.
+
+For example:
+- OpenAI API: The interface used to request model responses.
+- OpenAI Python SDK: The Python library that simplifies those API calls.
+- Boto3: The AWS Python SDK used to interact with AWS services, including Amazon Bedrock.
+Q2. What is the difference between an LLM and an LLM API?
+An LLM is the language model that generates responses.
+
+An LLM API provides an interface for applications to send input to the model and receive output.
+Q3. What is a prompt?
+A prompt is the input or instruction provided to a model.
+
+It may contain a question, system instructions, retrieved documents, examples, or other context.
+Q4. What is inference?
+Inference is the process of using a trained model to generate a prediction or response.
+
+When your Python application sends a question to an LLM API and the model generates an answer, inference is taking place.
+Q5. What is the difference between RAG and an LLM API?
+An LLM API provides a way to communicate with a model.
+
+RAG is an application architecture that retrieves relevant information and supplies it to the model as context.
+
+A RAG application commonly uses an LLM API to generate its final answer.
+Q6. How do you secure an LLM API integration?
+I would protect credentials using environment variables or a secrets manager, use appropriate authentication and authorization, avoid logging sensitive data, validate inputs and outputs, apply access controls to retrieved documents, and configure monitoring and rate limits.
+Q7. What is a rate limit?
+A rate limit restricts how frequently or how much a client can use an API within a specified period. The exact limit depends on the provider, model, account, and service configuration.
+Q8. How can you reduce LLM API costs?
+I would select a suitable model, control prompt and output length, avoid unnecessary repeated requests, cache appropriate results, retrieve only relevant context, and monitor token usage.
+Q9. What is the difference between stateless and stateful conversations?
+In a stateless interaction, the application generally needs to provide the relevant conversation history for each request.
+
+A stateful conversation maintains or references conversation state through a supported mechanism. The application still needs to understand how the provider manages that state and what data is retained.
+Q10. Why is API error handling important?
+It prevents temporary API failures from unnecessarily crashing the application. It also allows the application to respond appropriately to invalid requests, authentication failures, rate limits, and service outages.
