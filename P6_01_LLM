@@ -717,6 +717,105 @@ It can also associate each vector with:
 - Other metadata.
 
 
+How does a vector database work internally?
+Step 1: Generate embeddings
+Step 1: Generate embeddings - The application sends the vector and associated information to the vector database.
+Step 3: Build an index  (Hierarchical Navigable Small World_
+An index helps the system locate similar vectors efficiently.
+For example, HNSW and IVF are commonly used vector indexing approaches.
+
+What is vector indexing?
+This is an important interview topic.
+Suppose we have one million vectors.
+Without an index, an exact search might calculate the distance between the query vector and every stored vector.
+That can become computationally expensive.
+A vector index helps speed up retrieval.
+Important indexing techniques
+HNSW organizes vectors into a graph with multiple layers.
+- Higher layers help navigate large distances.
+- Lower layers provide more detailed searching.
+- The algorithm follows connections to find nearby vectors
+
+B. IVF divides vectors into clusters.
+- Each cluster has a centroid.
+- During search, the system identifies promising clusters.
+- It searches within selected clusters rather than all vectors.
+
+C. Product Quantization (PQ)
+
+PQ compresses vector representations into smaller codes.
+It can reduce memory requirements and improve search efficiency, with a potential accuracy trade-off.
+
+Interview answer: Vector indexing improves search efficiency by organizing vectors so the system does not always need to perform exhaustive comparisons.
+
+Four important vector search technologies:
+
+FAISS - FAISS is a library for efficient similarity search and clustering of dense vectors. (local usage)
+It is not a full database service like Pinecone. It primarily provides vector indexing and search capabilities.
+
+Chroma db:  An open-source vector database commonly used in RAG applications.
+Embeddings.
+Document text.
+Document IDs.
+Metadata.
+It supports similarity retrieval and persistence.
+
+Pinecone: A managed vector database platform.
+
+OpenSearch:  A search and analytics engine that supports vector search as well as traditional text search.
+OpenSearch is particularly useful when an application needs both:
+- Traditional keyword search.
+- Vector-based semantic search.
+
+Keyword and vector search capabilities.
+Metadata filtering.
+Search and analytics features.
+Useful in AWS-based architectures.
+-------------------------------------
+
+FAISS: When I need efficient local vector similarity search and can manage associated document storage.
+ChromaDB: When I want a straightforward vector database for local RAG development.
+Pinecone: When I want a managed vector database service.
+OpenSearch: When I need both keyword and vector retrieval, especially in an AWS-oriented search architecture.
+---------------------------------------------------------------------
+Practical implementation 1 – Build a vector search system using FAISS
+
+sentence-transformers – generate embeddings.
+faiss-cpu – create and search a vector index.
+numpy – numerical operations.
+
+IndexFlatIP: creates an exact inner-product index.
+threshold = 0.40
+
+7. Practical implementation 2 – Build a vector database using ChromaDB
+
+Load the embedding model: model = SentenceTransformer("all-MiniLM-L6-v2")  --> this is not openAI model , this is open source sentence embeddimg
+Why use upsert()?
+
+It inserts records or updates existing records with the same IDs.
+
+This is useful when documents are reprocessed or updated.
+
+How do we use Pinecone in a real project?
+Pinecone uses indexes to organize vector records.
+
+AWS also offers Amazon OpenSearch Service, a managed service for running OpenSearch. OpenSearch itself is an open-source search and analytics project.
+
+----------------------------------------------
+
+With FAISS:
+- We generate embeddings.
+- We add vectors to a FAISS index.
+- We maintain a separate mapping between vector positions and document records.
+- We save and load the index and associated document data.
+With ChromaDB:
+- We can store IDs, embeddings, document text and metadata in a collection.
+- We query the collection.
+- It returns the matching records and associated metadata.
+----------------------------------------------
+"In my banking RAG architecture, I use an embedding model to convert document chunks into numerical vectors. These vectors, along with document IDs, text and metadata, are stored in a vector search system such as OpenSearch. When a customer submits a question, I generate its embedding and perform similarity retrieval to identify the relevant policy chunks. I pass the retrieved context to the LLM to generate a grounded response."
+---------------------------------------------------------
+
 13. Interview questions and answers
 Q1. What is a vector database?
 
@@ -765,6 +864,35 @@ Context window → Controls how much information the model can process.
 Weights → Learned numerical parameters inside the model.
 Fine-tuning → Additional training that updates model parameters.
 ------------------------
+Exercise A – Theory
+Answer these questions in your own words:
+1. What is a vector database?
+2. Why do we need vector indexing?
+3. Explain HNSW and IVF.
+4. What is the difference between FAISS and ChromaDB?
+5. What is the difference between Pinecone and OpenSearch?
+6. What is metadata filtering?
+7. Why should we use persistent storage?
+8. What happens if the embedding model changes?
+9. How do vector databases support RAG?
+10. Why should a banking application remove outdated policy vectors?
+Exercise B – Coding challenge
+Build a banking document retrieval application using ChromaDB.
+
+Your requirements:
+1. Create at least eight banking documents.
+2. Generate embeddings for all documents.
+3. Store the embeddings in ChromaDB.
+4. Store document IDs and metadata.
+5. Accept a customer question.
+6. Retrieve the Top 3 relevant documents.
+7. Print the document ID, text and distance.
+8. Filter documents using metadata.
+9. Test the application with multiple queries.
+10. Display a message when no relevant documents are found.
+--------------------------------------
+
+"You have stored 50,000 banking document chunks in FAISS. When a customer asks about personal loan eligibility, your application retrieves irrelevant home loan documents. How would you investigate and resolve this?
 
 Keyword search: Finds information based on matching words.
 Keyword search looks for exact words or matching terms in documents.
@@ -910,3 +1038,44 @@ In a stateless interaction, the application generally needs to provide the relev
 A stateful conversation maintains or references conversation state through a supported mechanism. The application still needs to understand how the provider manages that state and what data is retained.
 Q10. Why is API error handling important?
 It prevents temporary API failures from unnecessarily crashing the application. It also allows the application to respond appropriately to invalid requests, authentication failures, rate limits, and service outages.
+------------------------------------------------------------------------------------------
+1. What is an API?
+API stands for Application Programming Interface.
+
+An API allows two software applications to communicate with each other using an agreed set of rules.
+
+
+
+ Customer
+   |
+   | Asks a question
+   v
+Python Application
+   |
+   | Sends API Request
+   v
+LLM API
+   |
+   v
+LLM Model
+   |
+   | Generates an answer
+   v
+LLM API
+   |
+   | Returns API Response
+   v
+Python Application
+   |
+   v
+Customer sees the answer
+
+An API is not an LLM itself.
+- LLM: The model that understands input and generates text.
+- API: The interface that lets your application communicate with the model.
+- Python application: The program that sends requests and uses the responses.
+
+
+What is an API, and why do we use it in GenAI applications?
+
+Answer: An API allows different applications to communicate with each other. In GenAI applications, we use APIs to send prompts from Python to an LLM and receive generated responses. APIs also allow us to integrate LLMs into chatbots, RAG applications, and AI agents.
