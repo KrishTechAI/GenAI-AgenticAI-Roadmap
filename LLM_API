@@ -1,0 +1,132 @@
+3. What is an LLM API?
+An LLM API allows a Python application to access a language model without running the entire model on your own computer.
+
+Interview point: OpenAI and Amazon Bedrock are not the same thing. They provide different ways to access models.
+Choose based on model requirements, security, cost, latency, deployment architecture, and organizational policies.
+
+nterview-ready answer
+"An LLM API allows an application to communicate with a Large Language Model. We send a prompt or relevant context through the API, and the model returns a generated response. In my banking RAG application, we use an LLM API to send the customer query along with retrieved banking policy information and generate context-aware responses."
+
+Remember: Python application → LLM API → LLM → Generated response.
+
+Guardrails: 
+Guardrails are safety and validation mechanisms used to control LLM behaviour. In my banking RAG application, we use input validation, context validation,
+output checks and fallback mechanisms to reduce hallucinations and prevent unsupported banking information from being returned
+. We also need to protect sensitive customer information
+
+Guardrails reduce risks; they cannot guarantee that an LLM will never hallucinate
+
+
+A. OpenAI API
+The OpenAI API allows developers to integrate supported OpenAI models into their applications.
+
+B. Amazon Bedrock
+Amazon Bedrock is an AWS service that provides API access to supported foundation models from Amazon and other providers.
+
+Interview point: OpenAI and Amazon Bedrock are not the same thing. They provide different ways to access models. 
+Choose based on model requirements, security, cost, latency, deployment architecture, and organizational policies.
+
+
+Connect Python to Amazon Bedrock:
+Boto3 allows Python applications to interact with AWS services.
+
+10.2 What does the API do in RAG?
+The LLM API is responsible for sending the prompt to the model and returning its generated response.
+The retrieval component is responsible for finding relevant information from your knowledge base.
+
+
+Interview-ready explanation
+Q: How would you integrate an LLM API into a banking document-processing application?
+
+Answer: I would use Python to communicate with the LLM through an API such as Amazon Bedrock's Converse API. 
+The application would extract text from banking documents, retrieve relevant information from a knowledge base, and include that information in the prompt. The LLM would generate a structured summary or answer.
+I would also implement error handling, access controls, logging, output validation, and human review for high-impact decisions.
+
+Q: How do you handle errors when integrating an LLM API into a production application?
+
+Answer: I use exception handling to manage connection failures and API errors. 
+I configure suitable timeouts and retries for temporary failures, especially rate limits and server errors. 
+I also log relevant error details, monitor failures, and avoid exposing API keys or sensitive customer information in logs.
+
+AWS authentication
+Boto3 supports AWS authentication through configured credentials, IAM roles, and other supported credential providers.
+
+An LLM is the language model that generates responses.
+An LLM API provides an interface for applications to send input to the model and receive output.
+
+
+Q1. What is the difference between an API and an SDK?
+An API defines how an application communicates with a service.
+
+An SDK is a collection of libraries and tools that makes it easier to use that service from a programming language.
+
+For example:
+- OpenAI API: The interface used to request model responses.
+- OpenAI Python SDK: The Python library that simplifies those API calls.
+- Boto3: The AWS Python SDK used to interact with AWS services, including Amazon Bedrock.
+Q2. What is the difference between an LLM and an LLM API?
+An LLM is the language model that generates responses.
+
+An LLM API provides an interface for applications to send input to the model and receive output.
+Q3. What is a prompt?
+A prompt is the input or instruction provided to a model.
+
+It may contain a question, system instructions, retrieved documents, examples, or other context.
+Q4. What is inference?
+Inference is the process of using a trained model to generate a prediction or response.
+
+When your Python application sends a question to an LLM API and the model generates an answer, inference is taking place.
+Q5. What is the difference between RAG and an LLM API?
+An LLM API provides a way to communicate with a model.
+
+RAG is an application architecture that retrieves relevant information and supplies it to the model as context.
+
+A RAG application commonly uses an LLM API to generate its final answer.
+Q6. How do you secure an LLM API integration?
+I would protect credentials using environment variables or a secrets manager, use appropriate authentication and authorization, avoid logging sensitive data, validate inputs and outputs, apply access controls to retrieved documents, and configure monitoring and rate limits.
+Q7. What is a rate limit?
+A rate limit restricts how frequently or how much a client can use an API within a specified period. The exact limit depends on the provider, model, account, and service configuration.
+Q8. How can you reduce LLM API costs?
+I would select a suitable model, control prompt and output length, avoid unnecessary repeated requests, cache appropriate results, retrieve only relevant context, and monitor token usage.
+Q9. What is the difference between stateless and stateful conversations?
+In a stateless interaction, the application generally needs to provide the relevant conversation history for each request.
+
+A stateful conversation maintains or references conversation state through a supported mechanism. The application still needs to understand how the provider manages that state and what data is retained.
+Q10. Why is API error handling important?
+It prevents temporary API failures from unnecessarily crashing the application. It also allows the application to respond appropriately to invalid requests, authentication failures, rate limits, and service outages.
+
+
+xercise A: Theory
+Answer these questions in your own words.
+1. What is an API?
+2. What is the difference between an API and an SDK?
+3. What is the difference between OpenAI and Amazon Bedrock?
+4. What is the purpose of system, user, and assistant messages?
+5. What happens when Python sends a request to an LLM API?
+6. What is the difference between an LLM API and RAG?
+7. Why should API keys not be hardcoded?
+8. What is a rate limit, and how would you handle it?
+Exercise B: Python coding
+Modify the banking chatbot to:
+1. Accept a question from the user.
+2. Use a system instruction that tells the model to answer in simple English.
+3. Include the banking policy as context.
+4. Send the request through the Responses API.
+5. Print the generated answer.
+6. Handle API errors.
+Bonus: Add a check so that the program does not send an empty question to the model.
+Exercise C: Interview scenario
+An interviewer asks:
+You are developing a banking RAG chatbot using Python and Amazon Bedrock. The chatbot sometimes returns errors, and sometimes it gives answers that are not supported by the banking documents.
+How would you improve the application?
+
+"I would improve the application in two areas. First, I would implement proper exception handling, logging, retry mechanisms and timeout handling to manage Bedrock API and retrieval errors. Second, to reduce hallucinations, I would improve document chunking and retrieval, apply similarity thresholds, provide relevant context to the LLM and implement guardrails and response validation. 
+If the required information is not available in the banking documents, the chatbot should provide a safe fallback instead of generating an unsupported answer."
+
+
+What is an API, and why do we use it in a GenAI application?
+"An API, or Application Programming Interface, allows two software applications to communicate with each other.
+In a GenAI application, we use APIs to connect our Python application with LLM services such as Amazon Bedrock, vector databases such as OpenSearch, and other cloud services. 
+For example, in my banking RAG chatbot, the OpenSearch API retrieves relevant banking policy information, and the Bedrock API generates a context-aware response using that information."
+
+
