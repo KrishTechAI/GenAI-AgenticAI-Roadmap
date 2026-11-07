@@ -5,7 +5,8 @@ Interview point: OpenAI and Amazon Bedrock are not the same thing. They provide 
 Choose based on model requirements, security, cost, latency, deployment architecture, and organizational policies.
 
 nterview-ready answer
-"An LLM API allows an application to communicate with a Large Language Model. We send a prompt or relevant context through the API, and the model returns a generated response. In my banking RAG application, we use an LLM API to send the customer query along with retrieved banking policy information and generate context-aware responses."
+"An LLM API allows an application to communicate with a Large Language Model. We send a prompt or relevant context through the API, and the model returns a generated response.
+In my banking RAG application, we use an LLM API to send the customer query along with retrieved banking policy information and generate context-aware responses."
 
 Remember: Python application → LLM API → LLM → Generated response.
 
@@ -128,5 +129,383 @@ What is an API, and why do we use it in a GenAI application?
 "An API, or Application Programming Interface, allows two software applications to communicate with each other.
 In a GenAI application, we use APIs to connect our Python application with LLM services such as Amazon Bedrock, vector databases such as OpenSearch, and other cloud services. 
 For example, in my banking RAG chatbot, the OpenSearch API retrieves relevant banking policy information, and the Bedrock API generates a context-aware response using that information."
+--------------------------------------------------------------------------------------------------------------------------------------------
+Lesson 7: LLM Sampling and Decoding
+
+
+How does the model decide what comes next?
+
+It doesn't simply search for a complete sentence and copy it. It predicts the next token based on the input and probabilities learned during training.
+The process of selecting tokens to generate a response is called sampling and decoding.
+
+
+The model assigns probabilities to possible next tokens.
+The model uses a decoding strategy to select the next token.
+This process continues until the model generates an end-of-response token or reaches a generation limit.
+----------------
+Before learning decoding techniques,
+What are logits and probabilities?
+
+Logits:
+
+Logits are the raw numerical scores produced by the model for possible next tokens.
+Higher logits generally indicate that a token is more favored before converting the scores into probabilities.
+
+B. Probabilities:
+The model converts logits into probabilities, commonly using a mathematical function called Softmax.
+The result is a probability distribution over possible next tokens.
+he probability distribution helps the decoding strategy decide which token to select.
+
+What is Softmax?
+Softmax converts a list of numerical scores into probabilities that sum to 1.
+oftmax is a mathematical function used to convert raw model scores, called logits, into probabilities. In an LLM, it helps calculate the probability of possible next tokens. Based on these probabilities, the decoding strategy selects the next token during text generation."
+Logits → Softmax → Probabilities → Token selection.
+
+
+What is Greedy Decoding?
+Greedy decoding is the simplest decoding strategy.
+It always selects the token with the highest probability.
+
+
+What is Temperature?
+Temperature controls how the probability distribution is adjusted before selecting the next token.
+
+Temperature controls how much randomness is allowed during text generation.
+- Low temperature: More predictable token selection.
+- High temperature: More varied token selection.
+
+Q: What is temperature in an LLM?
+
+Answer: Temperature controls the randomness of token selection. A lower temperature makes the model's output more predictable, while a higher temperature allows more variation. For banking policy applications, I would generally start with a low temperature and evaluate the output for correctness and consistency.
+
+5. What is Top-K Sampling?
+Top-K sampling restricts the model's next-token choices to the K tokens with the highest probabilities.
+Here, K means the number of candidate tokens considered.
+
+Top-K value	Effect
+K = 1	Only the highest-probability token remains
+Larger K  More possible tokens are considered
+
+Q: What is Top-K sampling?
+
+Answer: Top-K sampling selects the K most probable candidate tokens and removes the remaining tokens from consideration. The model then samples the next token from the selected candidates. It helps control the diversity of generated responses.
+
+
+What is Top-P Sampling (Nucleus Sampling)?
+Top-P sampling is another technique for controlling token selection.
+
+Instead of keeping a fixed number of tokens, it keeps the smallest group of highest-probability tokens whose cumulative probability reaches a specified threshold P.
+
+Easy way to remember
+- Top-K: How many tokens should I consider?
+- Top-P: How much cumulative probability should I cover?
+
+
+Technique	How it selects tokens	Main effect
+Greedy	Highest-probability token	Most direct selection
+Temperature	Adjusts probability distribution	Controls randomness
+Top-K	Keeps K highest-probability tokens	Limits candidate count
+Top-P	Keeps candidates reaching cumulative P	Adapts candidate count
+
+Greedy: Always chooses the highest-probability next token.
+Low temperature: Makes the token distribution more concentrated.
+Top-K: Limits the possible next tokens to a fixed number of candidates.
+Top-P: Limits candidates based on cumulative probability.
+
+
+Would reducing temperature solve this problem?
+
+Temperature changes token selection. It does not give the model access to the correct interest rate.
+
+12. Lesson 7 — Interview questions and answers
+These are important questions for GenAI Engineer interviews.
+
+Q1. How does an LLM generate a response?
+
+An LLM predicts the next token based on the input and the context. It calculates probabilities for possible tokens and uses a decoding strategy to select the next token. This process repeats until the response is complete or a generation limit is reached.
+
+Q2. What is greedy decoding?
+
+Greedy decoding selects the highest-probability token at every generation step. It is simple and predictable but can sometimes produce repetitive responses.
+
+Q3. What is temperature?
+
+Temperature controls the randomness of token selection. Lower temperature produces more predictable responses, while higher temperature allows more variation.
+
+Q4. What is Top-K sampling?
+
+Top-K sampling restricts the candidate tokens to the K highest-probability tokens. The model then selects from those candidates.
+
+Q5. What is Top-P sampling?
+
+Top-P sampling selects a group of high-probability tokens whose cumulative probability reaches a specified threshold. Unlike Top-K, the number of selected tokens can change.
+
+Q6. What is the difference between Top-K and Top-P?
+
+Top-K uses a fixed number of candidate tokens, whereas Top-P uses a cumulative probability threshold to determine the candidate group.
+
+Q7. Which sampling strategy would you use in a banking chatbot?
+
+I would start with a relatively low temperature to encourage consistent answers. I would also use relevant document retrieval, grounding instructions, and output validation to improve reliability.
+
+Q8. Does low temperature eliminate hallucinations?
+
+No. Temperature controls randomness, not factual correctness. I would use RAG, source validation, and appropriate evaluation to reduce hallucinations.
+
+Q9. What are logits?
+
+Logits are raw scores generated by the model for possible next tokens. They are commonly converted into probabilities using Softmax.
+
+Q10. What is the difference between a token and a word?
+
+A word is a language unit, whereas a token is a unit processed by the model. A token may represent a complete word, part of a word, or punctuation.
+
+13. Practical exercises
+Exercise A — Theory
+Try answering these in your own words:
+1. How does an LLM predict the next token?
+2. What is the difference between logits and probabilities?
+3. Explain greedy decoding with an example.
+4. What happens when temperature increases?
+5. What is Top-K sampling?
+6. What is Top-P sampling?
+7. What is the difference between Top-K and Top-P?
+8. Why doesn't low temperature eliminate hallucinations?
+Exercise B — Python coding
+Write a Python program that:
+1. Creates a dictionary of six tokens and their probabilities.
+2. Selects the highest-probability token using greedy decoding.
+3. Sorts the tokens by probability.
+4. Selects the Top 3 candidates.
+5. Implements Top-P sampling with a threshold of 0.80.
+6. Prints the results.
+You can use the examples in this lesson as references, but try writing the program yourself.
+Exercise C — Interview scenario
+An interviewer asks:
+You developed a banking chatbot using Amazon Bedrock. The chatbot gives different answers to the same banking policy question. How would you improve the consistency of the answers?
+I would improve the consistency of the banking chatbot by controlling the LLM parameters and improving the RAG pipeline.
+My main approach is to reduce the temperature, improve retrieval accuracy, maintain consistent prompts, and validate LLM responses against the original banking documents. This helps provide reliable and consistent answers.
+
+Write your answer in 4–5 sentences.
+-----------------------------------------------------------------------------------
+Context Windows and Token Management
+
+There are two important token categories.
+A. Input tokens
+Input tokens are the tokens sent to the model.
+
+Output tokens
+Output tokens are the tokens generated by the model.
+
+What is the difference between input and output tokens?
+
+Answer: Input tokens are the information sent to the model, including prompts, questions, conversation history, and retrieved documents. 
+Output tokens are the tokens generated by the model in its response.
+
+What happens?
+
+Depending on the model and API, the request may fail with a context-length error or exceed a request limit. The application must manage the input and output budgets.
+How can we solve this?
+1. Remove irrelevant conversation history.
+2. Retrieve only relevant document chunks.
+3. Summarize older conversations.
+4. Reduce unnecessary prompt instructions.
+5. Limit the output length appropriately.
+6. Select a model with a larger context window if needed.
+
+----------------------------------------------------------------------------------
+How to count tokens using Python
+
+For OpenAI models, you can use a library called tiktoken to estimate token counts for supported model tokenizers.
+
+How does an LLM process conversation history?
+When the customer asks the final question, the application needs to provide the relevant conversation history to the model.
+The model can then use the previous messages to understand what "everything" refers to.
+
+7. What is Context Management?
+Context management means deciding which information should be sent to the LLM and how much information should be included.
+
+What is Context Management?
+
+Context management means deciding which information should be sent to the LLM and how much information should be included.
+Technique 1: Truncate old conversation history
+Technique 2: Summarization
+Instead of keeping all older messages, create a shorter summary.
+Now the application can send the summary instead of all the older messages.
+
+Technique 3: RAG-based retrieval
+Instead of sending the complete document collection, retrieve only the relevant chunks.
+
+Technique 4: Hybrid context management
+In production applications, you can combine these techniques:
+- Keep recent conversation messages.
+- Summarize older conversation messages.
+- Retrieve relevant documents using RAG.
+- Include the current question.
+- Apply an output-token budget.
+This provides a better balance between conversation continuity and token usage.
+
+
+What is the "Lost in the Middle" problem?
+
+The important information is located in the middle of the document.
+Even if the model has a large context window, it may not use all information equally effectively. Some models and tasks show weaker recall for information buried in the middle of long contexts.
+This is commonly called the Lost in the Middle problem.
+
+Customer question
+What are the personal loan eligibility criteria?
+|
+Embedding model
+Convert the question into a vector.
+|
+Vector database
+Search relevant banking policy chunks.
+|
+Retrieved context
+Relevant eligibility policy chunks and source references.
+|
+Context management
+Select relevant chunks, conversation summary, and current question.
+|
+LLM API
+Generate an answer using the supplied context.
+|
+Final response
+Answer with relevant supporting sources.
+
+How do you decide how many chunks to retrieve?
+You may have heard of Top-K retrieval.
+Here, k=4 means retrieve up to four relevant chunks.
+
+10. What is Conversation Memory?
+Conversation memory helps an application maintain useful information from previous interactions.
+
+Let's distinguish three concepts:
+Concept	Purpose
+Context window	Maximum information the model can process in a request
+Conversation history	Previous messages available to the application
+Memory	Selected information retained or retrieved for future interactions
+
+ypes of memory used in AI applications
+1. Short-term memory
+
+Maintains recent messages in the current conversation.
+
+Example: The last 10 messages in a chatbot session.
+
+2. Summary memory
+
+Stores a condensed summary of an older conversation.
+
+Example: A short summary of the customer's previous questions about a loan.
+
+3. Long-term or external memory
+
+Stores selected information in a database or another persistent storage system.
+
+Example: An authorized customer preference or previously saved application detail.
+
+4. Retrieval-based memory
+
+Retrieves relevant previous information when required.
+
+Example: Searching previous conversation summaries using semantic search.
+Important distinction
+An LLM does not automatically have unlimited long-term memory.
+
+The application needs to manage, store, retrieve, and provide relevant information to the model.
+Any stored customer information must follow the organization's privacy, consent, retention, and access-control requirements.
+
+How to manage context in a production application:
+
+Context component	Management approach
+System instructions	Keep concise and consistent
+Recent conversation	Keep relevant recent messages
+Older conversation	Summarize
+Banking documents	Retrieve relevant chunks using RAG
+Customer question	Always include the current question
+Output	Set an appropriate token budget
+
+
+Q1. What is a context window?
+
+A context window is the maximum amount of token information a model can process for a request. It includes the supplied instructions, user input, conversation history, retrieved context, and potentially generated output within the applicable limits.
+
+Q2. What happens when the context window is exceeded?
+
+The API request may fail because it exceeds the model's context limit. I would reduce unnecessary conversation history, retrieve only relevant document chunks, summarize older messages, or select a model with a suitable context capacity.
+
+Q3. What is tokenization?
+
+Tokenization is the process of converting text into smaller units called tokens. These tokens are converted into numerical IDs that the model processes.
+
+Q4. What is the difference between input and output tokens?
+
+Input tokens are the information sent to the model, such as prompts, questions, and retrieved documents. Output tokens are generated by the model as its response.
+
+Q5. How do you count tokens in Python?
+
+For supported OpenAI tokenizers, I can use the tiktoken library to encode text and calculate the number of tokens. For other model providers, I would use their supported tokenizer or token-counting functionality.
+
+Q6. How do you manage long conversations in a chatbot?
+
+I would maintain recent conversation history, summarize older messages, and retrieve relevant information when required. I would also monitor token usage to avoid exceeding the context window.
+
+Q7. What is the Lost in the Middle problem?
+
+It refers to the tendency of some models to use information placed at the beginning or end of long contexts more effectively than information buried in the middle. I would improve this by retrieving relevant chunks and organizing the context carefully.
+
+Q8. What is the difference between context window and memory?
+
+The context window is the information the model can process in a particular request. Memory is information retained by an application or platform and supplied again when relevant.
+
+Q9. Why shouldn't we send all documents to an LLM?
+
+Sending all documents increases token usage, cost, and latency. It can also introduce irrelevant information. I would use RAG to retrieve only the relevant document chunks.
+
+Q10. How would you optimize context in a banking RAG application?
+
+I would retrieve relevant chunks from the vector database, use metadata filtering, remove duplicate or irrelevant content, maintain recent conversation history, and summarize older messages.
+I would also monitor token usage and evaluate the relevance of the retrieved information.
+
+1. What is a context window?
+2. What is the difference between tokens and words?
+3. What are input tokens and output tokens?
+4. What happens when the context window is exceeded?
+5. What is tokenization?
+6. What is the Lost in the Middle problem?
+7. How does conversation history work in a chatbot?
+8. What is the difference between truncation and summarization?
+9. How does RAG help with context management?
+10. What is the difference between context window and conversation memory?
+Exercise B — Python coding
+Create a Python program that:
+1. Stores a conversation in a list.
+2. Adds user and assistant messages.
+3. Preserves the system instruction.
+4. Keeps only the latest six messages.
+5. Prints the selected conversation.
+6. Counts the tokens using tiktoken for a supported OpenAI tokenizer.
+Bonus: Calculate the combined token count for the system instruction and selected messages.
+Exercise C — Interview scenario
+Imagine you developed a banking RAG chatbot using Python, LangChain, a vector database, and Amazon Bedrock.
+
+The application contains 10,000 banking policy documents.
+
+A customer asks a question, but the application sends too many document chunks to the LLM. This increases API cost and response time.
+
+Question: How would you optimize the context window and reduce token usage without affecting answer quality?
+
+Write your answer in 4–5 sentences.
+
+I would optimize token usage by improving the RAG retrieval process. First, I would use metadata filtering to retrieve only relevant banking policy documents based on policy type and version.
+Then, I would use similarity search with Top-K retrieval to select only the most relevant chunks instead of sending too many chunks to the LLM. I would apply reranking to prioritize the most relevant results and remove duplicate or irrelevant chunks. Finally, I would use context compression to remove unnecessary information while preserving important details, 
+reducing token usage, API cost, and response time without affecting answer quality.
+
+
+
+
+
+
 
 
