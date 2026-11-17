@@ -304,91 +304,10 @@ Use case	Semantic search and RAG
 
 
 
-from pathlib import Path
-from sentence_transformers import SentenceTransformer
-import json
 
-# 1. Get the project directory
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
-# 2. Define the documents folder
-DOCUMENTS_FOLDER = PROJECT_ROOT / "documents"
 
-# 3. Load the embedding model
-print("Loading embedding model...")
 
-model = SentenceTransformer("all-MiniLM-L6-v2")
-
-print("Embedding model loaded successfully!")
-
-# 4. Find all chunk files
-chunk_files = list(
-    DOCUMENTS_FOLDER.glob("*_chunks.txt")
-)
-
-if not chunk_files:
-    print("No chunk files found. Run chunk_documents.py first.")
-
-# 5. Process each chunk file
-for chunk_file in chunk_files:
-
-    print(f"\nProcessing: {chunk_file.name}")
-
-    # Read the chunk file
-    content = chunk_file.read_text(encoding="utf-8")
-
-    # Separate individual chunks using our chunk markers
-    raw_chunks = content.split("--- CHUNK ")
-
-    chunks = []
-
-    for raw_chunk in raw_chunks:
-
-        if "---" not in raw_chunk:
-            continue
-
-        chunk_text = raw_chunk.split("---", 1)[1].strip()
-
-        if chunk_text:
-            chunks.append(chunk_text)
-
-    if not chunks:
-        print("No valid chunks found.")
-        continue
-
-    # 6. Convert chunks into embeddings
-    embeddings = model.encode(
-        chunks,
-        convert_to_numpy=True,
-        normalize_embeddings=True
-    )
-
-    print("Total chunks:", len(chunks))
-    print("Embedding shape:", embeddings.shape)
-
-    # 7. Save embeddings and text
-    output_data = []
-
-    for index, (chunk, embedding) in enumerate(
-        zip(chunks, embeddings), start=1
-    ):
-
-        output_data.append({
-            "chunk_id": f"{chunk_file.stem}_{index}",
-            "text": chunk,
-            "embedding": embedding.tolist()
-        })
-
-    output_file = chunk_file.stem + "_embeddings.json"
-
-    output_path = DOCUMENTS_FOLDER / output_file
-
-    with output_path.open("w", encoding="utf-8") as file:
-        json.dump(output_data, file, indent=4)
-
-    print("Embeddings saved:", output_file)
-
-print("\nEmbedding generation completed!")
 
 
 banking_rag_project/
